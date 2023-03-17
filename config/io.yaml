@@ -1,0 +1,20 @@
+lr:
+  var_paths:
+    U10:
+      train_path: "/home/nannau/gom/era5/train/U10_batch_64/*.pt"
+      test_path: "/home/nannau/gom/era5/test/U10_batch_64/*.pt"
+    V10:
+      train_path: "/home/nannau/gom/era5/train/V10_batch_64/*.pt"
+      test_path: "/home/nannau/gom/era5/test/V10_batch_64/*.pt"
+    tas:
+      train_path: "/home/nannau/gom/era5/train/tas_batch_64/*.pt"
+      test_path: "/home/nannau/gom/era5/test/tas_batch_64/*.pt"
+
+hr:
+  var_paths:
+    U10:
+      train_path: "/home/nannau/gom/wrf/train/U10_batch_64/*.pt"
+      test_path: "/home/nannau/gom/wrf/test/U10_batch_64/*.pt"
+    V10:
+      train_path: "/home/nannau/gom/wrf/train/V10_batch_64/*.pt"
+      test_path: "/home/nannau/gom/wrf/test/V10_batch_64/*.pt"
