@@ -37,7 +37,7 @@ def SSIM_Loss(x, y, device, reduction="mean", window_size=11):
     ms_ssim_mod =  MS_SSIM(win_size=7, data_range=1,  channel=2)
     return ms_ssim_mod(x, y)
 
-def content_loss(hr: torch.Tensor, fake: torch.Tensor, device: torch.device) -> float:
+def content_loss(hr: torch.Tensor, fake: torch.Tensor) -> float:
     """Calculates the L1 loss (pixel wise error) between both
     samples. Note that this is done on the high resolution
     (or super resolved fields)
@@ -48,7 +48,7 @@ def content_loss(hr: torch.Tensor, fake: torch.Tensor, device: torch.device) -> 
     Returns:
         content_loss (float): Single value corresponding to L1.
     """
-    criterion_pixelwise = nn.L1Loss().to(device)
+    criterion_pixelwise = nn.L1Loss()
     # content_loss = criterion_pixelwise(hr/hr.std(), fake/fake.std())
     content_loss = criterion_pixelwise(hr, fake)
 

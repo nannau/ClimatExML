@@ -1,19 +1,23 @@
 hyperparameters:
-  batch_size: 16
+  batch_size: 8
   # Adam Optimizer
   learning_rate: 0.00025
   b1: 0.9
-  b2: 0.999
+  b2: 0.99
   gp_lambda: 10
-  alpha: 0.001
+  alpha: 50.0
   n_critic: 5
   max_epochs: 50
 
+# mlflow server --backend-store-uri sqlite:///climatexdb.sqlite --default-artifact-root /brain/nannau/climatex_ml_artifacts
 tracking:
-  tracking_uri: "/brain/nannau/"
+  tracking_uri: sqlite:////brain/nannau/climatexdb.sqlite
+  default_artifact_root: /brain/nannau/climatex_ml_artifacts
   experiment_name: "ClimatEx WGAN-GP"
   run_name: "wgan-gp"
-  description: "Initial setup with 4090 and pytorch lightning"
+  description: "Initial setup with 4090 and pytorch lightning. Same config as Annau2023."
+  log_every_n_steps: 100
+
 training:
   num_workers: 24
   precision: "16-mixed"

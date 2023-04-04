@@ -26,9 +26,7 @@ class DenseResidualBlock(nn.Module):
         self.res_scale = res_scale
 
         def block(in_features, non_linearity=True):
-            # layers = [nn.Conv2d(in_features, filters, 3, 1, 1, bias=True)]
-            layers = [Conv2dDepthwiseSeparable(in_features, filters, 3, 1, 1, bias=True)]
-
+            layers = [nn.Conv2d(in_features, filters, 3, 1, 1, bias=True)]
             if non_linearity:
                 layers += [nn.LeakyReLU()]
             return nn.Sequential(*layers)
@@ -62,36 +60,29 @@ class ResidualInResidualDenseBlock(nn.Module):
 
 class Generator(nn.Module):
     # coarse_dim_n, fine_dim_n, n_covariates, n_predictands
-    def __init__(self, lr_dim, n_covariates, n_predictands=2, num_res_blocks=16, num_upsample=3):
+    def __init__(self, filters, fine_dims, channels, n_predictands=2, num_res_blocks=16, num_upsample=3):
         super(Generator, self).__init__()
 
         # First layer
-        # self.conv1 = nn.Conv2d(n_covariates, lr_dim, kernel_size=3, stride=1, padding=1)
-        self.conv1 = Conv2dDepthwiseSeparable(n_covariates, lr_dim, kernel_size=3, stride=1, padding=1)
-
+        self.conv1 = nn.Conv2d(channels, filters, kernel_size=3, stride=1, padding=1)
         # Residual blocks
-        self.res_blocks = nn.Sequential(*[ResidualInResidualDenseBlock(lr_dim) for _ in range(num_res_blocks)])
+        self.res_blocks = nn.Sequential(*[ResidualInResidualDenseBlock(filters) for _ in range(num_res_blocks)])
         # Second conv layer post residual blocks
-        # self.conv2 = nn.Conv2d(lr_dim, lr_dim, kernel_size=3, stride=1, padding=1)
-        self.conv2 = Conv2dDepthwiseSeparable(lr_dim, lr_dim, kernel_size=3, stride=1, padding=1)
-
+        self.conv2 = nn.Conv2d(filters, filters, kernel_size=3, stride=1, padding=1)
         # Upsampling layers
         upsample_layers = []
         for _ in range(num_upsample):
             upsample_layers += [
-                # nn.Conv2d(lr_dim, lr_dim * 4, kernel_size=3, stride=1, padding=1),
-                Conv2dDepthwiseSeparable(lr_dim, lr_dim * 4, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(filters, filters * 4, kernel_size=3, stride=1, padding=1),
                 nn.LeakyReLU(),
                 nn.PixelShuffle(upscale_factor=2),
             ]
         self.upsampling = nn.Sequential(*upsample_layers)
         # Final output block
         self.conv3 = nn.Sequential(
-            # nn.Conv2d(lr_dim, lr_dim, kernel_size=3, stride=1, padding=1),
-            Conv2dDepthwiseSeparable(lr_dim, lr_dim, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(filters, filters, kernel_size=3, stride=1, padding=1),
             nn.LeakyReLU(),
-            # nn.Conv2d(lr_dim, n_predictands, kernel_size=3, stride=1, padding=1),
-            Conv2dDepthwiseSeparable(lr_dim, n_predictands, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(filters, n_predictands, kernel_size=3, stride=1, padding=1),
         )
 
     def forward(self, x):
