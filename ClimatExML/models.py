@@ -5,16 +5,28 @@
 import torch
 import torch.nn as nn
 
+
 class Conv2dDepthwiseSeparable(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False):
+    def __init__(
+        self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False
+    ):
         super(Conv2dDepthwiseSeparable, self).__init__()
-        self.depthwise = nn.Conv2d(in_channels, in_channels, kernel_size, stride, padding, groups=in_channels, bias=bias)
+        self.depthwise = nn.Conv2d(
+            in_channels,
+            in_channels,
+            kernel_size,
+            stride,
+            padding,
+            groups=in_channels,
+            bias=bias,
+        )
         self.pointwise = nn.Conv2d(in_channels, out_channels, 1, 1, 0, bias=bias)
 
     def forward(self, x):
         out = self.depthwise(x)
         out = self.pointwise(out)
         return out
+
 
 class DenseResidualBlock(nn.Module):
     """
@@ -51,7 +63,9 @@ class ResidualInResidualDenseBlock(nn.Module):
         super(ResidualInResidualDenseBlock, self).__init__()
         self.res_scale = res_scale
         self.dense_blocks = nn.Sequential(
-            DenseResidualBlock(filters), DenseResidualBlock(filters), DenseResidualBlock(filters)
+            DenseResidualBlock(filters),
+            DenseResidualBlock(filters),
+            DenseResidualBlock(filters),
         )
 
     def forward(self, x):
@@ -60,13 +74,23 @@ class ResidualInResidualDenseBlock(nn.Module):
 
 class Generator(nn.Module):
     # coarse_dim_n, fine_dim_n, n_covariates, n_predictands
-    def __init__(self, filters, fine_dims, channels, n_predictands=2, num_res_blocks=16, num_upsample=3):
+    def __init__(
+        self,
+        filters,
+        fine_dims,
+        channels,
+        n_predictands=2,
+        num_res_blocks=16,
+        num_upsample=3,
+    ):
         super(Generator, self).__init__()
 
         # First layer
         self.conv1 = nn.Conv2d(channels, filters, kernel_size=3, stride=1, padding=1)
         # Residual blocks
-        self.res_blocks = nn.Sequential(*[ResidualInResidualDenseBlock(filters) for _ in range(num_res_blocks)])
+        self.res_blocks = nn.Sequential(
+            *[ResidualInResidualDenseBlock(filters) for _ in range(num_res_blocks)]
+        )
         # Second conv layer post residual blocks
         self.conv2 = nn.Conv2d(filters, filters, kernel_size=3, stride=1, padding=1)
         # Upsampling layers
@@ -92,6 +116,7 @@ class Generator(nn.Module):
         out = torch.add(out1, out2)
         out = self.upsampling(out)
         out = self.conv3(out)
+        # out[:, 0, ...] = nn.ReLU()(out[:, 0, ...]) # I tried this just to clip to positive values, but it didn't seem to work. might be a more clever way
         return out
 
 
@@ -179,7 +204,7 @@ class Critic(nn.Module):
         )
 
         self.classifier = nn.Sequential(
-            nn.Linear(int((self.lr_dim*2**3)*(self.hr_dim/2**4)**2), 100),
+            nn.Linear(int((self.lr_dim * 2**3) * (self.hr_dim / 2**4) ** 2), 100),
             # nn.Linear(32*24 * self.lr_dim, 100),
             nn.LeakyReLU(negative_slope=0.2, inplace=True),
             nn.Linear(100, 1),

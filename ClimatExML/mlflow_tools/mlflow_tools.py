@@ -18,7 +18,13 @@ def log_pytorch_model(model: torch.nn.Module, path: str) -> None:
     mlflow.pytorch.log_model(model, path)
 
 
-def log_metrics_every_n_steps(metrics: dict, sr: torch.Tensor, hr: torch.Tensor, batch_idx: int, n_steps: int = 100) -> None:
+def log_metrics_every_n_steps(
+    metrics: dict,
+    sr: torch.Tensor,
+    hr: torch.Tensor,
+    batch_idx: int,
+    n_steps: int = 100,
+) -> None:
     """
     Logs metrics to mlflow every n steps
     Args:
@@ -34,12 +40,21 @@ def log_metrics_every_n_steps(metrics: dict, sr: torch.Tensor, hr: torch.Tensor,
         metrics = {
             "MSE": F.mse_loss(sr, hr).item(),
             "MAE": F.l1_loss(sr, hr).item(),
-            "Wasserstein": torch.mean()
+            "Wasserstein": torch.mean(),
         }
         mlflow.log_metrics(metrics)
 
 
-def gen_grid_images(fig, G, lr: torch.Tensor, hr: torch.Tensor, batch_size: int, n_examples: int=3, cmap="viridis") -> None:
+def gen_grid_images(
+    var,
+    fig,
+    G,
+    lr: torch.Tensor,
+    hr: torch.Tensor,
+    batch_size: int,
+    n_examples: int = 3,
+    cmap="viridis",
+) -> None:
     """
     Plots a grid of images and saves them to file
     Args:
@@ -50,35 +65,46 @@ def gen_grid_images(fig, G, lr: torch.Tensor, hr: torch.Tensor, batch_size: int,
         None
     """
     torch.manual_seed(0)
-    random = torch.randint(0, batch_size, (n_examples, ))
+    random = torch.randint(0, batch_size, (n_examples,))
 
     sr = G(lr[random, ...])
-    lr_grid = torchvision.utils.make_grid(
-        lr[random, ...],
-        nrow=n_examples,
-        padding=5
-    )[0, ...]
+    lr_grid = torchvision.utils.make_grid(lr[random, ...], nrow=n_examples, padding=5)[
+        var, ...
+    ]
 
-    sr_grid = torchvision.utils.make_grid(
-        sr,
-        nrow=n_examples
-    )[0, ...]
+    sr_grid = torchvision.utils.make_grid(sr, nrow=n_examples)[var, ...]
 
-    hr_grid = torchvision.utils.make_grid(
-        hr[random, ...],
-        nrow=n_examples
-    )[0, ...]
+    hr_grid = torchvision.utils.make_grid(hr[random, ...], nrow=n_examples)[var, ...]
 
     fig.suptitle("Training Samples")
 
     # Plot the coarse and fake samples
     subfigs = fig.subfigures(nrows=n_examples, ncols=1)
 
-    ax = make_subfig(subfigs, 0, f"Low Resolution Fields Min: {lr_grid.min()} Max: {lr_grid.max()}", lr_grid, cmap)
-    ax = make_subfig(subfigs, 1, f"Super Resolved Fields Min: {sr_grid.min()} Max: {sr_grid.max()}", sr_grid, cmap)
-    ax = make_subfig(subfigs, 2, f"Ground Truth Fields Min: {hr_grid.min()} Max: {hr_grid.max()}", hr_grid, cmap)
+    ax = make_subfig(
+        subfigs,
+        0,
+        f"Low Resolution Fields Min: {lr_grid.min()} Max: {lr_grid.max()}",
+        lr_grid,
+        cmap,
+    )
+    ax = make_subfig(
+        subfigs,
+        1,
+        f"Super Resolved Fields Min: {sr_grid.min()} Max: {sr_grid.max()}",
+        sr_grid,
+        cmap,
+    )
+    ax = make_subfig(
+        subfigs,
+        2,
+        f"Ground Truth Fields Min: {hr_grid.min()} Max: {hr_grid.max()}",
+        hr_grid,
+        cmap,
+    )
 
     return fig
+
 
 def make_subfig(subfigs, idx, title, grid, cmap):
     """Function to plot a subfigure of the tensor grid
@@ -90,7 +116,7 @@ def make_subfig(subfigs, idx, title, grid, cmap):
         cmap (str): The colormap to use.
 
     Returns:
-        matplotlib.axes.Axes: The axes of the subfigure. 
+        matplotlib.axes.Axes: The axes of the subfigure.
     """
     subfigs[idx].suptitle(title)
     result = subfigs[idx].subplots(1, 1)

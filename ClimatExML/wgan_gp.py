@@ -2,30 +2,39 @@ import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
 from ClimatExML.models import Generator, Critic
-from ClimatExML.mlflow_tools.mlflow_tools import gen_grid_images, log_metrics_every_n_steps, log_pytorch_model
+from ClimatExML.mlflow_tools.mlflow_tools import (
+    gen_grid_images,
+    log_metrics_every_n_steps,
+    log_pytorch_model,
+)
 from ClimatExML.loader import ClimatExMLLoader
 from ClimatExML.losses import content_loss
 from torch.utils.data import DataLoader
-from torchmetrics.functional import mean_absolute_error, mean_squared_error, multiscale_structural_similarity_index_measure
+from torchmetrics.functional import (
+    mean_absolute_error,
+    mean_squared_error,
+    multiscale_structural_similarity_index_measure,
+)
 import mlflow
 import matplotlib.pyplot as plt
 
+
 class SuperResolutionWGANGP(pl.LightningModule):
     def __init__(
-            self,
-            batch_size: int = 16,
-            num_workers: int = 24,
-            learning_rate: float = 0.00025,
-            b1: float = 0.9,
-            b2: float = 0.999,
-            gp_lambda: float = 10,
-            alpha: float = 1e-3,
-            lr_shape: tuple = (3, 64, 64),
-            hr_shape: tuple = (2, 512, 512),
-            n_critic: int = 5,
-            log_every_n_steps: int = 100,
-            artifact_path: str = None,
-            **kwargs
+        self,
+        batch_size: int = 16,
+        num_workers: int = 24,
+        learning_rate: float = 0.00025,
+        b1: float = 0.9,
+        b2: float = 0.999,
+        gp_lambda: float = 10,
+        alpha: float = 1e-3,
+        lr_shape: tuple = (3, 64, 64),
+        hr_shape: tuple = (2, 512, 512),
+        n_critic: int = 5,
+        log_every_n_steps: int = 100,
+        artifact_path: str = None,
+        **kwargs,
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -49,7 +58,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         # networks
         n_covariates, lr_dim, _ = self.lr_shape
         n_predictands, hr_dim, _ = self.hr_shape
-        #DEBUG coarse_dim_n, fine_dim_n, n_covariates, n_predictands
+        # DEBUG coarse_dim_n, fine_dim_n, n_covariates, n_predictands
         self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
         self.C = Critic(lr_dim, hr_dim, n_predictands)
 
@@ -64,7 +73,11 @@ class SuperResolutionWGANGP(pl.LightningModule):
         # Calculate interpolation
 
         # gradient penalty
-        gp_alpha = torch.rand(current_batch_size, 1, 1, 1, requires_grad=True).expand_as(real_samples).to(real_samples)
+        gp_alpha = (
+            torch.rand(current_batch_size, 1, 1, 1, requires_grad=True)
+            .expand_as(real_samples)
+            .to(real_samples)
+        )
 
         interpolated = gp_alpha * real_samples.data + (1 - gp_alpha) * fake_samples.data
 
@@ -77,18 +90,20 @@ class SuperResolutionWGANGP(pl.LightningModule):
         gradients = torch.autograd.grad(
             outputs=critic_interpolated,
             inputs=interpolated,
-            grad_outputs=torch.ones(critic_interpolated.size(), requires_grad=True).to(real_samples),
+            grad_outputs=torch.ones(critic_interpolated.size(), requires_grad=True).to(
+                real_samples
+            ),
             create_graph=True,
             retain_graph=True,
         )[0]
 
         # Gradients have shape (batch_size, num_channels, img_width, img_height),
         # so flatten to easily take norm per example in batch
-        gradients = gradients.view(self.batch_size, -1)
+        gradients = gradients.view(current_batch_size, -1)
 
         # Derivatives of the gradient close to 0 can cause problems because of
         # the square root, so manually calculate norm and add epsilon
-        gradients_norm = torch.sqrt(torch.sum(gradients ** 2, dim=1) + 1e-12)
+        gradients_norm = torch.sqrt(torch.sum(gradients**2, dim=1) + 1e-12)
 
         # Return gradient penalty
         return self.gp_lambda * ((gradients_norm - 1) ** 2).mean()
@@ -114,13 +129,14 @@ class SuperResolutionWGANGP(pl.LightningModule):
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
             sr = self.G(lr)
-            loss_g = - torch.mean(self.C(sr).detach()) + self.alpha * content_loss(sr, hr)
+            loss_g = -torch.mean(self.C(sr).detach()) + self.alpha * content_loss(
+                sr, hr
+            )
             # self.go_downhill(g_opt, loss_g)
             self.manual_backward(loss_g)
             g_opt.step()
             g_opt.zero_grad()
             self.untoggle_optimizer(g_opt)
-
 
         self.log_dict(
             {
@@ -133,14 +149,22 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         if (batch_idx + 1) % self.log_every_n_steps == 0:
             fig = plt.figure(figsize=(30, 10))
-            self.logger.experiment.log_figure(
-                mlflow.active_run().info.run_id,
-                gen_grid_images(
-                    fig, self.G, lr, hr, self.batch_size, n_examples=3, cmap="viridis"
-                ),
-                f"train_images.png"
-            )
-            plt.close()
+            for var in range(lr.shape[1]):
+                self.logger.experiment.log_figure(
+                    mlflow.active_run().info.run_id,
+                    gen_grid_images(
+                        var,
+                        fig,
+                        self.G,
+                        lr,
+                        hr,
+                        self.batch_size,
+                        n_examples=3,
+                        cmap="viridis",
+                    ),
+                    f"train_images_{var}_{self.current_epoch}_{batch_idx}.png",
+                )
+                plt.close()
 
     def go_downhill(self, opt, loss):
         self.manual_backward(loss)
@@ -156,25 +180,30 @@ class SuperResolutionWGANGP(pl.LightningModule):
                 "Test MAE": content_loss(sr, hr),
                 "Test MSE": mean_squared_error(sr, hr),
                 "Test MSSIM": multiscale_structural_similarity_index_measure(sr, hr),
-                "Test Wasserstein Distance": torch.mean(self.C(hr)) - torch.mean(self.C(sr)),
+                "Test Wasserstein Distance": torch.mean(self.C(hr))
+                - torch.mean(self.C(sr)),
             }
         )
 
-        fig =  plt.figure(figsize=(30, 10))
+        fig = plt.figure(figsize=(30, 10))
         self.logger.experiment.log_figure(
             mlflow.active_run().info.run_id,
             gen_grid_images(
                 fig, self.G, lr, hr, self.batch_size, n_examples=3, cmap="viridis"
             ),
-            "test_images.png"
+            f"test_images_{self.current_epoch}_{self.batch_idx}.png",
         )
         plt.close()
 
     def configure_optimizers(self):
-        opt_g = torch.optim.Adam(self.G.parameters(), lr=self.learning_rate, betas=(self.b1, self.b2))
-        opt_d = torch.optim.Adam(self.C.parameters(), lr=self.learning_rate, betas=(self.b1, self.b2))
+        opt_g = torch.optim.Adam(
+            self.G.parameters(), lr=self.learning_rate, betas=(self.b1, self.b2)
+        )
+        opt_d = torch.optim.Adam(
+            self.C.parameters(), lr=self.learning_rate, betas=(self.b1, self.b2)
+        )
         return opt_g, opt_d
- 
+
     # def on_train_epoch_end(self) -> None:
     #     log_pytorch_model(self.G, f"{self.artifact_path}/generator")
     #     log_pytorch_model(self.C, f"{self.artifact_path}/critic")

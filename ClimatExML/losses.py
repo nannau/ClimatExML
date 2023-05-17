@@ -10,23 +10,22 @@ def wass_loss(real, fake, device):
 
 
 def SSIM_Loss(x, y, device, reduction="mean", window_size=11):
-    """Return MS_SSIM
-    """
+    """Return MS_SSIM"""
     maxu = x[:, 0, ...].max()
     minu = x[:, 0, ...].min()
-    maxv = x[:, 1, ...].max()
-    minv = x[:, 1, ...].min()
+    # maxv = x[:, 1, ...].max()
+    # minv = x[:, 1, ...].min()
 
-    x[:, 0, ...] = (x[:, 0, ...] - minu)/(maxu-minu)
-    x[:, 1, ...] = (x[:, 1, ...] - minv)/(maxv-minv)
+    x[:, 0, ...] = (x[:, 0, ...] - minu) / (maxu - minu)
+    # x[:, 1, ...] = (x[:, 1, ...] - minv)/(maxv-minv)
 
     maxu = y[:, 0, ...].max()
     minu = y[:, 0, ...].min()
-    maxv = y[:, 1, ...].max()
-    minv = y[:, 1, ...].min()
+    # maxv = y[:, 1, ...].max()
+    # minv = y[:, 1, ...].min()
 
-    y[:, 0, ...] = (y[:, 0, ...] - minu)/(maxu-minu)
-    y[:, 1, ...] = (y[:, 1, ...] - minv)/(maxv-minv)
+    y[:, 0, ...] = (y[:, 0, ...] - minu) / (maxu - minu)
+    # y[:, 1, ...] = (y[:, 1, ...] - minv)/(maxv-minv)
 
     assert float(x.max()) == 1.0
     assert float(y.max()) == 1.0
@@ -34,8 +33,9 @@ def SSIM_Loss(x, y, device, reduction="mean", window_size=11):
     assert float(x.min()) == 0.0
 
     # return ssim(x, y, reduction=reduction, window_size=window_size)
-    ms_ssim_mod =  MS_SSIM(win_size=7, data_range=1,  channel=2)
+    ms_ssim_mod = MS_SSIM(win_size=7, data_range=1, channel=1)
     return ms_ssim_mod(x, y)
+
 
 def content_loss(hr: torch.Tensor, fake: torch.Tensor) -> float:
     """Calculates the L1 loss (pixel wise error) between both
@@ -55,7 +55,9 @@ def content_loss(hr: torch.Tensor, fake: torch.Tensor) -> float:
     return content_loss
 
 
-def content_MSELoss(hr: torch.Tensor, fake: torch.Tensor, device: torch.device) -> float:
+def content_MSELoss(
+    hr: torch.Tensor, fake: torch.Tensor, device: torch.device
+) -> float:
     """Calculates the L1 loss (pixel wise error) between both
     samples. Note that this is done on the high resolution (or super resolved fields)
     Args:

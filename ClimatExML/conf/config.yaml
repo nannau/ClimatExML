@@ -9,41 +9,47 @@ hyperparameters:
   n_critic: 5
   max_epochs: 50
 
-# mlflow server --backend-store-uri sqlite:///climatexdb.sqlite --default-artifact-root /brain/nannau/climatex_ml_artifacts
+# mlflow server --backend-store-uri sqlite:///climatexdb.sqlite --default-artifact-root /home/nannau/jabbar/climatex_ml_artifacts
 tracking:
-  tracking_uri: sqlite:////brain/nannau/climatexdb.sqlite
-  default_artifact_root: /brain/nannau/climatex_ml_artifacts
+  tracking_uri: sqlite:////home/nannau/jabbar/climatex_ml_artifacts/climatexdb.sqlite
+  default_artifact_root: /home/nannau/jabbar/climatex_ml_artifacts
   experiment_name: "ClimatEx WGAN-GP"
   run_name: "wgan-gp"
-  description: "Initial setup with 4090 and pytorch lightning. Same config as Annau2023."
+  description: "Initial setup with 3060 and pytorch lightning. Same config as Annau2023."
   log_every_n_steps: 100
 
 training:
-  num_workers: 24
+  num_workers: 16
   precision: "16-mixed"
   accelerator: "gpu"
 
 data:
   lr_shape:
-    - 3 # n_covariates
+    - 1 # n_covariates
     - 64 # x size
     - 64 # y size
   hr_shape:
-    - 2 # n_predictands
+    - 1 # n_predictands
     - 512 # x size
     - 512 # y size
   files:
     lr_test:
-      - /home/nannau/data/era5/test/U10/*.pt
-      - /home/nannau/data/era5/test/V10/*.pt
-      - /home/nannau/data/era5/test/ps/*.pt
+      - /home/nannau/gom/proc/test/pr/lr/*.pt
+      # - /home/nannau/gom/proc/test/tas/lr/*.pt
+      # - /home/nannau/gom/proc/test/uas/lr/*.pt
+      # - /home/nannau/gom/proc/test/vas/lr/*.pt
     lr_train:
-      - /home/nannau/data/era5/train/U10/*.pt
-      - /home/nannau/data/era5/train/V10/*pt
-      - /home/nannau/data/era5/train/ps/*.pt
+      - /home/nannau/gom/proc/train/pr/lr/*.pt
+      # - /home/nannau/gom/proc/train/tas/lr/*.pt
+      # - /home/nannau/gom/proc/train/uas/lr/*.pt
+      # - /home/nannau/gom/proc/train/vas/lr/*.pt
     hr_test:
-      - /home/nannau/data/wrf/test/U10/*.pt
-      - /home/nannau/data/wrf/test/V10/*.pt
+      - /home/nannau/gom/proc/test/pr/hr/*.pt
+      # - /home/nannau/gom/proc/test/tas/hr/*.pt
+      # - /home/nannau/gom/proc/test/uas/hr/*.pt
+      # - /home/nannau/gom/proc/test/vas/hr/*.pt
     hr_train:
-      - /home/nannau/data/wrf/train/U10/*.pt
-      - /home/nannau/data/wrf/train/V10/*.pt
+      - /home/nannau/gom/proc/train/pr/hr/*.pt
+      # - /home/nannau/gom/proc/train/tas/hr/*.pt
+      # - /home/nannau/gom/proc/train/uas/hr/*.pt
+      # - /home/nannau/gom/proc/train/vas/hr/*.pt
