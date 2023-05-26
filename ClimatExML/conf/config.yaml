@@ -22,6 +22,7 @@ training:
   num_workers: 16
   precision: "16-mixed"
   accelerator: "gpu"
+  use_hr_cov: Yes
 
 data:
   lr_shape:
@@ -53,3 +54,5 @@ data:
       # - /home/nannau/gom/proc/train/tas/hr/*.pt
       # - /home/nannau/gom/proc/train/uas/hr/*.pt
       # - /home/nannau/gom/proc/train/vas/hr/*.pt
+    hr_cov: 
+      - /path/to/hrtopo.pt

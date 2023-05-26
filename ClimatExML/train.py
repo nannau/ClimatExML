@@ -30,7 +30,7 @@ def main(cfg: dict):
             "lr_train": [glob.glob(path) for path in cfg.data.files.lr_train],
             "hr_train": [glob.glob(path) for path in cfg.data.files.hr_train],
             "lr_test": [glob.glob(path) for path in cfg.data.files.lr_test],
-            "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test]
+            "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test] ## if hrcov, load here
         }
 
         clim_data = ClimatExMLData(

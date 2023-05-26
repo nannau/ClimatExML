@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
-from ClimatExML.models import Generator, Critic
+from ClimatExML.models import Generator, Generator_hr_cov, Critic
 from ClimatExML.mlflow_tools.mlflow_tools import (
     gen_grid_images,
     log_metrics_every_n_steps,
@@ -31,9 +31,11 @@ class SuperResolutionWGANGP(pl.LightningModule):
         alpha: float = 1e-3,
         lr_shape: tuple = (3, 64, 64),
         hr_shape: tuple = (2, 512, 512),
+        hr_cov_shape: tuple = (1,512,512),
         n_critic: int = 5,
         log_every_n_steps: int = 100,
         artifact_path: str = None,
+        use_hr_cov: bool = True,
         **kwargs,
     ):
         super().__init__()
@@ -54,12 +56,18 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.alpha = alpha
         self.log_every_n_steps = log_every_n_steps
         self.artifact_path = artifact_path
+        self.use_hr_cov = use_hr_cov
 
         # networks
         n_covariates, lr_dim, _ = self.lr_shape
         n_predictands, hr_dim, _ = self.hr_shape
+        if use_hr_cov:
+            n_hr_covariates = hr_cov_shape[0]
         # DEBUG coarse_dim_n, fine_dim_n, n_covariates, n_predictands
-        self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
+        if use_hr_cov:
+            self.G = Generator_hr_cov(lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands)
+        else:
+            self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
         self.C = Critic(lr_dim, hr_dim, n_predictands)
 
         self.automatic_optimization = False
@@ -110,12 +118,15 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         # train generator
-        lr, hr = batch[0]
+        lr, hr, hr_cov = batch[0]
         g_opt, c_opt = self.optimizers()
         # c_opt.zero_grad()
         # update critic every other step
         self.toggle_optimizer(c_opt)
-        sr = self.G(lr).detach()
+        if self.use_hr_cov:
+            sr = self.G(lr,hr_cov).detach()
+        else:
+            sr = self.G(lr).detach()
         gradient_penalty = self.compute_gradient_penalty(hr, sr)
         mean_sr = torch.mean(self.C(sr))
         mean_hr = torch.mean(self.C(hr))
@@ -128,7 +139,10 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
-            sr = self.G(lr)
+            if self.use_hr_cov:
+                sr = self.G(lr,hr_cov).detach()
+            else:
+                sr = self.G(lr).detach()
             loss_g = -torch.mean(self.C(sr).detach()) + self.alpha * content_loss(
                 sr, hr
             )
@@ -158,7 +172,9 @@ class SuperResolutionWGANGP(pl.LightningModule):
                         self.G,
                         lr,
                         hr,
+                        hr_cov,
                         self.batch_size,
+                        use_hr_cov = self.use_hr_cov,
                         n_examples=3,
                         cmap="viridis",
                     ),
@@ -173,8 +189,11 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         # if (batch_idx + 1) % self.log_every_n_steps == 0:
-        lr, hr = batch
-        sr = self.G(lr)
+        lr, hr, hr_cov = batch
+        if self.use_hr_cov:
+            sr = self.G(lr,hr_cov)
+        else:
+            sr = self.G(lr)
         self.log_dict(
             {
                 "Test MAE": content_loss(sr, hr),

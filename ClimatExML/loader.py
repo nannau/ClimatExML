@@ -5,9 +5,10 @@ from torch.utils.data import DataLoader
 
 
 class ClimatExMLLoader(Dataset):
-    def __init__(self, lr_glob, hr_glob) -> None:
+    def __init__(self, lr_glob, hr_glob, hr_cov_path) -> None:
         self.lr_glob = lr_glob
         self.hr_glob = hr_glob
+        self.hr_cov = torch.load(hr_cov_path)
 
     def __len__(self):
         return len(self.lr_glob[0])
@@ -15,7 +16,7 @@ class ClimatExMLLoader(Dataset):
     def __getitem__(self, idx):
         lr = torch.stack([torch.load(var[idx]) for var in self.lr_glob])
         hr = torch.stack([torch.load(var[idx]) for var in self.hr_glob])     
-        return [lr, hr]
+        return [lr, hr, self.hr_cov] ##if not use hr cov, return none
 
 
 class ClimatExMLData(pl.LightningDataModule):

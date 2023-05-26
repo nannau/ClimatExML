@@ -10,7 +10,7 @@ class SuperModel(pl.LightningModule):
         self.model = model
 
     def training_step(self, batch, batch_idx):
-        lr, hr = batch["lr"], batch["hr"]
+        lr, hr, hr_cov = batch["lr"], batch["hr"], batch["hr_cov"]
         sr = self.model(lr)
         loss = nn.L1Loss()(sr, hr)
         self.log("Train MAE", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
