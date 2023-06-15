@@ -8,7 +8,10 @@ class ClimatExMLLoader(Dataset):
     def __init__(self, lr_glob, hr_glob, hr_cov_path) -> None:
         self.lr_glob = lr_glob
         self.hr_glob = hr_glob
-        self.hr_cov = torch.load(hr_cov_path)
+        if hr_cov_path is not None:
+          self.hr_cov = torch.load(hr_cov_path) ##load HR at initialisation
+        else: 
+          self.hr_cov = None
 
     def __len__(self):
         return len(self.lr_glob[0])
@@ -16,7 +19,7 @@ class ClimatExMLLoader(Dataset):
     def __getitem__(self, idx):
         lr = torch.stack([torch.load(var[idx]) for var in self.lr_glob])
         hr = torch.stack([torch.load(var[idx]) for var in self.hr_glob])     
-        return [lr, hr, self.hr_cov] ##if not use hr cov, return none
+        return [lr, hr, self.hr_cov]
 
 
 class ClimatExMLData(pl.LightningDataModule):
@@ -27,8 +30,8 @@ class ClimatExMLData(pl.LightningDataModule):
         self.num_workers = num_workers
 
     def setup(self, stage: str):
-        self.test_data = ClimatExMLLoader(self.data_glob['lr_test'], self.data_glob['hr_test'])
-        self.train_data = ClimatExMLLoader(self.data_glob['lr_train'], self.data_glob['hr_train'])
+        self.test_data = ClimatExMLLoader(self.data_glob['lr_test'], self.data_glob['hr_test'], self.data_glob['hr_cov'])
+        self.train_data = ClimatExMLLoader(self.data_glob['lr_train'], self.data_glob['hr_train'], self.data_glob['hr_cov'])
 
     def train_dataloader(self):
         return DataLoader(self.train_data, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers, pin_memory=True),

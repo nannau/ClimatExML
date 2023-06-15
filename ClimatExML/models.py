@@ -189,8 +189,6 @@ class Generator_hr_cov(nn.Module):
         out = torch.cat((outc,outf),1) ##combine
         out = self.conv3(out)
         return out
-        return out
-
 
 class Critic(nn.Module):
     r"""The main architecture of the discriminator. Similar to VGG structure."""

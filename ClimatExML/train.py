@@ -30,7 +30,8 @@ def main(cfg: dict):
             "lr_train": [glob.glob(path) for path in cfg.data.files.lr_train],
             "hr_train": [glob.glob(path) for path in cfg.data.files.hr_train],
             "lr_test": [glob.glob(path) for path in cfg.data.files.lr_test],
-            "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test] ## if hrcov, load here
+            "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test],
+            "hr_cov": cfg.data.files.hr_cov_path if cfg.training.use_hr_cov else None
         }
 
         clim_data = ClimatExMLData(
@@ -58,7 +59,8 @@ def main(cfg: dict):
             lr_shape=cfg.data.lr_shape,
             hr_shape=cfg.data.hr_shape,
             artifact_path=artifact_path,
-            log_every_n_steps=cfg.tracking.log_every_n_steps
+            log_every_n_steps=cfg.tracking.log_every_n_steps,
+            use_hr_cov=cfg.training.use_hr_cov
         )
 
         trainer = pl.Trainer(

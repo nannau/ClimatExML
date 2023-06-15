@@ -31,7 +31,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         alpha: float = 1e-3,
         lr_shape: tuple = (3, 64, 64),
         hr_shape: tuple = (2, 512, 512),
-        hr_cov_shape: tuple = (1,512,512),
+        ##hr_cov_shape: tuple = (1,512,512),
         n_critic: int = 5,
         log_every_n_steps: int = 100,
         artifact_path: str = None,
@@ -63,8 +63,6 @@ class SuperResolutionWGANGP(pl.LightningModule):
         n_predictands, hr_dim, _ = self.hr_shape
         if use_hr_cov:
             n_hr_covariates = hr_cov_shape[0]
-        # DEBUG coarse_dim_n, fine_dim_n, n_covariates, n_predictands
-        if use_hr_cov:
             self.G = Generator_hr_cov(lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands)
         else:
             self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
