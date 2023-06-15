@@ -162,7 +162,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
                         n_examples=3,
                         cmap="viridis",
                     ),
-                    f"train_images_{var}_{self.current_epoch}_{batch_idx}.png",
+                    f"train_images_{var}_{self.current_epoch}_{batch_idx + 1}.png",
                 )
                 plt.close()
 

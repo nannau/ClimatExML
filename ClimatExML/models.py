@@ -116,7 +116,9 @@ class Generator(nn.Module):
         out = torch.add(out1, out2)
         out = self.upsampling(out)
         out = self.conv3(out)
-        # out[:, 0, ...] = nn.ReLU()(out[:, 0, ...]) # I tried this just to clip to positive values, but it didn't seem to work. might be a more clever way
+        # out[:, 0, ...] = nn.ReLU()(
+        #     out[:, 0, ...]
+        # )  # I tried this just to clip to positive values, but it didn't seem to work. might be a more clever way
         return out
 
 
