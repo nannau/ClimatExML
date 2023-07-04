@@ -15,7 +15,7 @@ setup(
          "mlflow",
          "hydra-core",
          "pytorch_msssim",
-         "torchvision"
+         "torchvision",
          "matplotlib",
          ],
 )
