@@ -6,6 +6,23 @@ import torch
 import torch.nn as nn
 
 
+class ShortcutBlock(nn.Module):
+    # Elementwise sum the output of a submodule to its input
+    def __init__(self, submodule):
+        super(ShortcutBlock, self).__init__()
+        self.sub = submodule
+
+    def forward(self, x):
+        output = x + self.sub(x)
+        return output
+
+    def __repr__(self):
+        tmpstr = "Identity + \n|"
+        modstr = self.sub.__repr__().replace("\n", "\n|")
+        tmpstr = tmpstr + modstr
+        return tmpstr
+
+
 class Conv2dDepthwiseSeparable(nn.Module):
     def __init__(
         self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False
@@ -119,6 +136,70 @@ class Generator(nn.Module):
         # out[:, 0, ...] = nn.ReLU()(
         #     out[:, 0, ...]
         # )  # I tried this just to clip to positive values, but it didn't seem to work. might be a more clever way
+        return out
+
+
+class Generator_hr_cov(nn.Module):
+    # coarse_dim_n, fine_dim_n, n_covariates, n_predictands
+    def __init__(
+        self,
+        filters,
+        fine_dims,
+        channels,
+        channels_hr_cov=1,
+        n_predictands=2,
+        num_res_blocks=14,
+        num_res_blocks_fine=1,
+        num_upsample=3,
+    ):
+        super(Generator_hr_cov, self).__init__()
+        self.fine_res = fine_dims
+        # First layer
+        self.conv1 = nn.Conv2d(channels, filters, kernel_size=3, stride=1, padding=1)
+        self.conv1f = nn.Conv2d(
+            channels_hr_cov, filters, kernel_size=3, stride=1, padding=1
+        )
+        # Residual blocks
+        self.res_blocks = nn.Sequential(
+            *[ResidualInResidualDenseBlock(filters) for _ in range(num_res_blocks)]
+        )
+        self.res_blocksf = nn.Sequential(
+            *[ResidualInResidualDenseBlock(filters) for _ in range(num_res_blocks_fine)]
+        )
+
+        # Second conv layer post residual blocks
+        self.conv2 = nn.Conv2d(filters, filters, kernel_size=3, stride=1, padding=1)
+        self.LR_pre = nn.Sequential(
+            self.conv1, ShortcutBlock(nn.Sequential(self.res_blocks, self.conv2))
+        )
+        self.HR_pre = nn.Sequential(
+            self.conv1f, ShortcutBlock(nn.Sequential(self.res_blocksf, self.conv2))
+        )
+
+        # Upsampling layers
+        upsample_layers = []
+        for _ in range(num_upsample):
+            upsample_layers += [
+                nn.Conv2d(filters, filters * 4, kernel_size=3, stride=1, padding=1),
+                nn.LeakyReLU(),
+                nn.PixelShuffle(upscale_factor=2),
+            ]
+        self.upsampling = nn.Sequential(*upsample_layers)
+        # Final output block
+        self.conv3 = nn.Sequential(
+            # nn.Conv2d(filters * 2, filters + 1, kernel_size=3, stride=1, padding=1),
+            # ResidualInResidualDenseBlock(filters + 1),
+            nn.Conv2d(filters * 2, filters + 1, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(),
+            nn.Conv2d(filters + 1, n_predictands, kernel_size=3, stride=1, padding=1),
+        )
+
+    def forward(self, x_coarse, x_fine):
+        out = self.LR_pre(x_coarse)  ## LR branch
+        outc = self.upsampling(out)
+        outf = self.HR_pre(x_fine)  ## HR branch
+        out = torch.cat((outc, outf), 1)  ##combine
+        out = self.conv3(out)
         return out
 
 

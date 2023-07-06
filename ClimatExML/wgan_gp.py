@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
-from ClimatExML.models import Generator, Critic
+from ClimatExML.models import Generator, Generator_hr_cov, Critic
 from ClimatExML.mlflow_tools.mlflow_tools import (
     gen_grid_images,
     log_metrics_every_n_steps,
@@ -29,8 +29,10 @@ class SuperResolutionWGANGP(pl.LightningModule):
         b2: float = 0.999,
         gp_lambda: float = 10,
         alpha: float = 1e-3,
-        lr_shape: tuple = (3, 64, 64),
-        hr_shape: tuple = (2, 512, 512),
+        lr_shape: tuple = (1, 64, 64),
+        hr_shape: tuple = (1, 512, 512),
+        hr_cov_shape: tuple = (1, 512, 512),
+        # hr_cov_shape: tuple = None,
         n_critic: int = 5,
         log_every_n_steps: int = 100,
         artifact_path: str = None,
@@ -54,12 +56,18 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.alpha = alpha
         self.log_every_n_steps = log_every_n_steps
         self.artifact_path = artifact_path
-
+        self.hr_cov_shape = hr_cov_shape
         # networks
         n_covariates, lr_dim, _ = self.lr_shape
         n_predictands, hr_dim, _ = self.hr_shape
-        # DEBUG coarse_dim_n, fine_dim_n, n_covariates, n_predictands
-        self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
+
+        if self.hr_cov_shape is not None:
+            n_hr_covariates = hr_cov_shape[0]
+            self.G = Generator_hr_cov(
+                lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands
+            )
+        else:
+            self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
         self.C = Critic(lr_dim, hr_dim, n_predictands)
 
         self.automatic_optimization = False
@@ -109,47 +117,61 @@ class SuperResolutionWGANGP(pl.LightningModule):
         return self.gp_lambda * ((gradients_norm - 1) ** 2).mean()
 
     def training_step(self, batch, batch_idx):
+        if self.hr_cov_shape is not None:
+            lr, hr, hr_cov = batch[0]
+            sr = self.G(lr, hr_cov).detach()
+        else:
+            lr, hr = batch[0]
+            sr = self.G(lr).detach()
+
         # train generator
-        lr, hr = batch[0]
         g_opt, c_opt = self.optimizers()
         # c_opt.zero_grad()
         # update critic every other step
         self.toggle_optimizer(c_opt)
-        sr = self.G(lr).detach()
-        gradient_penalty = self.compute_gradient_penalty(hr, sr)
-        mean_sr = torch.mean(self.C(sr))
+
+        gradient_penalty = self.compute_gradient_penalty(hr, sr.detach())
+        mean_sr = torch.mean(self.C(sr.detach()))
         mean_hr = torch.mean(self.C(hr))
         loss_c = mean_sr - mean_hr + self.gp_lambda * gradient_penalty
-        # self.go_downhill(c_opt, loss_c)
-        self.manual_backward(loss_c)
-        c_opt.step()
-        c_opt.zero_grad()
+        self.go_downhill(c_opt, loss_c)
+        # self.manual_backward(loss_c)
+        # c_opt.step()
+        # c_opt.zero_grad()
         self.untoggle_optimizer(c_opt)
 
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
-            sr = self.G(lr)
-            loss_g = -torch.mean(self.C(sr).detach()) + self.alpha * content_loss(
-                sr, hr
-            )
-            # self.go_downhill(g_opt, loss_g)
-            self.manual_backward(loss_g)
-            g_opt.step()
-            g_opt.zero_grad()
+            if self.hr_cov_shape is not None:
+                lr, hr, hr_cov = batch[0]
+                sr = self.G(lr, hr_cov)  # .detach()
+            else:
+                lr, hr = batch[0]
+                sr = self.G(lr)  # .detach()
+
+            loss_g = -torch.mean(
+                self.C(sr).detach()
+            ) + self.alpha * mean_absolute_error(sr, hr)
+            self.go_downhill(g_opt, loss_g)
+            # self.manual_backward(loss_g)
+            # g_opt.step()
+            # g_opt.zero_grad()
             self.untoggle_optimizer(g_opt)
 
         self.log_dict(
             {
-                "MAE": content_loss(sr, hr),
-                "MSE": mean_squared_error(sr, hr),
-                "MSSIM": multiscale_structural_similarity_index_measure(sr, hr),
+                "MAE": mean_absolute_error(sr.detach(), hr),
+                "MSE": mean_squared_error(sr.detach(), hr),
+                "MSSIM": multiscale_structural_similarity_index_measure(
+                    sr.detach(), hr
+                ),
                 "Wasserstein Distance": mean_hr - mean_sr,
             }
         )
 
         if (batch_idx + 1) % self.log_every_n_steps == 0:
             fig = plt.figure(figsize=(30, 10))
-            for var in range(lr.shape[1]):
+            for var in range(sr.shape[1]):
                 self.logger.experiment.log_figure(
                     mlflow.active_run().info.run_id,
                     gen_grid_images(
@@ -158,11 +180,13 @@ class SuperResolutionWGANGP(pl.LightningModule):
                         self.G,
                         lr,
                         hr,
+                        hr_cov,
                         self.batch_size,
+                        use_hr_cov=self.hr_cov_shape is not None,
                         n_examples=3,
                         cmap="viridis",
                     ),
-                    f"train_images_{var}_{self.current_epoch}_{batch_idx + 1}.png",
+                    f"train_images_{var}.png",
                 )
                 plt.close()
 
@@ -173,8 +197,11 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         # if (batch_idx + 1) % self.log_every_n_steps == 0:
-        lr, hr = batch
-        sr = self.G(lr)
+        lr, hr, hr_cov = batch
+        if self.use_hr_cov:
+            sr = self.G(lr, hr_cov)
+        else:
+            sr = self.G(lr)
         self.log_dict(
             {
                 "Test MAE": content_loss(sr, hr),
