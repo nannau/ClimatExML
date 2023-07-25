@@ -11,6 +11,7 @@ setup(
    long_description=open('README.md').read(),
    install_requires=[
          "pytorch-lightning",
+         "lightning",
          "torch",
          "mlflow",
          "hydra-core",
