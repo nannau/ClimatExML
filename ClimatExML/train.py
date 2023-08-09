@@ -27,10 +27,10 @@ def main(cfg: dict):
 
     with mlflow.start_run() as run:
         data = {
-            "lr_train": [glob.glob(path) for path in cfg.data.files.lr_train],
-            "hr_train": [glob.glob(path) for path in cfg.data.files.hr_train],
-            "lr_test": [glob.glob(path) for path in cfg.data.files.lr_test],
-            "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test]
+            "lr_train": [sorted(glob.glob(path)) for path in cfg.data.files.lr_train],
+            "hr_train": [sorted(glob.glob(path)) for path in cfg.data.files.hr_train],
+            # "lr_test": [glob.glob(path) for path in cfg.data.files.lr_test],
+            # "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test]
         }
 
         clim_data = ClimatExMLData(

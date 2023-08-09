@@ -65,7 +65,7 @@ def gen_grid_images(
         None
     """
     torch.manual_seed(0)
-    random = torch.randint(0, batch_size, (n_examples,))
+    random = torch.randint(0, lr.size(0), (n_examples,))
 
     sr = G(lr[random, ...])
     lr_grid = torchvision.utils.make_grid(lr[random, ...], nrow=n_examples, padding=5)[

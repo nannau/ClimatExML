@@ -111,6 +111,9 @@ class SuperResolutionWGANGP(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # train generator
         lr, hr = batch[0]
+        lr = lr.squeeze(0)
+        hr = hr.squeeze(0)
+
         g_opt, c_opt = self.optimizers()
         # c_opt.zero_grad()
         # update critic every other step
@@ -162,7 +165,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
                         n_examples=3,
                         cmap="viridis",
                     ),
-                    f"train_images_{var}_{self.current_epoch}_{batch_idx + 1}.png",
+                    f"train_images_{var}.png",
                 )
                 plt.close()
 
