@@ -51,7 +51,9 @@ def gen_grid_images(
     G,
     lr: torch.Tensor,
     hr: torch.Tensor,
+    hr_cov: torch.Tensor,
     batch_size: int,
+    use_hr_cov: bool,
     n_examples: int = 3,
     cmap="viridis",
 ) -> None:
@@ -65,13 +67,16 @@ def gen_grid_images(
         None
     """
     torch.manual_seed(0)
-    random = torch.randint(0, lr.size(0), (n_examples,))
-
-    sr = G(lr[random, ...])
+    random = torch.randint(0, batch_size, (n_examples,))
+    
+    if(use_hr_cov):
+        sr = G(lr[random, ...],hr_cov[random,...])
+    else:
+        sr = G(lr[random, ...])
+        
     lr_grid = torchvision.utils.make_grid(lr[random, ...], nrow=n_examples, padding=5)[
         var, ...
     ]
-
     sr_grid = torchvision.utils.make_grid(sr, nrow=n_examples)[var, ...]
 
     hr_grid = torchvision.utils.make_grid(hr[random, ...], nrow=n_examples)[var, ...]
@@ -120,6 +125,6 @@ def make_subfig(subfigs, idx, title, grid, cmap):
     """
     subfigs[idx].suptitle(title)
     result = subfigs[idx].subplots(1, 1)
-    result.imshow(grid.cpu().detach(), origin="lower", cmap=cmap)
+    result.imshow(grid.float().cpu().detach().numpy(), origin="lower", cmap=cmap)
 
     return result
