@@ -77,7 +77,6 @@ def gen_grid_images(
     lr_grid = torchvision.utils.make_grid(lr[random, ...], nrow=n_examples, padding=5)[
         var, ...
     ]
-
     sr_grid = torchvision.utils.make_grid(sr, nrow=n_examples)[var, ...]
 
     hr_grid = torchvision.utils.make_grid(hr[random, ...], nrow=n_examples)[var, ...]

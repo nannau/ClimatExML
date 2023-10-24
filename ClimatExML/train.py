@@ -1,6 +1,6 @@
 import torch
 import glob
-import pytorch_lightning as pl
+import lightning as pl
 from ClimatExML.wgan_gp import SuperResolutionWGANGP
 from ClimatExML.loader import ClimatExMLDataHRCov
 from lightning.pytorch.loggers import MLFlowLogger
@@ -11,11 +11,12 @@ import hydra
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
-    mlflow.pytorch.autolog(log_every_n_step=100, log_models=True)
+    mlflow.pytorch.autolog(log_models=cfg.tracking.log_model)
     mlflow.set_tracking_uri(cfg.tracking.tracking_uri)
+
     logging.info(f"Tracking URI: {mlflow.get_tracking_uri()}")
     artifact_path = f"{cfg.tracking.default_artifact_root}/{cfg.tracking.run_name}"
-
+    logging.info(f"Artifact Location: {artifact_path}")
     # check if experiment name already exists
     if mlflow.get_experiment_by_name(cfg.tracking.experiment_name) is None:
         logging.info(
@@ -29,17 +30,12 @@ def main(cfg: dict):
     experiment = mlflow.get_experiment_by_name(cfg.tracking.experiment_name)
     mlflow.set_experiment(cfg.tracking.experiment_name)
     logging.info(f"Experiment ID: {experiment.experiment_id}")
-
     with mlflow.start_run() as run:
         data = {
-            "lr_train": [glob.glob(path) for path in cfg.data.files.lr_train],
-            "hr_train": [glob.glob(path) for path in cfg.data.files.hr_train],
-            "lr_test": [glob.glob(path) for path in cfg.data.files.lr_test],
-            "hr_test": [glob.glob(path) for path in cfg.data.files.hr_test],
+            "lr_train": [sorted(glob.glob(path)) for path in cfg.data.files.lr_train],
+            "hr_train": [sorted(glob.glob(path)) for path in cfg.data.files.hr_train],
             "hr_cov": cfg.data.files.hr_cov,
             "lr_invariant": cfg.data.files.lr_invariant
-            if cfg.data.files.hr_cov is not None
-            else None,
         }
 
         lr_shape = cfg.data.lr_shape
@@ -72,7 +68,6 @@ def main(cfg: dict):
             alpha=cfg.hyperparameters.alpha,
             lr_shape=lr_shape,
             hr_shape=hr_shape,
-            artifact_path=artifact_path,
             log_every_n_steps=cfg.tracking.log_every_n_steps,
         )
 
@@ -81,8 +76,9 @@ def main(cfg: dict):
             accelerator=cfg.training.accelerator,
             max_epochs=cfg.hyperparameters.max_epochs,
             logger=mlflow_logger,
-            default_root_dir=artifact_path,
             detect_anomaly=False,
+            devices=-1,
+            strategy=cfg.training.strategy,
         )
         trainer.fit(srmodel, datamodule=clim_data)
 
