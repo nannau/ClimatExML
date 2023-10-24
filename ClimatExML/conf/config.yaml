@@ -22,7 +22,6 @@ tracking:
 training:
   num_workers: 24
   precision: 32
-  # precision: "16-mixed"
   # or ^^ "16-mixed"
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
@@ -41,7 +40,6 @@ data:
       - /home/nannau/light_container/data/train/uas/lr/*.pt
       - /home/nannau/light_container/data/train/vas/lr/*.pt
       - /home/nannau/light_container/data/train/Q2/lr/*.pt
-    hr_train:
       - /home/nannau/light_container/data/train/pr/hr/*.pt
       - /home/nannau/light_container/data/train/tas/hr/*.pt
       - /home/nannau/light_container/data/train/uas/hr/*.pt
@@ -50,4 +48,3 @@ data:
     hr_cov: /home/nannau/light_container/data/train/hr_topography_norm.pt
     lr_invariant:
       - /home/nannau/light_container/data/train/lr_topography_norm.pt
-

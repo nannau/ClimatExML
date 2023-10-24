@@ -4,7 +4,6 @@ import lightning as pl
 from torch.utils.data import DataLoader
 
 
-
 class ClimatExMLLoaderHRCov(Dataset):
     def __init__(self, lr_glob, hr_glob, hr_cov_path, lr_invariant) -> None:
         self.lr_glob = lr_glob
@@ -67,8 +66,6 @@ class ClimatExMLDataHRCov(pl.LightningDataModule):
         )
 
 
-
-
 class ClimatExMLLoader(Dataset):
     def __init__(self, lr_glob, hr_glob) -> None:
         self.lr_glob = lr_glob
@@ -77,7 +74,6 @@ class ClimatExMLLoader(Dataset):
     def __len__(self):
         return len(self.lr_glob[0])
 
-    def __getitem__(self, idx):
         lr = torch.stack([torch.load(var[idx]) for var in self.lr_glob], dim=1)
         hr = torch.stack([torch.load(var[idx]) for var in self.hr_glob], dim=1)
 
@@ -94,11 +90,9 @@ class ClimatExMLData(pl.LightningDataModule):
         self.num_workers = num_workers
 
     def setup(self, stage: str):
-        # self.test_data = ClimatExMLLoader(
-        #     self.data_glob["lr_test"], self.data_glob["hr_test"]
-        # )
         self.train_data = ClimatExMLLoader(
-            self.data_glob["lr_train"], self.data_glob["hr_train"]
+            self.data_glob["lr_train"],
+            self.data_glob["hr_train"],
         )
 
     def train_dataloader(self):

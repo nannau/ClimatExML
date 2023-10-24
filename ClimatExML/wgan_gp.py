@@ -114,6 +114,13 @@ class SuperResolutionWGANGP(pl.LightningModule):
         return self.gp_lambda * ((gradients_norm - 1) ** 2).mean()
 
     def training_step(self, batch, batch_idx):
+        if self.hr_cov_shape is not None:
+            lr, hr, hr_cov = batch[0]
+            sr = self.G(lr, hr_cov).detach()
+        else:
+            lr, hr = batch[0]
+            sr = self.G(lr).detach()
+
         # train generator
         if self.hr_cov_shape is not None:
             lr, hr, hr_cov = batch[0]
@@ -140,6 +147,20 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
+            if self.hr_cov_shape is not None:
+                lr, hr, hr_cov = batch[0]
+                sr = self.G(lr, hr_cov)  # .detach()
+            else:
+                lr, hr = batch[0]
+                sr = self.G(lr)  # .detach()
+
+            loss_g = -torch.mean(
+                self.C(sr).detach()
+            ) + self.alpha * mean_absolute_error(sr, hr)
+            self.go_downhill(g_opt, loss_g)
+            # self.manual_backward(loss_g)
+            # g_opt.step()
+            # g_opt.zero_grad()
             sr = self.G(lr, hr_cov)
             loss_g = -torch.mean(self.C(sr).detach()) + self.alpha * content_loss(
                 sr, hr
@@ -151,9 +172,11 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         self.log_dict(
             {
-                "MAE": content_loss(sr, hr),
-                "MSE": mean_squared_error(sr, hr),
-                "MSSIM": multiscale_structural_similarity_index_measure(sr, hr),
+                "MAE": mean_absolute_error(sr.detach(), hr),
+                "MSE": mean_squared_error(sr.detach(), hr),
+                "MSSIM": multiscale_structural_similarity_index_measure(
+                    sr.detach(), hr
+                ),
                 "Wasserstein Distance": mean_hr - mean_sr,
             }
         )
@@ -183,7 +206,6 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.manual_backward(loss)
         opt.step()
         opt.zero_grad()
-
 
     def configure_optimizers(self):
         opt_g = torch.optim.Adam(

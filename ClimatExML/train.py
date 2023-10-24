@@ -19,8 +19,13 @@ def main(cfg: dict):
     logging.info(f"Artifact Location: {artifact_path}")
     # check if experiment name already exists
     if mlflow.get_experiment_by_name(cfg.tracking.experiment_name) is None:
-        logging.info(f"Creating experiment: {cfg.tracking.experiment_name} with artifact location: {cfg.tracking.default_artifact_root}")
-        mlflow.create_experiment(cfg.tracking.experiment_name, artifact_location=cfg.tracking.default_artifact_root)
+        logging.info(
+            f"Creating experiment: {cfg.tracking.experiment_name} with artifact location: {cfg.tracking.default_artifact_root}"
+        )
+        mlflow.create_experiment(
+            cfg.tracking.experiment_name,
+            artifact_location=cfg.tracking.default_artifact_root,
+        )
 
     experiment = mlflow.get_experiment_by_name(cfg.tracking.experiment_name)
     mlflow.set_experiment(cfg.tracking.experiment_name)
@@ -32,7 +37,6 @@ def main(cfg: dict):
             "hr_cov": cfg.data.files.hr_cov,
             "lr_invariant": cfg.data.files.lr_invariant
         }
-
 
         lr_shape = cfg.data.lr_shape
         lr_shape.insert(0, len(cfg.data.files.lr_train)+len(cfg.data.files.lr_invariant))
