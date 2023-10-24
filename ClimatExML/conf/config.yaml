@@ -21,8 +21,8 @@ tracking:
 
 training:
   num_workers: 24
-  # precision: 32
-  precision: "16-mixed"
+  precision: 32
+  # precision: "16-mixed"
   # or ^^ "16-mixed"
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
