@@ -8,8 +8,10 @@ class ClimatExMLLoaderHRCov(Dataset):
     def __init__(self, lr_glob, hr_glob, hr_cov_path, lr_invariant) -> None:
         self.lr_glob = lr_glob
         self.hr_glob = hr_glob
-        # self.hr_cov_path = hr_cov_path
         self.hr_cov = torch.load(hr_cov_path).unsqueeze(0).float()
+        self.hr_cov = [
+            torch.tensor(torch.load(path)).float() for path in hr_cov_path
+        ]
         self.lr_invariant = [
             torch.tensor(torch.load(path)).float() for path in lr_invariant
         ]
