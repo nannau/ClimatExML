@@ -71,6 +71,7 @@ def main(cfg: dict):
             lr_shape=lr_shape,
             hr_shape=hr_shape,
             hr_cov_shape=hr_cov_shape,
+            is_noise=cfg.stochasticity.noise_injection,
             log_every_n_steps=cfg.tracking.log_every_n_steps,
         )
 

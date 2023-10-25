@@ -15,7 +15,7 @@ class HyperParameters():
 
 
 @dataclass
-class ClimatExMlFlow(BaseModel):
+class ClimatExMlFlow():
     host: str = "http://206.12.93.183/"
     port: int = 5000
     tracking_uri: str# = os.environ("MLFLOW_TRACKING_URI")
@@ -28,6 +28,10 @@ class ClimateExMLTraining:
     precision: int = 32
     accelerator: str = "gpu"
     strategy: str = "ddp_find_unused_parameters_true"
+
+@dataclass
+class StochasticityParameters:
+    noise_injection: bool = True
 
 
 @dataclass
