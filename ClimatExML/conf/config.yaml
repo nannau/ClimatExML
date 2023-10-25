@@ -21,34 +21,33 @@ tracking:
   log_model: true
   experiment_name: "ClimatExML"
 
-training:
+hardware:
   __target__: "ClimatExML.mlclasses.ClimatExMLTraining"
   num_workers: 24
   precision: 32
-  # or ^^ "16-mixed"
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
 
 data:
+  __target__: "ClimatExML.mlclasses.SuperResolutionData"
   lr_shape:
     - 64 # x size
     - 64 # y size
   hr_shape:
     - 512 # x size
     - 512 # y size
-  files:
-    lr_train:
-      - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
-    hr_train:
-      - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-      - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
-    hr_cov: /home/nannau/sprint-10-2023/data/invariant/hr_topography_norm.pt
-    lr_invariant:
-      - //home/nannau/sprint-10-2023/data/invariant/lr_topography_norm.pt
+  lr_train_paths:
+    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+  hr_train_paths:
+    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
+    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+  hr_cov_paths: /home/nannau/sprint-10-2023/data/invariant/hr_topography_norm.pt
+  lr_invariant_paths:
+    - /home/nannau/sprint-10-2023/data/invariant/lr_topography_norm.pt

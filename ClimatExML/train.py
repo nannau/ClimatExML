@@ -1,5 +1,4 @@
 import torch
-import glob
 import lightning as pl
 from ClimatExML.wgan_gp import SuperResolutionWGANGP
 from ClimatExML.loader import ClimatExMLDataHRCov
@@ -34,27 +33,21 @@ def main(cfg: dict):
     hardware = instantiate(cfg.hardware)
     experiment = start_mlflow_run(hardware)
 
-    logging.info(f"Experiment ID: {experiment.experiment_id}")
     with mlflow.start_run() as run:
+        logging.info(f"Experiment ID: {experiment.experiment_id}")
         logging.info(f"Artifact Location: {run.info.artifact_uri}")
 
-        data = {
-            "lr_train": [sorted(glob.glob(path)) for path in cfg.data.files.lr_train],
-            "hr_train": [sorted(glob.glob(path)) for path in cfg.data.files.hr_train],
-            "hr_cov": cfg.data.files.hr_cov,
-            "lr_invariant": cfg.data.files.lr_invariant,
-        }
-
-        lr_shape = cfg.data.lr_shape
+        super_resolution_data = instantiate(cfg.data)        
+        lr_shape = super_resolution_data.lr_shape
         lr_shape.insert(
-            0, len(cfg.data.files.lr_train) + len(cfg.data.files.lr_invariant)
+            0, len(super_resolution_data.lr_train) + len(super_resolution_data.lr_invariant)
         )
 
         hr_shape = cfg.data.hr_shape
-        hr_shape.insert(0, len(cfg.data.files.hr_train))
+        hr_shape.insert(0, len(super_resolution_data.hr_train))
 
         clim_data = ClimatExMLDataHRCov(
-            data_glob=data,
+            super_resolution_data=super_resolution_data,
             batch_size=cfg.hyperparameters.batch_size,
             num_workers=cfg.training.num_workers,
         )

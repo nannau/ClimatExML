@@ -2,9 +2,12 @@ import torch
 from torch.utils.data import Dataset
 import lightning as pl
 from torch.utils.data import DataLoader
+from ClimatExML.mlclasses import SuperResolutionData
+from pydantic.dataclasses import dataclass
 
 
 class ClimatExMLLoaderHRCov(Dataset):
+
     def __init__(self, lr_glob, hr_glob, hr_cov_path, lr_invariant) -> None:
         self.lr_glob = lr_glob
         self.hr_glob = hr_glob
@@ -13,6 +16,12 @@ class ClimatExMLLoaderHRCov(Dataset):
         self.lr_invariant = [
             torch.tensor(torch.load(path)).float() for path in lr_invariant
         ]
+    def __post_init__(self):
+        self.hr_cov = self.hr_cov.unsqueeze(0).float()
+        self.lr_invariant = [
+            torch.tensor(torch.load(path)).float() for path in self.lr_invariant
+        ]
+
 
     def __len__(self):
         return len(self.lr_glob[0])
