@@ -39,12 +39,14 @@ def main(cfg: dict):
 
         super_resolution_data = instantiate(cfg.data)        
         lr_shape = super_resolution_data.lr_shape
-        lr_shape.insert(
-            0, len(super_resolution_data.lr_train) + len(super_resolution_data.lr_invariant)
-        )
+        #lr_shape.insert(
+        #    0, len(super_resolution_data.lr_train) + len(super_resolution_data.lr_invariant)
+        #)
+        hr_cov_shape = cfg.data.hr_cov_shape
+        # hr_cov_shape.insert(0, len(cfg.data.files.hr_cov))
 
         hr_shape = cfg.data.hr_shape
-        hr_shape.insert(0, len(super_resolution_data.hr_train))
+        #hr_shape.insert(0, len(super_resolution_data.hr_train))
 
         clim_data = ClimatExMLDataHRCov(
             super_resolution_data=super_resolution_data,
@@ -68,7 +70,8 @@ def main(cfg: dict):
             alpha=cfg.hyperparameters.alpha,
             lr_shape=lr_shape,
             hr_shape=hr_shape,
-            log_every_n_steps=hardware.log_every_n_steps,
+            hr_cov_shape=hr_cov_shape,
+            log_every_n_steps=cfg.tracking.log_every_n_steps,
         )
 
         trainer = pl.Trainer(
