@@ -1,5 +1,6 @@
+
 hyperparameters:
-  batch_size: 1
+  __target__: "ClimatExML.mlclasses.HyperParameters"
   # Adam Optimizer
   learning_rate: 0.00025
   b1: 0.9
@@ -10,23 +11,25 @@ hyperparameters:
   max_epochs: 50
 
 tracking:
-# mlflow server --backend-store-uri sqlite:///home/kdaust/sprint/mlflow/proc/sqlite --default-artifact-root /home/kdaust/sprint/mlflow/proc/
-  tracking_uri: sqlite:////home/kdaust/sprint/mlflow/proc/sqlite
-  default_artifact_root: /home/kdaust/sprint/mlflow/proc/ "ClimatEx WGAN-GP"
+  __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
+  # mlflow server --backend-store-uri sqlite:///home/nannau/sprint-10-2023/mlflow/proc/sqlite --default-artifact-root /home/nannau/sprint-10-2023/mlflow/proc/
+  tracking_uri: sqlite:////home/nannau/sprint-10-2023/mlflow/proc/sqlite
+  default_artifact_root: /home/nannau/sprint-10-2023/mlflow/proc/ "ClimatEx WGAN-GP"
   run_name: "wgan-gp"
   description: "Build up large model with WGAN-GP, hr covariates, and all fire weather vars."
   log_every_n_steps: 10
   log_model: true
   experiment_name: "ClimatExML"
 
-training:
+hardware:
+  __target__: "ClimatExML.mlclasses.ClimatExMLTraining"
   num_workers: 24
   precision: 32
-  # or ^^ "16-mixed"
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
 
 data:
+  __target__: "ClimatExML.mlclasses.SuperResolutionData"
   lr_shape:
     - 6 # lr covariates
     - 64 # x size
@@ -39,21 +42,20 @@ data:
     - 2 # hr covariates
     - 512
     - 512
-  files:
-    lr_train:
-      - /home/kdaust/sprint/data/proc/pr/lr/*.pt
-      - /home/kdaust/sprint/data/proc/tas/lr/*.pt
-      - /home/kdaust/sprint/data/proc/uas/lr/*.pt
-      - /home/kdaust/sprint/data/proc/vas/lr/*.pt
-      - /home/kdaust/sprint/data/proc/Q2/lr/*.pt
-    hr_train:
-      - /home/kdaust/sprint/data/proc/pr/hr/*.pt
-      - /home/kdaust/sprint/data/proc/tas/hr/*.pt
-      - /home/kdaust/sprint/data/proc/uas/hr/*.pt
-      - /home/kdaust/sprint/data/proc/vas/hr/*.pt
-      - /home/kdaust/sprint/data/proc/Q2/hr/*.pt
-    hr_cov: 
-      - /home/kdaust/sprint/data/invariant/hr_topography_norm.pt
-      - /home/kdaust/sprint/data/invariant/hr_topography_copy.pt
-    lr_invariant:
-      - //home/kdaust/sprint/data/invariant/lr_topography_norm.pt
+  lr_train:
+    - /home/kdaust/sprint/data/proc/pr/lr/*.pt
+    - /home/kdaust/sprint/data/proc/tas/lr/*.pt
+    - /home/kdaust/sprint/data/proc/uas/lr/*.pt
+    - /home/kdaust/sprint/data/proc/vas/lr/*.pt
+    - /home/kdaust/sprint/data/proc/Q2/lr/*.pt
+  hr_train:
+    - /home/kdaust/sprint/data/proc/pr/hr/*.pt
+    - /home/kdaust/sprint/data/proc/tas/hr/*.pt
+    - /home/kdaust/sprint/data/proc/uas/hr/*.pt
+    - /home/kdaust/sprint/data/proc/vas/hr/*.pt
+    - /home/kdaust/sprint/data/proc/Q2/hr/*.pt
+  hr_cov: 
+    - /home/kdaust/sprint/data/invariant/hr_topography_norm.pt
+    - /home/kdaust/sprint/data/invariant/hr_topography_copy.pt
+  lr_invariant:
+    - //home/kdaust/sprint/data/invariant/lr_topography_norm.pt
