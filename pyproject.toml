@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ClimatExML"
+authors = [{name = "Nic Annau", email = "nicannau@gmail.com"}]
+description = "WGAN-GP implementation for super-resolution with PyTorch Lightning"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    "lightning",
+    "torchvision",
+    "mlflow",
+    "hydra-core",
+    "matplotlib",
+]
+
+[tool.setuptools.packages.find]
+where = [".", "ClimatExML"]  # list of folders that contain the packages (["."] by default)
+include = ["*"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["notebooks"]  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term-missing"

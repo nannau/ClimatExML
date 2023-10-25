@@ -10,14 +10,16 @@ class ClimatExMLLoaderHRCov(Dataset):
         self.hr_glob = hr_glob
         # self.hr_cov_path = hr_cov_path
         self.hr_cov = torch.load(hr_cov_path).unsqueeze(0).float()
-        self.lr_invariant = [torch.tensor(torch.load(path)).float() for path in lr_invariant]
+        self.lr_invariant = [
+            torch.tensor(torch.load(path)).float() for path in lr_invariant
+        ]
 
     def __len__(self):
         return len(self.lr_glob[0])
 
     def __getitem__(self, idx):
         pathlist = [torch.load(var[idx]) for var in self.lr_glob]
-        batch_lr_invariant = [self.lr_invariant[0]*torch.ones(pathlist[0].size())]
+        batch_lr_invariant = [self.lr_invariant[0] * torch.ones(pathlist[0].size())]
         pathlist.extend(batch_lr_invariant)
 
         lr = torch.stack(pathlist, dim=1)
@@ -74,6 +76,7 @@ class ClimatExMLLoader(Dataset):
     def __len__(self):
         return len(self.lr_glob[0])
 
+    def __getitem__(self, idx):
         lr = torch.stack([torch.load(var[idx]) for var in self.lr_glob], dim=1)
         hr = torch.stack([torch.load(var[idx]) for var in self.hr_glob], dim=1)
 

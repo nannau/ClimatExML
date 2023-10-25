@@ -11,7 +11,7 @@ from ClimatExML.losses import content_loss
 from torchmetrics.functional import (
     mean_absolute_error,
     mean_squared_error,
-    multiscale_structural_similarity_index_measure
+    multiscale_structural_similarity_index_measure,
 )
 
 import mlflow
@@ -111,22 +111,17 @@ class SuperResolutionWGANGP(pl.LightningModule):
         gradients_norm = torch.sqrt(torch.sum(gradients**2, dim=1) + 1e-12)
 
         # Return gradient penalty
-        return self.gp_lambda * ((gradients_norm - 1) ** 2).mean()
+        return ((gradients_norm - 1) ** 2).mean()
 
     def training_step(self, batch, batch_idx):
-        if self.hr_cov_shape is not None:
-            lr, hr, hr_cov = batch[0]
-            sr = self.G(lr, hr_cov).detach()
-        else:
-            lr, hr = batch[0]
-            sr = self.G(lr).detach()
-
         # train generator
         if self.hr_cov_shape is not None:
             lr, hr, hr_cov = batch[0]
             lr = lr.squeeze(0)
             hr = hr.squeeze(0)
-            hr_cov = hr_cov*torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).cuda()
+            hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(
+                hr
+            )  # .cuda()
             sr = self.G(lr, hr_cov).detach()
         else:
             lr, hr = batch[0]
@@ -147,24 +142,10 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
-            if self.hr_cov_shape is not None:
-                lr, hr, hr_cov = batch[0]
-                sr = self.G(lr, hr_cov)  # .detach()
-            else:
-                lr, hr = batch[0]
-                sr = self.G(lr)  # .detach()
-
+            sr = self.G(lr, hr_cov)
             loss_g = -torch.mean(
                 self.C(sr).detach()
             ) + self.alpha * mean_absolute_error(sr, hr)
-            self.go_downhill(g_opt, loss_g)
-            # self.manual_backward(loss_g)
-            # g_opt.step()
-            # g_opt.zero_grad()
-            sr = self.G(lr, hr_cov)
-            loss_g = -torch.mean(self.C(sr).detach()) + self.alpha * content_loss(
-                sr, hr
-            )
             self.manual_backward(loss_g)
             g_opt.step()
             g_opt.zero_grad()
@@ -172,13 +153,12 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         self.log_dict(
             {
-                "MAE": mean_absolute_error(sr.detach(), hr),
-                "MSE": mean_squared_error(sr.detach(), hr),
-                "MSSIM": multiscale_structural_similarity_index_measure(
-                    sr.detach(), hr
-                ),
+                "MAE": mean_absolute_error(sr, hr),
+                "MSE": mean_squared_error(sr, hr),
+                "MSSIM": multiscale_structural_similarity_index_measure(sr, hr),
                 "Wasserstein Distance": mean_hr - mean_sr,
-            }
+            },
+            sync_dist=True,
         )
 
         if (batch_idx + 1) % self.log_every_n_steps == 0:
