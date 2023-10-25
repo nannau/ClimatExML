@@ -1,5 +1,6 @@
+
 hyperparameters:
-  batch_size: 1
+  __target__: "ClimatExML.mlclasses.HyperParameters"
   # Adam Optimizer
   learning_rate: 0.00025
   b1: 0.9
@@ -10,7 +11,8 @@ hyperparameters:
   max_epochs: 50
 
 tracking:
-# mlflow server --backend-store-uri sqlite:///home/nannau/sprint-10-2023/mlflow/proc/sqlite --default-artifact-root /home/nannau/sprint-10-2023/mlflow/proc/
+  __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
+  # mlflow server --backend-store-uri sqlite:///home/nannau/sprint-10-2023/mlflow/proc/sqlite --default-artifact-root /home/nannau/sprint-10-2023/mlflow/proc/
   tracking_uri: sqlite:////home/nannau/sprint-10-2023/mlflow/proc/sqlite
   default_artifact_root: /home/nannau/sprint-10-2023/mlflow/proc/ "ClimatEx WGAN-GP"
   run_name: "wgan-gp"
@@ -20,6 +22,7 @@ tracking:
   experiment_name: "ClimatExML"
 
 training:
+  __target__: "ClimatExML.mlclasses.ClimatExMLTraining"
   num_workers: 24
   precision: 32
   # or ^^ "16-mixed"

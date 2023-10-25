@@ -3,33 +3,41 @@ import glob
 import lightning as pl
 from ClimatExML.wgan_gp import SuperResolutionWGANGP
 from ClimatExML.loader import ClimatExMLDataHRCov
+from ClimatExML.mlclasses import HyperParameters, ClimatExMlFlow, ClimateExMLTraining
 from lightning.pytorch.loggers import MLFlowLogger
 import mlflow
 import logging
 import hydra
+from hydra.utils import instantiate
+
+
+def start_mlflow_run(hardware: HyperParameters):
+    mlflow.pytorch.autolog(log_models=hardware.log_model)
+    logging.info(f"Tracking URI: {mlflow.get_tracking_uri()}")
+
+    if mlflow.get_experiment_by_name(hardware.experiment_name) is None:
+        logging.info(
+            f"Creating experiment: {hardware.experiment_name} with artifact location: {hardware.default_artifact_root}"
+        )
+        mlflow.create_experiment(
+            hardware.experiment_name,
+        )
+
+    experiment = mlflow.get_experiment_by_name(hardware.experiment_name)
+    mlflow.set_experiment(hardware.experiment_name)
+    return experiment
 
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
-    mlflow.pytorch.autolog(log_models=cfg.tracking.log_model)
-    # mlflow.set_tracking_uri(cfg.tracking.tracking_uri)
+    hyperparameters = instantiate(cfg.hyperparameters)
+    hardware = instantiate(cfg.hardware)
+    experiment = start_mlflow_run(hardware)
 
-    logging.info(f"Tracking URI: {mlflow.get_tracking_uri()}")
-    # check if experiment name already exists
-    if mlflow.get_experiment_by_name(cfg.tracking.experiment_name) is None:
-        logging.info(
-            f"Creating experiment: {cfg.tracking.experiment_name} with artifact location: {cfg.tracking.default_artifact_root}"
-        )
-        mlflow.create_experiment(
-            cfg.tracking.experiment_name,
-            # artifact_location=cfg.tracking.default_artifact_root,
-        )
-
-    experiment = mlflow.get_experiment_by_name(cfg.tracking.experiment_name)
-    mlflow.set_experiment(cfg.tracking.experiment_name)
     logging.info(f"Experiment ID: {experiment.experiment_id}")
     with mlflow.start_run() as run:
         logging.info(f"Artifact Location: {run.info.artifact_uri}")
+
         data = {
             "lr_train": [sorted(glob.glob(path)) for path in cfg.data.files.lr_train],
             "hr_train": [sorted(glob.glob(path)) for path in cfg.data.files.hr_train],
@@ -52,7 +60,7 @@ def main(cfg: dict):
         )
 
         mlflow_logger = MLFlowLogger(
-            experiment_name=cfg.tracking.experiment_name,
+            experiment_name=hardware.experiment_name,
             run_id=run.info.run_id,
         )
 
@@ -67,7 +75,7 @@ def main(cfg: dict):
             alpha=cfg.hyperparameters.alpha,
             lr_shape=lr_shape,
             hr_shape=hr_shape,
-            log_every_n_steps=cfg.tracking.log_every_n_steps,
+            log_every_n_steps=hardware.log_every_n_steps,
         )
 
         trainer = pl.Trainer(

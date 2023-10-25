@@ -3,7 +3,6 @@ import os
 
 
 class HyperParameters(BaseModel):
-    batch_size: int
     learning_rate: float
     b1: float
     b2: float
@@ -16,8 +15,8 @@ class HyperParameters(BaseModel):
 class ClimatExMlFlow(BaseModel):
     host: str = "http://206.12.93.183/"
     port: int = 5000
-    tracking_uri: str = os.environ("MLFLOW_TRACKING_URI")
-    default_artifact_root: str = os.environ("MLFLOW_ARTIFACT_ROOT")
+    tracking_uri: str# = os.environ("MLFLOW_TRACKING_URI")
+    default_artifact_root: str# = os.environ("MLFLOW_ARTIFACT_ROOT")
 
 
 class ClimateExMLTraining:

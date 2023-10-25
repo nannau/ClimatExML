@@ -161,26 +161,26 @@ class SuperResolutionWGANGP(pl.LightningModule):
             sync_dist=True,
         )
 
-        if (batch_idx + 1) % self.log_every_n_steps == 0:
-            fig = plt.figure(figsize=(30, 10))
-            for var in range(lr.shape[1] - 1):
-                self.logger.experiment.log_figure(
-                    mlflow.active_run().info.run_id,
-                    gen_grid_images(
-                        var,
-                        fig,
-                        self.G,
-                        lr,
-                        hr,
-                        hr_cov,
-                        lr.size(0),
-                        use_hr_cov=self.hr_cov_shape is not None,
-                        n_examples=3,
-                        cmap="viridis",
-                    ),
-                    f"train_images_{var}.png",
-                )
-                plt.close()
+        # if (batch_idx + 1) % self.log_every_n_steps == 0:
+        #     fig = plt.figure(figsize=(30, 10))
+        #     for var in range(lr.shape[1] - 1):
+        #         self.logger.experiment.log_figure(
+        #             mlflow.active_run().info.run_id,
+        #             gen_grid_images(
+        #                 var,
+        #                 fig,
+        #                 self.G,
+        #                 lr,
+        #                 hr,
+        #                 hr_cov,
+        #                 lr.size(0),
+        #                 use_hr_cov=self.hr_cov_shape is not None,
+        #                 n_examples=3,
+        #                 cmap="viridis",
+        #             ),
+        #             f"train_images_{var}.png",
+        #         )
+        #         plt.close()
 
     def go_downhill(self, opt, loss):
         self.manual_backward(loss)
