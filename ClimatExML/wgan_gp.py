@@ -53,7 +53,6 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.n_critic = n_critic
         self.alpha = alpha
         self.log_every_n_steps = log_every_n_steps
-
         # networks
         n_covariates, lr_dim, _ = self.lr_shape
         n_predictands, hr_dim, _ = self.hr_shape

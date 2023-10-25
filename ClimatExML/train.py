@@ -37,13 +37,18 @@ def main(cfg: dict):
             "lr_invariant": cfg.data.files.lr_invariant,
         }
 
+        ##specify shapes of data
         lr_shape = cfg.data.lr_shape
-        lr_shape.insert(
-            0, len(cfg.data.files.lr_train) + len(cfg.data.files.lr_invariant)
-        )
+        # lr_shape.insert(
+        #     0, len(cfg.data.files.lr_train) + len(cfg.data.files.lr_invariant)
+        # )
 
         hr_shape = cfg.data.hr_shape
-        hr_shape.insert(0, len(cfg.data.files.hr_train))
+        # hr_shape.insert(0, len(cfg.data.files.hr_train))
+
+        ##number of hr covariates
+        hr_cov_shape = cfg.data.hr_cov_shape
+        # hr_cov_shape.insert(0, len(cfg.data.files.hr_cov))
 
         clim_data = ClimatExMLDataHRCov(
             data_glob=data,
@@ -67,6 +72,7 @@ def main(cfg: dict):
             alpha=cfg.hyperparameters.alpha,
             lr_shape=lr_shape,
             hr_shape=hr_shape,
+            hr_cov_shape=hr_cov_shape,
             log_every_n_steps=cfg.tracking.log_every_n_steps,
         )
 
