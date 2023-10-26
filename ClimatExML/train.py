@@ -1,7 +1,7 @@
 import torch
 import lightning as pl
 from ClimatExML.wgan_gp import SuperResolutionWGANGP
-from ClimatExML.loader import ClimatExMLDataHRCov
+from ClimatExML.loader import ClimatExLightning
 from ClimatExML.mlclasses import HyperParameters, ClimatExMlFlow, ClimateExMLTraining
 from lightning.pytorch.loggers import MLFlowLogger
 import mlflow
@@ -10,64 +10,59 @@ import hydra
 from hydra.utils import instantiate
 
 
-def start_mlflow_run(hardware: HyperParameters):
-    mlflow.pytorch.autolog(log_models=hardware.log_model)
+def start_mlflow_run(tracking: ClimatExMlFlow):
+    mlflow.pytorch.autolog(log_models=tracking.log_model)
     logging.info(f"Tracking URI: {mlflow.get_tracking_uri()}")
 
-    if mlflow.get_experiment_by_name(hardware.experiment_name) is None:
+    if mlflow.get_experiment_by_name(tracking.experiment_name) is None:
         logging.info(
-            f"Creating experiment: {hardware.experiment_name} with artifact location: {hardware.default_artifact_root}"
+            f"Creating experiment: {tracking.experiment_name} with artifact location: {tracking.default_artifact_root}"
         )
         mlflow.create_experiment(
-            hardware.experiment_name,
+            tracking.experiment_name,
         )
 
-    experiment = mlflow.get_experiment_by_name(hardware.experiment_name)
-    mlflow.set_experiment(hardware.experiment_name)
+    experiment = mlflow.get_experiment_by_name(tracking.experiment_name)
+    mlflow.set_experiment(tracking.experiment_name)
     return experiment
 
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
     hyperparameters = instantiate(cfg.hyperparameters)
+    tracking = instantiate(cfg.tracking)
+    experiment = start_mlflow_run(tracking)
     hardware = instantiate(cfg.hardware)
-    experiment = start_mlflow_run(hardware)
 
     with mlflow.start_run() as run:
         logging.info(f"Experiment ID: {experiment.experiment_id}")
         logging.info(f"Artifact Location: {run.info.artifact_uri}")
 
-        super_resolution_data = instantiate(cfg.data)        
-        lr_shape = super_resolution_data.lr_shape
-        #lr_shape.insert(
-        #    0, len(super_resolution_data.lr_train) + len(super_resolution_data.lr_invariant)
-        #)
-        hr_cov_shape = cfg.data.hr_cov_shape
-        # hr_cov_shape.insert(0, len(cfg.data.files.hr_cov))
+        train_data = instantiate(cfg.train_data)
+        test_data = instantiate(cfg.test_data)
+        invariant = instantiate(cfg.invariant)
 
-        hr_shape = cfg.data.hr_shape
-        #hr_shape.insert(0, len(super_resolution_data.hr_train))
+        print(train_data)
 
-        clim_data = ClimatExMLDataHRCov(
-            super_resolution_data=super_resolution_data,
-            batch_size=cfg.hyperparameters.batch_size,
-            num_workers=cfg.training.num_workers,
-        )
+        lr_shape = invariant.lr_shape
+        hr_shape = invariant.hr_shape
+        hr_cov_shape = invariant.hr_cov_shape
+
+        clim_data = ClimatExLightning(train_data, test_data, invariant)
 
         mlflow_logger = MLFlowLogger(
-            experiment_name=hardware.experiment_name,
+            experiment_name=tracking.experiment_name,
             run_id=run.info.run_id,
         )
 
         srmodel = SuperResolutionWGANGP(
-            batch_size=cfg.hyperparameters.batch_size,
-            num_workers=cfg.training.num_workers,
-            learning_rate=cfg.hyperparameters.learning_rate,
-            b1=cfg.hyperparameters.b1,
-            b2=cfg.hyperparameters.b2,
-            n_critic=cfg.hyperparameters.n_critic,
-            gp_lambda=cfg.hyperparameters.gp_lambda,
-            alpha=cfg.hyperparameters.alpha,
+            num_workers=hardware.num_workers,
+            learning_rate=hyperparameters.learning_rate,
+            b1=hyperparameters.b1,
+            b2=hyperparameters.b2,
+            n_critic=hyperparameters.n_critic,
+            gp_lambda=hyperparameters.gp_lambda,
+            alpha=hyperparameters.alpha,
             lr_shape=lr_shape,
             hr_shape=hr_shape,
             hr_cov_shape=hr_cov_shape,
@@ -76,13 +71,13 @@ def main(cfg: dict):
         )
 
         trainer = pl.Trainer(
-            precision=cfg.training.precision,
-            accelerator=cfg.training.accelerator,
-            max_epochs=cfg.hyperparameters.max_epochs,
+            precision=hardware.precision,
+            accelerator=hardware.accelerator,
+            max_epochs=hyperparameters.max_epochs,
             logger=mlflow_logger,
             detect_anomaly=False,
             devices=-1,
-            strategy=cfg.training.strategy,
+            strategy=hardware.strategy,
         )
         trainer.fit(srmodel, datamodule=clim_data)
 
