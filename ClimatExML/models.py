@@ -51,7 +51,7 @@ class DenseResidualBlockNoise(nn.Module):
     """
 
     def __init__(self, filters, resolution, res_scale=0.8, noise_sd=1):
-        super(DenseResidualBlock, self).__init__()
+        super().__init__()
         self.res_scale = res_scale
         self.resolution = resolution
         self.noise_sd = noise_sd
@@ -133,7 +133,7 @@ class DenseResidualBlock(nn.Module):
 
 class ResidualInResidualDenseBlock(nn.Module):
     def __init__(self, filters, noise, resolution, res_scale=0.2):
-        super(ResidualInResidualDenseBlock, self).__init__()
+        super().__init__()
         self.res_scale = res_scale
         if noise:
             self.dense_blocks = nn.Sequential(
@@ -220,7 +220,7 @@ class Generator_hr_cov(nn.Module):
         num_res_blocks_fine=1,
         num_upsample=3,
     ):
-        super(Generator_hr_cov, self).__init__()
+        super().__init__()
         self.fine_res = fine_dims
         # First layer
         self.conv1 = nn.Conv2d(channels, filters, kernel_size=3, stride=1, padding=1)
@@ -281,7 +281,7 @@ class Critic(nn.Module):
     r"""The main architecture of the discriminator. Similar to VGG structure."""
 
     def __init__(self, lr_dim, hr_dim, n_predictands):
-        super(Critic, self).__init__()
+        super().__init__()
         self.lr_dim = lr_dim
         self.hr_dim = hr_dim
         self.n_predictands = n_predictands

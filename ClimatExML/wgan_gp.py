@@ -65,7 +65,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
             lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands
         )
 
-        self.C = Critic(is_noise, lr_dim, hr_dim, n_predictands)
+        self.C = Critic(self.is_noise, lr_dim, hr_dim, n_predictands)
 
         self.automatic_optimization = False
 
