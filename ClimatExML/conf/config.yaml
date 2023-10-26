@@ -9,6 +9,7 @@ hyperparameters:
   alpha: 50.0
   n_critic: 5
   max_epochs: 50
+  noise_injection: True
 
 tracking:
   __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
@@ -26,9 +27,6 @@ hardware:
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
 
-stochasticity:
-  __target__: "ClimatExML.mlclasses.StochasticityParameters"
-  noise_injection: True
 
 invariant:
   _target_: "ClimatExML.mlclasses.InvariantData"
@@ -40,11 +38,11 @@ invariant:
     - 5 # hr covariates (predictands)
     - 512 # x size
     - 512 # y size
-  hr_cov_shape:
+  hr_invariant_shape:
     - 2 # hr covariates
     - 512
     - 512
-  hr_cov_paths: 
+  hr_invariant_paths: 
     - /home/nannau/sprint-10-2023/data/invariant/hr_topography_norm.pt
     - /home/nannau/sprint-10-2023/data/invariant/hr_topography_copy.pt
   lr_invariant_paths:
