@@ -13,7 +13,6 @@ from ClimatExML.mlflow_tools.mlflow_tools import (
     log_metrics_every_n_steps,
     log_pytorch_model,
 )
-from ClimatExML.losses import content_loss
 from torchmetrics.functional import (
     mean_absolute_error,
     mean_squared_error,
@@ -65,7 +64,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
             lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands
         )
 
-        self.C = Critic(self.is_noise, lr_dim, hr_dim, n_predictands)
+        self.C = Critic(lr_dim, hr_dim, n_predictands)
 
         self.automatic_optimization = False
 
@@ -111,15 +110,16 @@ class SuperResolutionWGANGP(pl.LightningModule):
         return ((gradients_norm - 1) ** 2).mean()
 
     def training_step(self, batch, batch_idx):
-        print(batch)
+        print(batch[0])
         # train generator
         lr, hr, hr_cov = batch[0]
         lr = lr.squeeze(0)
         hr = hr.squeeze(0)
         hr_cov = hr_cov.squeeze(0)
-        hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(
-            hr
-        )  # .cuda()
+        hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(hr)
+
+        print("SIZES", lr.size(), hr.size(), hr_cov.size())
+
         sr = self.G(lr, hr_cov).detach()
 
         g_opt, c_opt = self.optimizers()

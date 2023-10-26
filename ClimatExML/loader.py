@@ -39,7 +39,7 @@ class ClimatExSampler(Dataset):
 
         lr = torch.stack(pathlist, dim=1)
         hr = torch.stack([torch.load(var[idx]) for var in self.hr_paths], dim=1)
-        return [lr, hr, self.hr_cov]
+        return [lr, hr, self.hr_invariant]
 
 
 class ClimatExLightning(pl.LightningDataModule):
