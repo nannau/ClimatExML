@@ -2,26 +2,25 @@ import torch
 from torch.utils.data import Dataset
 import lightning as pl
 from torch.utils.data import DataLoader
-from ClimatExML.mlclasses import InvariantData, InputVariables
-from pydantic.dataclasses import dataclass
 
 
-# @dataclass
 class ClimatExSampler(Dataset):
     lr_paths: list
     hr_paths: list
-    hr_cov_paths: list
+    hr_invariant_paths: list
     lr_invariant_paths: list
 
-    def __init__(self, lr_paths, hr_paths, hr_cov_paths, lr_invariant_paths) -> None:
+    def __init__(
+        self, lr_paths, hr_paths, hr_invariant_paths, lr_invariant_paths
+    ) -> None:
         super().__init__()
         self.lr_paths = lr_paths
         self.hr_paths = hr_paths
-        self.hr_cov_paths = hr_cov_paths
+        self.hr_invariant_paths = hr_invariant_paths
         self.lr_invariant_paths = lr_invariant_paths
 
-        self.hr_cov = (
-            torch.stack([torch.load(path).float() for path in self.hr_cov_paths])
+        self.hr_invariant = (
+            torch.stack([torch.load(path).float() for path in self.hr_invariant_paths])
             .unsqueeze(0)
             .float()
         )
@@ -65,13 +64,13 @@ class ClimatExLightning(pl.LightningDataModule):
         self.train_data = ClimatExSampler(
             self.train_data.lr_files,
             self.train_data.hr_files,
-            self.invariant.hr_cov_paths,
+            self.invariant.hr_invariant_paths,
             self.invariant.lr_invariant_paths,
         )
         self.test_data = ClimatExSampler(
             self.test_data.lr_files,
             self.test_data.hr_files,
-            self.invariant.hr_cov_paths,
+            self.invariant.hr_invariant_paths,
             self.invariant.lr_invariant_paths,
         )
 

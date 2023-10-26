@@ -42,12 +42,6 @@ def main(cfg: dict):
         test_data = instantiate(cfg.test_data)
         invariant = instantiate(cfg.invariant)
 
-        print(train_data)
-
-        lr_shape = invariant.lr_shape
-        hr_shape = invariant.hr_shape
-        hr_cov_shape = invariant.hr_cov_shape
-
         clim_data = ClimatExLightning(train_data, test_data, invariant)
 
         mlflow_logger = MLFlowLogger(
@@ -56,17 +50,10 @@ def main(cfg: dict):
         )
 
         srmodel = SuperResolutionWGANGP(
-            num_workers=hardware.num_workers,
-            learning_rate=hyperparameters.learning_rate,
-            b1=hyperparameters.b1,
-            b2=hyperparameters.b2,
-            n_critic=hyperparameters.n_critic,
-            gp_lambda=hyperparameters.gp_lambda,
-            alpha=hyperparameters.alpha,
-            lr_shape=lr_shape,
-            hr_shape=hr_shape,
-            hr_cov_shape=hr_cov_shape,
-            is_noise=cfg.stochasticity.noise_injection,
+            tracking,
+            hardware,
+            hyperparameters,
+            invariant,
             log_every_n_steps=cfg.tracking.log_every_n_steps,
         )
 

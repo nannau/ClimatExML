@@ -13,6 +13,7 @@ class HyperParameters:
     alpha: float
     n_critic: int
     max_epochs: int
+    noise_injection: bool = True
 
 
 @dataclass
@@ -33,56 +34,21 @@ class ClimateExMLTraining:
     accelerator: str = Field(default="gpu")
     strategy: str = Field(default="ddp_find_unused_parameters_true")
 
-@dataclass
-class StochasticityParameters:
-    noise_injection: bool = True
-
 
 @dataclass
 class InvariantData:
     lr_shape: list
     hr_shape: list
-    hr_cov_shape: list
-    hr_cov_paths: list
+    hr_invariant_shape: list
+    hr_invariant_paths: list
     lr_invariant_paths: list
-
-    # def __post_init__(self):
-    #     self.lr_invariant_list = [
-    #         sorted(glob.glob(path)) for path in self.lr_invariant_paths
-    #     ]
-    # #     self.hr_cov_list = [sorted(glob.glob(path)) for path in self.hr_cov_paths]
-    #     print("LIST" + 80 * "-")
-    #     print(self.lr_invariant_list)
-    #     print(self.hr_cov_list)
-    #     print("LIST" + 80 * "-")
 
 
 @dataclass
 class InputVariables:
     lr_paths: list
     hr_paths: list
-    # lr_files: list
-    # hr_files: list
 
     def __post_init__(self):
         self.lr_files = [sorted(glob.glob(path)) for path in self.lr_paths]
         self.hr_files = [sorted(glob.glob(path)) for path in self.hr_paths]
-
-
-# @dataclass
-# class InputVariables:
-#     lr_shape: list
-#     hr_shape: list
-#     lr_paths: list
-#     hr_paths: list
-
-#     def __post_init__(self):
-#         self.lr_paths = [sorted(glob.glob(path)) for path in self.lr_paths]
-#         self.hr_paths = [sorted(glob.glob(path)) for path in self.hr_paths]
-
-
-# @dataclass
-# class DataModule:
-#     invariant: InvariantData
-#     train_data: InputVariables
-#     test_data: InputVariables

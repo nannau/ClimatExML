@@ -2,6 +2,12 @@ import lightning as pl
 import torch.nn.functional as F
 import torch
 from ClimatExML.models import Generator, Generator_hr_cov, Critic
+from ClimatExML.mlclasses import (
+    ClimatExMlFlow,
+    ClimateExMLTraining,
+    HyperParameters,
+    InvariantData,
+)
 from ClimatExML.mlflow_tools.mlflow_tools import (
     gen_grid_images,
     log_metrics_every_n_steps,
@@ -19,59 +25,49 @@ import matplotlib.pyplot as plt
 
 
 class SuperResolutionWGANGP(pl.LightningModule):
+    tracking: ClimatExMlFlow
+    hardware: ClimateExMLTraining
+    hyperparameters: HyperParameters
+    invariant: InvariantData
+    is_noise: bool
+
     def __init__(
         self,
-        # batch_size: int = 16,
-        num_workers: int = 24,
-        learning_rate: float = 0.00025,
-        b1: float = 0.9,
-        b2: float = 0.999,
-        gp_lambda: float = 10,
-        alpha: float = 1e-3,
-        lr_shape: tuple = (1, 64, 64),
-        hr_shape: tuple = (1, 512, 512),
-        hr_cov_shape: tuple = (1, 512, 512),
-        is_noise: bool = True,
-        n_critic: int = 5,
-        log_every_n_steps: int = 100,
+        tracking,
+        hardware,
+        hyperparameters,
+        invariant,
         **kwargs,
     ):
         super().__init__()
         self.save_hyperparameters()
+        self.num_workers = hardware.num_workers
+        self.log_every_n_steps = tracking.log_every_n_steps
 
-        # data
-        self.num_workers = num_workers
+        self.learning_rate = hyperparameters.learning_rate
+        self.b1 = hyperparameters.b1
+        self.b2 = hyperparameters.b2
+        self.gp_lambda = hyperparameters.gp_lambda
+        self.n_critic = hyperparameters.n_critic
+        self.alpha = hyperparameters.alpha
+        self.is_noise = hyperparameters.noise_injection
 
-        # training
-        self.learning_rate = learning_rate
-        self.b1 = b1
-        self.b2 = b2
-        # self.batch_size = batch_size
-        self.lr_shape = lr_shape
-        self.hr_shape = hr_shape
-        self.hr_cov_shape = hr_cov_shape
-        self.gp_lambda = gp_lambda
-        self.n_critic = n_critic
-        self.alpha = alpha
-        self.log_every_n_steps = log_every_n_steps
+        self.lr_shape = invariant.lr_shape
+        self.hr_shape = invariant.hr_shape
+        self.hr_invariant_shape = invariant.hr_invariant_shape
 
         # networks
         n_covariates, lr_dim, _ = self.lr_shape
         n_predictands, hr_dim, _ = self.hr_shape
-        # DEBUG coarse_dim_n, fine_dim_n, n_covariates, n_predictands
-        if self.hr_cov_shape is not None:
-            n_hr_covariates = hr_cov_shape[0]
-            self.G = Generator_hr_cov(
-                lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands
-            )
-        else:
-            self.G = Generator(is_noise, lr_dim, hr_dim, n_covariates, n_predictands)
+
+        n_hr_covariates = self.hr_invariant_shape[0]
+        self.G = Generator_hr_cov(
+            lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands
+        )
+
         self.C = Critic(is_noise, lr_dim, hr_dim, n_predictands)
 
         self.automatic_optimization = False
-
-        # self.register_buffer("gp_alpha", torch.rand(current_batch_size, 1, 1, 1, requires_grad=True).expand_as(real_samples))
-        # self.register_buffer("gp_ones", torch.ones(critic_interpolated.size(), requires_grad=True))
 
     def compute_gradient_penalty(self, real_samples, fake_samples):
         """Calculates the gradient penalty loss for WGAN GP"""
@@ -115,19 +111,16 @@ class SuperResolutionWGANGP(pl.LightningModule):
         return ((gradients_norm - 1) ** 2).mean()
 
     def training_step(self, batch, batch_idx):
+        print(batch)
         # train generator
-        if self.hr_cov_shape is not None:
-            lr, hr, hr_cov = batch[0]
-            lr = lr.squeeze(0)
-            hr = hr.squeeze(0)
-            hr_cov = hr_cov.squeeze(0)
-            hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(
-                hr
-            )  # .cuda()
-            sr = self.G(lr, hr_cov).detach()
-        else:
-            lr, hr = batch[0]
-            sr = self.G(lr).detach()
+        lr, hr, hr_cov = batch[0]
+        lr = lr.squeeze(0)
+        hr = hr.squeeze(0)
+        hr_cov = hr_cov.squeeze(0)
+        hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(
+            hr
+        )  # .cuda()
+        sr = self.G(lr, hr_cov).detach()
 
         g_opt, c_opt = self.optimizers()
         self.toggle_optimizer(c_opt)
