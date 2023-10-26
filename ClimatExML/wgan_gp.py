@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 class SuperResolutionWGANGP(pl.LightningModule):
     def __init__(
         self,
-        batch_size: int = 16,
+        # batch_size: int = 16,
         num_workers: int = 24,
         learning_rate: float = 0.00025,
         b1: float = 0.9,
@@ -45,7 +45,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.learning_rate = learning_rate
         self.b1 = b1
         self.b2 = b2
-        self.batch_size = batch_size
+        # self.batch_size = batch_size
         self.lr_shape = lr_shape
         self.hr_shape = hr_shape
         self.hr_cov_shape = hr_cov_shape
@@ -53,6 +53,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.n_critic = n_critic
         self.alpha = alpha
         self.log_every_n_steps = log_every_n_steps
+
         # networks
         n_covariates, lr_dim, _ = self.lr_shape
         n_predictands, hr_dim, _ = self.hr_shape
@@ -118,6 +119,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
             lr, hr, hr_cov = batch[0]
             lr = lr.squeeze(0)
             hr = hr.squeeze(0)
+            hr_cov = hr_cov.squeeze(0)
             hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(
                 hr
             )  # .cuda()
