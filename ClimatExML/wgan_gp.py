@@ -112,10 +112,10 @@ class SuperResolutionWGANGP(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # train generator
         lr, hr, hr_cov = batch[0]
+
         lr = lr.squeeze(0)
         hr = hr.squeeze(0)
         hr_cov = hr_cov.squeeze(0)
-        hr_cov = hr_cov * torch.ones((hr.size(0), 1, hr.size(2), hr.size(3))).to(hr)
 
         sr = self.G(lr, hr_cov).detach()
 
