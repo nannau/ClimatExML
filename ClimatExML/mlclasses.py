@@ -33,6 +33,10 @@ class ClimateExMLTraining:
     accelerator: str = Field(default="gpu")
     strategy: str = Field(default="ddp_find_unused_parameters_true")
 
+@dataclass
+class StochasticityParameters:
+    noise_injection: bool = True
+
 
 @dataclass
 class InvariantData:

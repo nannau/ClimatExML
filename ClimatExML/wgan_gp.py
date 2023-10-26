@@ -31,6 +31,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         lr_shape: tuple = (1, 64, 64),
         hr_shape: tuple = (1, 512, 512),
         hr_cov_shape: tuple = (1, 512, 512),
+        is_noise: bool = True,
         n_critic: int = 5,
         log_every_n_steps: int = 100,
         **kwargs,
@@ -64,8 +65,8 @@ class SuperResolutionWGANGP(pl.LightningModule):
                 lr_dim, hr_dim, n_covariates, n_hr_covariates, n_predictands
             )
         else:
-            self.G = Generator(lr_dim, hr_dim, n_covariates, n_predictands)
-        self.C = Critic(lr_dim, hr_dim, n_predictands)
+            self.G = Generator(is_noise, lr_dim, hr_dim, n_covariates, n_predictands)
+        self.C = Critic(is_noise, lr_dim, hr_dim, n_predictands)
 
         self.automatic_optimization = False
 

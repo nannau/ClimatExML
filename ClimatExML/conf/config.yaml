@@ -26,6 +26,10 @@ hardware:
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
 
+stochasticity:
+  __target__: "ClimatExML.mlclasses.StochasticityParameters"
+  noise_injection: True
+
 invariant:
   _target_: "ClimatExML.mlclasses.InvariantData"
   lr_shape:
