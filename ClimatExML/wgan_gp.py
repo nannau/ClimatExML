@@ -18,6 +18,7 @@ from torchmetrics.functional import (
     mean_squared_error,
     multiscale_structural_similarity_index_measure,
 )
+from torchmetrics.functional.image import multiscale_structural_similarity_index_measure
 
 import mlflow
 import matplotlib.pyplot as plt
@@ -112,16 +113,14 @@ class SuperResolutionWGANGP(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # train generator
         lr, hr, hr_cov = batch[0]
-
-        lr = lr.squeeze(0)
-        hr = hr.squeeze(0)
-        hr_cov = hr_cov.squeeze(0)
+        lr, hr, hr_cov = lr.squeeze(0), hr.squeeze(0), hr_cov.squeeze(0)
 
         sr = self.G(lr, hr_cov).detach()
 
         g_opt, c_opt = self.optimizers()
         self.toggle_optimizer(c_opt)
         sr = self.G(lr, hr_cov).detach()
+
         gradient_penalty = self.compute_gradient_penalty(hr, sr)
         mean_sr = torch.mean(self.C(sr))
         mean_hr = torch.mean(self.C(hr))
