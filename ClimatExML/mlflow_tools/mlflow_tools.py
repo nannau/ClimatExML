@@ -1,6 +1,7 @@
 # Plots matplotlib grids and saves to file
 import torch
-import matplotlib.pyplot as plt
+
+# import matplotlib.pyplot as plt
 import torchvision
 import mlflow
 import torch.nn.functional as F
@@ -68,12 +69,12 @@ def gen_grid_images(
     """
     torch.manual_seed(0)
     random = torch.randint(0, batch_size, (n_examples,))
-    
-    if(use_hr_cov):
-        sr = G(lr[random, ...],hr_cov[random,...])
+
+    if use_hr_cov:
+        sr = G(lr[random, ...], hr_cov[random, ...])
     else:
         sr = G(lr[random, ...])
-        
+
     lr_grid = torchvision.utils.make_grid(lr[random, ...], nrow=n_examples, padding=5)[
         var, ...
     ]

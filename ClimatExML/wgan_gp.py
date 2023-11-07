@@ -69,6 +69,8 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         self.automatic_optimization = False
 
+        mlflow.pytorch.autolog()
+
     def compute_gradient_penalty(self, real_samples, fake_samples):
         """Calculates the gradient penalty loss for WGAN GP"""
         current_batch_size = real_samples.size(0)
@@ -126,21 +128,14 @@ class SuperResolutionWGANGP(pl.LightningModule):
         mean_hr = torch.mean(self.C(hr))
         loss_c = mean_sr - mean_hr + self.gp_lambda * gradient_penalty
 
-        self.manual_backward(loss_c)
-        c_opt.step()
-        c_opt.zero_grad()
-        self.untoggle_optimizer(c_opt)
-
+        self.go_downhill(loss_c, c_opt)
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
             sr = self.G(lr, hr_cov)
             loss_g = -torch.mean(
                 self.C(sr).detach()
             ) + self.alpha * mean_absolute_error(sr, hr)
-            self.manual_backward(loss_g)
-            g_opt.step()
-            g_opt.zero_grad()
-            self.untoggle_optimizer(g_opt)
+            self.go_downhill(loss_g, g_opt)
 
         self.log_dict(
             {
@@ -152,31 +147,38 @@ class SuperResolutionWGANGP(pl.LightningModule):
             sync_dist=True,
         )
 
-        # if (batch_idx + 1) % self.log_every_n_steps == 0:
-        #     fig = plt.figure(figsize=(30, 10))
-        #     for var in range(lr.shape[1] - 1):
-        #         self.logger.experiment.log_figure(
-        #             mlflow.active_run().info.run_id,
-        #             gen_grid_images(
-        #                 var,
-        #                 fig,
-        #                 self.G,
-        #                 lr,
-        #                 hr,
-        #                 hr_cov,
-        #                 lr.size(0),
-        #                 use_hr_cov=self.hr_cov_shape is not None,
-        #                 n_examples=3,
-        #                 cmap="viridis",
-        #             ),
-        #             f"train_images_{var}.png",
-        #         )
-        #         plt.close()
+        if (batch_idx + 1) % self.log_every_n_steps == 0:
+            fig = plt.figure(figsize=(30, 10))
+            for var in range(lr.shape[1] - 1):
+                self.logger.experiment.log_figure(
+                    mlflow.active_run().info.run_id,
+                    gen_grid_images(
+                        var,
+                        fig,
+                        self.G,
+                        lr,
+                        hr,
+                        hr_cov,
+                        lr.size(0),
+                        use_hr_cov=self.hr_cov_shape is not None,
+                        n_examples=3,
+                        cmap="viridis",
+                    ),
+                    f"train_images_{var}.png",
+                )
+                plt.close()
 
-    def go_downhill(self, opt, loss):
+    # TODO Rename this here and in `training_step`
+    def go_downhill(self, loss, opt):
         self.manual_backward(loss)
-        opt.step()
+        loss.step()
         opt.zero_grad()
+        self.untoggle_optimizer(opt)
+
+    # def go_downhill(self, opt, loss):
+    #     self.manual_backward(loss)
+    #     opt.step()
+    #     opt.zero_grad()
 
     def configure_optimizers(self):
         opt_g = torch.optim.Adam(

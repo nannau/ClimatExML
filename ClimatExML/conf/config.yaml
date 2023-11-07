@@ -17,7 +17,7 @@ tracking:
   port: 5000
   default_artifact_root: str
   log_model: True
-  experiment_name: "ClimatExML"
+  experiment_name: "ML"
   log_every_n_steps: 100
 
 hardware:
