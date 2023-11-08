@@ -1,4 +1,6 @@
+from typing import Any
 import lightning as pl
+from lightning.pytorch.utilities.types import STEP_OUTPUT
 import torch.nn.functional as F
 import torch
 from ClimatExML.models import Generator, Generator_hr_cov, Critic
@@ -168,17 +170,52 @@ class SuperResolutionWGANGP(pl.LightningModule):
                 )
                 plt.close()
 
-    # TODO Rename this here and in `training_step`
+    def validation_step(self, batch, batch_idx):
+        # train generator
+        lr, hr, hr_cov = batch[0]
+        lr, hr, hr_cov = lr.squeeze(0), hr.squeeze(0), hr_cov.squeeze(0)
+
+        sr = self.G(lr, hr_cov).detach()
+
+        mean_sr = torch.mean(self.C(sr))
+        mean_hr = torch.mean(self.C(hr))
+
+        self.log_dict(
+            {
+                "MAE": mean_absolute_error(sr, hr),
+                "MSE": mean_squared_error(sr, hr),
+                "MSSIM": multiscale_structural_similarity_index_measure(sr, hr),
+                "Wasserstein Distance": mean_hr - mean_sr,
+            },
+            sync_dist=True,
+        )
+
+        if (batch_idx + 1) % self.log_every_n_steps == 0:
+            fig = plt.figure(figsize=(30, 10))
+            for var in range(lr.shape[1] - 1):
+                self.logger.experiment.log_figure(
+                    mlflow.active_run().info.run_id,
+                    gen_grid_images(
+                        var,
+                        fig,
+                        self.G,
+                        lr,
+                        hr,
+                        hr_cov,
+                        lr.size(0),
+                        use_hr_cov=self.hr_cov_shape is not None,
+                        n_examples=3,
+                        cmap="viridis",
+                    ),
+                    f"test_images_{var}.png",
+                )
+                plt.close()
+
     def go_downhill(self, loss, opt):
         self.manual_backward(loss)
         loss.step()
         opt.zero_grad()
         self.untoggle_optimizer(opt)
-
-    # def go_downhill(self, opt, loss):
-    #     self.manual_backward(loss)
-    #     opt.step()
-    #     opt.zero_grad()
 
     def configure_optimizers(self):
         opt_g = torch.optim.Adam(

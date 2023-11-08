@@ -19,10 +19,14 @@ class ClimatExSampler(Dataset):
         self.hr_invariant_paths = hr_invariant_paths
         self.lr_invariant_paths = lr_invariant_paths
 
-        self.hr_invariant = torch.stack([torch.load(path).float() for path in self.hr_invariant_paths])
-        self.lr_invariant = torch.stack([torch.load(path).float() for path in self.lr_invariant_paths])
+        self.hr_invariant = torch.stack(
+            [torch.load(path).float() for path in self.hr_invariant_paths]
+        )
+        self.lr_invariant = torch.stack(
+            [torch.load(path).float() for path in self.lr_invariant_paths]
+        )
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.lr_paths[0])
 
     def __getitem__(self, idx):
