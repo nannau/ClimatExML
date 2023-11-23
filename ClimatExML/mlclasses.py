@@ -25,6 +25,7 @@ class ClimatExMlFlow:
     log_model: bool = True
     experiment_name: str = Field(default="ClimatExML")
     log_every_n_steps: int = Field(default=100)
+    validation_log_every_n_steps: int = Field(default=500)
 
 
 @dataclass

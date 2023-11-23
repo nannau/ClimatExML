@@ -39,10 +39,10 @@ def main(cfg: dict):
         logging.info(f"Artifact Location: {run.info.artifact_uri}")
 
         train_data = instantiate(cfg.train_data)
-        test_data = instantiate(cfg.test_data)
+        validation_data = instantiate(cfg.validation_data)
         invariant = instantiate(cfg.invariant)
 
-        clim_data = ClimatExLightning(train_data, test_data, invariant)
+        clim_data = ClimatExLightning(train_data, validation_data, invariant)
 
         mlflow_logger = MLFlowLogger(
             experiment_name=tracking.experiment_name,
@@ -65,6 +65,7 @@ def main(cfg: dict):
             detect_anomaly=False,
             devices=-1,
             strategy=hardware.strategy,
+            check_val_every_n_epoch=1,
         )
         trainer.fit(srmodel, datamodule=clim_data)
 
