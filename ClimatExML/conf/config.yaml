@@ -9,7 +9,7 @@ hyperparameters:
   alpha: 50.0
   n_critic: 5
   max_epochs: 50
-  noise_injection: True
+  noise_injection: False
 
 tracking:
   __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
@@ -19,11 +19,13 @@ tracking:
   log_model: True
   experiment_name: "ML"
   log_every_n_steps: 100
+  validation_log_every_n_steps: 500
 
 hardware:
   __target__: "ClimatExML.mlclasses.ClimatExMLTraining"
   num_workers: 24
-  precision: 32
+  # precision: 32
+  precision: "16-mixed"
   accelerator: "gpu"
   strategy: "ddp_find_unused_parameters_true"
 
@@ -31,49 +33,53 @@ hardware:
 invariant:
   _target_: "ClimatExML.mlclasses.InvariantData"
   lr_shape:
-    - 6 # lr covariates
+    - 7 # lr covariates
     - 64 # x size
     - 64 # y size
   hr_shape:
-    - 5 # hr covariates (predictands)
+    - 6 # hr covariates (predictands)
     - 512 # x size
     - 512 # y size
   hr_invariant_shape:
-    - 2 # hr covariates
+    - 1 # hr invariant covariates
     - 512
     - 512
   hr_invariant_paths: 
     - /home/nannau/sprint-10-2023/data/invariant/hr_topography_norm.pt
-    - /home/nannau/sprint-10-2023/data/invariant/hr_topography_copy.pt
+    # - /home/nannau/sprint-10-2023/data/invariant/hr_topography_copy.pt
   lr_invariant_paths:
     - /home/nannau/sprint-10-2023/data/invariant/lr_topography_norm.pt
 
 train_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+    - /home/nannau/data/proc/batched/train/pr/lr/*.pt
+    - /home/nannau/data/proc/batched/train/tas/lr/*.pt
+    - /home/nannau/data/proc/batched/train/uas/lr/*.pt
+    - /home/nannau/data/proc/batched/train/vas/lr/*.pt
+    - /home/nannau/data/proc/batched/train/Q2/lr/*.pt
+    - /home/nannau/data/proc/batched/train/pr_mask/lr/*.pt
   hr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+    - /home/nannau/data/proc/batched/train/pr/hr/*.pt
+    - /home/nannau/data/proc/batched/train/tas/hr/*.pt
+    - /home/nannau/data/proc/batched/train/uas/hr/*.pt
+    - /home/nannau/data/proc/batched/train/vas/hr/*.pt
+    - /home/nannau/data/proc/batched/train/Q2/hr/*.pt
+    - /home/nannau/data/proc/batched/train/pr_mask/hr/*.pt
 
-test_data:
+validation_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+    - /home/nannau/data/proc/batched/validation/pr/lr/*.pt
+    - /home/nannau/data/proc/batched/validation/tas/lr/*.pt
+    - /home/nannau/data/proc/batched/validation/uas/lr/*.pt
+    - /home/nannau/data/proc/batched/validation/vas/lr/*.pt
+    - /home/nannau/data/proc/batched/validation/Q2/lr/*.pt
+    - /home/nannau/data/proc/batched/validation/pr_mask/lr/*.pt
   hr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+    - /home/nannau/data/proc/batched/validation/pr/hr/*.pt
+    - /home/nannau/data/proc/batched/validation/tas/hr/*.pt
+    - /home/nannau/data/proc/batched/validation/uas/hr/*.pt
+    - /home/nannau/data/proc/batched/validation/vas/hr/*.pt
+    - /home/nannau/data/proc/batched/validation/Q2/hr/*.pt
+    - /home/nannau/data/proc/batched/validation/pr_mask/hr/*.pt
