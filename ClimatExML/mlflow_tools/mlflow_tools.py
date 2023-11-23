@@ -5,6 +5,7 @@ import torch
 import torchvision
 import mlflow
 import torch.nn.functional as F
+from numpy.random import RandomState
 
 
 def log_pytorch_model(model: torch.nn.Module, path: str) -> None:
@@ -53,7 +54,6 @@ def gen_grid_images(
     lr: torch.Tensor,
     hr: torch.Tensor,
     hr_cov: torch.Tensor,
-    batch_size: int,
     use_hr_cov: bool,
     n_examples: int = 3,
     cmap="viridis",
@@ -67,8 +67,11 @@ def gen_grid_images(
     Returns:
         None
     """
-    torch.manual_seed(0)
-    random = torch.randint(0, batch_size, (n_examples,))
+
+    batch_size = lr.size(0)
+    prng = RandomState(1234567890)
+
+    random = prng.randint(0, batch_size, size=(n_examples,))
 
     if use_hr_cov:
         sr = G(lr[random, ...], hr_cov[random, ...])
