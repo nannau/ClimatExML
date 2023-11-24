@@ -1,6 +1,8 @@
 # ClimatExML
 
-## MLFlow Configuration on the Alliance
+# MLFlow Configuration on the Alliance
+
+## Remote Tracking
 
 Alliance provides persistant storage on arbutus which is accessible here https://arbutus.cloud.computecanada.ca/. You can also make object stores here.
 
@@ -30,4 +32,17 @@ You will have to configure a postgresql database named `mlflowdb` and set a user
 
 Also note that `<name_of_bucket>` is the name of the object store you create in openstack. 
 
+## Server Bound Tracking
+The installation process on alliance machines always takes me a bit of time to remember.
+
+Basically, if you're having troubles -- start with a fresh Python environment and run 
+```
+virtualenv --no-download ENV
+source ENV/bin/activate
+pip install --no-index --upgrade pip
+module load gcc/9.3.0 arrow/8 python/3.8
+pip install --no-index mlflow
+
+# now you can run mlflow server commands! 
+```
 ## Useful Apptainer Commands for the Alliance Machines
