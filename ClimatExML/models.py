@@ -279,7 +279,7 @@ class Generator_hr_cov(nn.Module):
         # the training data divided by the standard deviation of the training data
         delta_precip = 0.0769779160618782 / 0.3726992905139923
         out[:, 0, ...] = nn.ReLU()(out[:, 0, ...] + delta_precip) - delta_precip
-        out[:, 5, ...] = nn.Sigmoid()(out[:, 5, ...])
+        # out[:, 5, ...] = nn.Sigmoid()(out[:, 5, ...])
 
         return out
 

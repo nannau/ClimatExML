@@ -1,8 +1,9 @@
-from pydantic.dataclasses import dataclass
+# from pydantic.dataclasses import dataclass
 from pydantic import Field
 import os
 import glob
-
+from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class HyperParameters:
@@ -51,5 +52,5 @@ class InputVariables:
     hr_paths: list
 
     def __post_init__(self):
-        self.lr_files = [sorted(glob.glob(path)) for path in self.lr_paths]
-        self.hr_files = [sorted(glob.glob(path)) for path in self.hr_paths]
+        self.lr_files = np.array([sorted(glob.glob(path)) for path in self.lr_paths])
+        self.hr_files = np.array([sorted(glob.glob(path)) for path in self.hr_paths])

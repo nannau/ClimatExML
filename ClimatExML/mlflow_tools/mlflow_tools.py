@@ -74,9 +74,9 @@ def gen_grid_images(
     random = prng.randint(0, batch_size, size=(n_examples,))
 
     if use_hr_cov:
-        sr = G(lr[random, ...], hr_cov[random, ...])
+        sr = G(lr[random, ...], hr_cov[random, ...]).detach()
     else:
-        sr = G(lr[random, ...])
+        sr = G(lr[random, ...]).detach()
 
     lr_grid = torchvision.utils.make_grid(lr[random, ...], nrow=n_examples, padding=5)[
         var, ...

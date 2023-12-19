@@ -4,6 +4,7 @@ import lightning as pl
 from torch.utils.data import DataLoader
 import re
 import os
+import numpy as np
 
 
 def extract_dates_from_string(input_string):
@@ -43,23 +44,22 @@ class ClimatExSampler(Dataset):
 
     def __getitem__(self, idx):
         # check that path has identical dates
-        lr_basepaths = [os.path.basename(var[idx]) for var in self.lr_paths]
-        hr_basepaths = [os.path.basename(var[idx]) for var in self.hr_paths]
+        lr_basepaths = np.array([os.path.basename(var[idx]) for var in self.lr_paths])
+        hr_basepaths = np.array([os.path.basename(var[idx]) for var in self.hr_paths])
 
-        lr_dates = [extract_dates_from_string(path) for path in lr_basepaths]
-        hr_dates = [extract_dates_from_string(path) for path in hr_basepaths]
+        lr_dates = np.array([extract_dates_from_string(path) for path in lr_basepaths])
+        hr_dates = np.array([extract_dates_from_string(path) for path in hr_basepaths])
 
         assert all(
-            [lr_date == hr_date for lr_date, hr_date in zip(lr_dates, hr_dates)]
+            np.array([lr_date == hr_date for lr_date, hr_date in zip(lr_dates, hr_dates)])
         ), "Dates in paths do not match"
 
-        lr = torch.stack([torch.load(var[idx]) for var in self.lr_paths], dim=1)
-        lr = torch.cat([lr, self.lr_invariant.expand(lr.size(0), -1, -1, -1)], dim=1)
+        lr = torch.stack(tuple(torch.load(var[idx]) for var in self.lr_paths), dim=0)
+        lr = torch.cat([lr, self.lr_invariant], dim=0)
+        hr = torch.stack(tuple(torch.load(var[idx]) for var in self.hr_paths), dim=0)
 
-        hr = torch.stack([torch.load(var[idx]) for var in self.hr_paths], dim=1)
-        hr_invariant_expand = self.hr_invariant.expand(hr.size(0), -1, -1, -1)
 
-        return (lr, hr, hr_invariant_expand)
+        return (lr, hr, self.hr_invariant)
 
 
 class ClimatExLightning(pl.LightningDataModule):
@@ -68,14 +68,15 @@ class ClimatExLightning(pl.LightningDataModule):
         train_data,
         validation_data,
         invariant,
-        num_workers: int = 24,
+        batch_size,
+        num_workers: int = 12,
     ):
         super().__init__()
         self.train_data = train_data
         self.validation_data = validation_data
         self.invariant = invariant
+        self.batch_size = batch_size
         self.num_workers = num_workers
-        self.batch_size = 1
 
     def setup(
         self,
@@ -98,7 +99,7 @@ class ClimatExLightning(pl.LightningDataModule):
         return (
             DataLoader(
                 self.train_data,
-                batch_size=1,
+                batch_size=self.batch_size,
                 shuffle=True,
                 num_workers=self.num_workers,
                 pin_memory=True,
@@ -110,7 +111,7 @@ class ClimatExLightning(pl.LightningDataModule):
         return (
             DataLoader(
                 self.validation_data,
-                batch_size=1,
+                batch_size=self.batch_size,
                 num_workers=self.num_workers,
                 shuffle=False,
                 pin_memory=True,
