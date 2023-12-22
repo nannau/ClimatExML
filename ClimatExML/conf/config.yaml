@@ -9,16 +9,19 @@ hyperparameters:
   alpha: 50.0
   n_critic: 5
   max_epochs: 50
-  noise_injection: True
+  noise_injection: false
+  batch_size: 3
 
 tracking:
-  __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
-  host: "http://206.12.93.183/"
-  port: 5000
-  default_artifact_root: str
-  log_model: True
-  experiment_name: "ML"
-  log_every_n_steps: 100
+  tracking_uri: sqlite:////home/nannau/light_container/mlflow/climatexdb.sqlite
+  default_artifact_root: /home/nannau/scratch/marvin_light_container/light_container/mlflow
+  experiment_name: "Fire Vars"
+  run_name: "wgan-gp with kurtoses loss"
+  description: "Build up large model with WGAN-GP, hr covariates, and all fire weather vars."
+  log_every_n_steps: 250
+  validation_log_every_n_steps: 100
+  log_model: true
+
 
 hardware:
   __target__: "ClimatExML.mlclasses.ClimatExMLTraining"
@@ -31,7 +34,7 @@ hardware:
 invariant:
   _target_: "ClimatExML.mlclasses.InvariantData"
   lr_shape:
-    - 6 # lr covariates
+    - 7 # lr covariates
     - 64 # x size
     - 64 # y size
   hr_shape:
@@ -39,41 +42,47 @@ invariant:
     - 512 # x size
     - 512 # y size
   hr_invariant_shape:
-    - 2 # hr covariates
+    - 1 # hr invariant covariates
     - 512
     - 512
   hr_invariant_paths: 
-    - /home/nannau/sprint-10-2023/data/invariant/hr_topography_norm.pt
-    - /home/nannau/sprint-10-2023/data/invariant/hr_topography_copy.pt
+    - /home/nannau/light_container/ClimatExML/data/hr_topography_norm.pt
   lr_invariant_paths:
-    - /home/nannau/sprint-10-2023/data/invariant/lr_topography_norm.pt
+    - /home/nannau/light_container/ClimatExML/data/lr_topography_norm.pt
 
 train_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+    - /home/nannau/data/train/pr/lr/*.pt
+    - /home/nannau/data/train/tas/lr/*.pt
+    - /home/nannau/data/train/uas/lr/*.pt
+    - /home/nannau/data/train/vas/lr/*.pt
+    - /home/nannau/data/train/Q2/lr/*.pt
+    # - /home/nannau/data/train/pr_mask/lr/*.pt
   hr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+    - /home/nannau/data/train/pr/hr/*.pt
+    - /home/nannau/data/train/tas/hr/*.pt
+    - /home/nannau/data/train/uas/hr/*.pt
+    - /home/nannau/data/train/vas/hr/*.pt
+    - /home/nannau/data/train/Q2/hr/*.pt
+    # - /home/nannau/data/train/pr_mask/hr/*.pt
 
-test_data:
+validation_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+    - /home/nannau/data/validation/pr/lr/*.pt
+    - /home/nannau/data/validation/tas/lr/*.pt
+    - /home/nannau/data/validation/uas/lr/*.pt
+    - /home/nannau/data/validation/vas/lr/*.pt
+    - /home/nannau/data/validation/Q2/lr/*.pt
+    # - /home/nannau/data/validation/pr_mask/lr/*.pt
   hr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+    - /home/nannau/data/validation/pr/hr/*.pt
+    - /home/nannau/data/validation/tas/hr/*.pt
+    - /home/nannau/data/validation/uas/hr/*.pt
+    - /home/nannau/data/validation/vas/hr/*.pt
+    - /home/nannau/data/validation/Q2/hr/*.pt
+    # - /home/nannau/data/validation/pr_mask/hr/*.pt
+
+
+# TODO: Add Narval specific instructions
