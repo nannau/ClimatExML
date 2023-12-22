@@ -10,22 +10,6 @@ import hydra
 from hydra.utils import instantiate
 import os
 
-def start_mlflow_run(tracking: ClimatExMlFlow):
-    mlflow.pytorch.autolog(log_models=tracking.log_model)
-    logging.info(f"Tracking URI: {mlflow.get_tracking_uri()}")
-
-    if mlflow.get_experiment_by_name(tracking.experiment_name) is None:
-        logging.info(
-            f"Creating experiment: {tracking.experiment_name} with artifact location: {tracking.default_artifact_root}"
-        )
-        mlflow.create_experiment(
-            tracking.experiment_name,
-        )
-
-    experiment = mlflow.get_experiment_by_name(tracking.experiment_name)
-    mlflow.set_experiment(tracking.experiment_name)
-    return experiment
-
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
@@ -33,15 +17,16 @@ def main(cfg: dict):
 
     hyperparameters = instantiate(cfg.hyperparameters)
     tracking = cfg.tracking
-    # experiment = start_mlflow_run(tracking)
     hardware = instantiate(cfg.hardware)
 
-    mlflow.pytorch.autolog()
+    mlflow.autolog(log_models=True, exclusive=False)
 
     mlflow_logger = MLFlowLogger(
         tracking_uri=tracking.tracking_uri,
         experiment_name=tracking.experiment_name,
-        run_name="mae_to_mse_pr",
+        run_name=tracking.run_name,
+        log_model = tracking.log_model,
+        artifact_location=tracking.default_artifact_root,
     )
 
     train_data = instantiate(cfg.train_data)
@@ -70,8 +55,7 @@ def main(cfg: dict):
         log_every_n_steps=tracking.log_every_n_steps,
     )
 
-    with mlflow.start_run():
-        trainer.fit(srmodel, datamodule=clim_data)
+    trainer.fit(srmodel, datamodule=clim_data)
 
 
 if __name__ == "__main__":

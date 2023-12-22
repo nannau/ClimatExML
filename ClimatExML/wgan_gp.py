@@ -66,9 +66,13 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.C = Critic(lr_dim, hr_dim, n_predictands)
         self.cross_entropy = nn.CrossEntropyLoss()
 
-
+        mlflow.pytorch.autolog()
 
         self.automatic_optimization = False
+
+
+        self.delta_precip_hr = - 0.0769779160618782 / 0.3726992905139923
+        self.delta_precip_lr = - 0.0795731395483017 / 0.2713610827922821
 
     def compute_gradient_penalty(self, real_samples, fake_samples):
         """Calculates the gradient penalty loss for WGAN GP"""
@@ -117,7 +121,6 @@ class SuperResolutionWGANGP(pl.LightningModule):
         var = torch.mean(torch.pow(diffs, 2.0))
         std = torch.pow(var, 0.5)
         zscores = diffs / std
-        # skews = torch.mean(torch.pow(zscores, 3.0))
         return torch.mean(torch.pow(zscores, 4.0)) - 3.0
 
 
@@ -126,17 +129,21 @@ class SuperResolutionWGANGP(pl.LightningModule):
         # train generator
         lr, hr, hr_cov = batch[0]
         
-
-        # sr = self.G(lr, hr_cov).detach()
+        hr_pr_mask = 1.0*(hr[:, 0, ...] > self.delta_precip_hr)
+        lr_pr_mask = 1.0*(lr[:, 0, ...] > self.delta_precip_lr)
 
         g_opt, c_opt = self.optimizers()
         self.toggle_optimizer(c_opt)
-        sr = self.G(lr, hr_cov).detach()
-        sr_pr_mask = sr[:, 0, ...] > - 0.0769779160618782 / 0.3726992905139923
 
-        gradient_penalty = self.compute_gradient_penalty(hr[:, 0:5, :, :], sr)
+        lr_w_mask = torch.cat([lr, lr_pr_mask.unsqueeze(1)], dim=1)
+        # hr_w_mask = torch.stack([hr, hr_pr_mask.unsqueeze(1)], dim=1)
+
+        sr = self.G(lr_w_mask, hr_cov).detach()
+        sr_pr_mask = 1.0*(sr[:, 0, ...] > self.delta_precip_hr)
+
+        gradient_penalty = self.compute_gradient_penalty(hr, sr)
         mean_sr = torch.mean(self.C(sr))
-        mean_hr = torch.mean(self.C(hr[:, 0:5, :, :]))
+        mean_hr = torch.mean(self.C(hr))
         loss_c = mean_sr - mean_hr + self.gp_lambda * gradient_penalty
 
         # precip_cross_entropy = torch.BoolTensor([False, False, False, False, False, True])
@@ -147,40 +154,40 @@ class SuperResolutionWGANGP(pl.LightningModule):
         if (batch_idx + 1) % self.n_critic == 0: 
             weight_mse = torch.Tensor([0.0001, 1, 1, 1, 1]).type_as(hr)
             self.toggle_optimizer(g_opt)
-            sr = self.G(lr, hr_cov)
-            sr_pr_mask = sr[:, 0, ...] > - 0.0769779160618782 / 0.3726992905139923
+            sr = self.G(lr_w_mask, hr_cov)
+            sr_pr_mask = sr[:, 0, ...] > self.delta_precip_hr
             loss_g = -torch.mean(
                 self.C(sr).detach()
             ) + self.alpha * mean_squared_error(
                 torch.einsum("bchw,c->bchw", sr, weight_mse),
-                torch.einsum("bchw,c->bchw", hr[:, 0:5, :, :], weight_mse),
+                torch.einsum("bchw,c->bchw", hr, weight_mse),
             ) + self.cross_entropy(
-                1.0*sr_pr_mask, hr[:, 5, :, :]
+                1.0*sr_pr_mask, hr_pr_mask
             ) + (self.kurtoses(sr[:, 0, ...]) - self.kurtoses(hr[:, 0, ...]))**2  
 
             self.go_downhill(loss_g, g_opt)
 
         self.log_dict(
             {
-                "MAE": mean_absolute_error(sr.detach(), hr[:, 0:5, :, :]),
-                "MSE": mean_squared_error(sr.detach(), hr[:, 0:5, :, :]),
-                "MSSIM": multiscale_structural_similarity_index_measure(sr.detach(), hr[:, 0:5, :, :]),
+                "MAE": mean_absolute_error(sr.detach(), hr),
+                "MSE": mean_squared_error(sr.detach(), hr),
+                "MSSIM": multiscale_structural_similarity_index_measure(sr.detach(), hr),
                 "Wasserstein Distance": mean_hr.detach() - mean_sr.detach(),
-                "Cross Entropy on Precip Mask": self.cross_entropy(1.0*sr_pr_mask.detach(), hr[:, 5, :, :]).detach(),
-                "kurtoses": self.kurtoses(sr[:, 0, ...]) - self.kurtoses(hr[:, 0, ...])
+                "Cross Entropy on Precip Mask": self.cross_entropy(1.0*sr_pr_mask.detach(), hr_pr_mask).detach(),
+                "kurtoses": (self.kurtoses(sr[:, 0, ...]) - self.kurtoses(hr[:, 0, ...]))**2,
             },
             sync_dist=True,
         )
 
         if (batch_idx + 1) % self.log_every_n_steps == 0:
-            for var in range(hr[:, 0:5, :, :].shape[1]):
+            for var in range(hr.shape[1]):
                 fig = plt.figure(figsize=(30, 10))
                 fig = gen_grid_images(
                     var,
                     fig,
                     self.G,
-                    lr,
-                    hr[:, 0:5, :, :],
+                    lr_w_mask,
+                    hr,
                     hr_cov,
                     use_hr_cov=self.hr_invariant_shape is not None,
                     n_examples=3,
@@ -196,34 +203,39 @@ class SuperResolutionWGANGP(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         # train generator
         lr, hr, hr_cov = batch
-        sr = self.G(lr, hr_cov).detach()
-        sr_pr_mask = sr[:, 0, ...] > - 0.0769779160618782 / 0.3726992905139923
+        
+        hr_pr_mask = 1.0*(hr[:, 0, ...] > self.delta_precip_hr)
+        lr_pr_mask = 1.0*(lr[:, 0, ...] > self.delta_precip_lr)
+        lr_w_mask = torch.cat([lr, lr_pr_mask.unsqueeze(1)], dim=1)
+
+        sr = self.G(lr_w_mask, hr_cov).detach()
+        sr_pr_mask = 1.0*(sr[:, 0, ...] > self.delta_precip_hr)
         mean_sr = torch.mean(self.C(sr).detach())
-        mean_hr = torch.mean(self.C(hr[:, 0:5, :, :]).detach())
+        mean_hr = torch.mean(self.C(hr).detach())
         self.log_dict(
             {
-                "Validation MAE": mean_absolute_error(sr, hr[:, 0:5, :, :]),
-                "Validation MSE": mean_squared_error(sr, hr[:, 0:5, :, :]),
+                "Validation MAE": mean_absolute_error(sr, hr),
+                "Validation MSE": mean_squared_error(sr, hr),
                 "Validation MSSIM": multiscale_structural_similarity_index_measure(
-                    sr, hr[:, 0:5, :, :]
+                    sr, hr
                 ),
                 "Validation Wasserstein Distance": mean_hr - mean_sr,
-                "Validation Cross Entropy on Precip Mask": self.cross_entropy(1.0*sr_pr_mask.detach(), hr[:, 5, :, :]).detach()
+                "Validation Cross Entropy on Precip Mask": self.cross_entropy(sr_pr_mask.detach(), hr_pr_mask).detach(),
+                "Validation kurtoses": (self.kurtoses(sr[:, 0, ...]) - self.kurtoses(hr[:, 0, ...]))**2,
 
             },
             sync_dist=True,
         )
 
         if (batch_idx + 1) % self.validation_log_every_n_steps == 0:
-            fig = plt.figure(figsize=(30, 10))
-            for var in range(hr[:, 0:5, :, :].shape[1]):
+            for var in range(hr.shape[1]):
                 fig = plt.figure(figsize=(30, 10))
                 fig = gen_grid_images(
                     var,
                     fig,
                     self.G,
-                    lr,
-                    hr[:, 0:5, :, :],
+                    lr_w_mask,
+                    hr,
                     hr_cov,
                     use_hr_cov=self.hr_invariant_shape is not None,
                     n_examples=3,
@@ -235,6 +247,15 @@ class SuperResolutionWGANGP(pl.LightningModule):
                     f"validation_images_{var}.png",
                 )
                 plt.close(fig)
+
+    # def on_train_epoch_end(self):
+    #     self.logger._log_model(self.G, "G")
+    #     self.logger._log_model(self.C, "C")
+        # artifact_path = f"models/"
+        # torch.save(self.G.state_dict(), artifact_path + "G.pt")
+        # torch.save(self.C.state_dict(), artifact_path + "C.pt")
+        # self.log_artifacts(artifact_path)
+
 
     def go_downhill(self, loss, opt):
         self.manual_backward(loss)
