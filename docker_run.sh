@@ -1,0 +1,1 @@
+docker run --env-file mlflow.env -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr  bash container_cmd.sh
