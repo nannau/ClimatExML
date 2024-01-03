@@ -5,6 +5,7 @@ import glob
 from dataclasses import dataclass
 import numpy as np
 
+
 @dataclass
 class HyperParameters:
     learning_rate: float
@@ -15,6 +16,7 @@ class HyperParameters:
     n_critic: int
     max_epochs: int
     noise_injection: bool = True
+    batch_size: int = 3
 
 
 @dataclass
@@ -30,7 +32,7 @@ class ClimatExMlFlow:
 
 
 @dataclass
-class ClimateExMLTraining:
+class ClimatExMLTraining:
     num_workers: int = Field(default=24)
     precision: int = Field(default=32)
     accelerator: str = Field(default="gpu")
