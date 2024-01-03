@@ -2,7 +2,7 @@ import torch
 import lightning as pl
 from ClimatExML.wgan_gp import SuperResolutionWGANGP
 from ClimatExML.loader import ClimatExLightning
-from ClimatExML.mlclasses import HyperParameters, ClimatExMlFlow, ClimateExMLTraining
+from ClimatExML.mlclasses import HyperParameters, ClimatExMlFlow, ClimatExMLTraining
 from lightning.pytorch.loggers import MLFlowLogger
 import mlflow
 import logging
@@ -13,7 +13,7 @@ import os
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
-    os.environ["SLURM_JOB_NAME"]="bash"
+    os.environ["SLURM_JOB_NAME"] = "bash"
 
     hyperparameters = instantiate(cfg.hyperparameters)
     tracking = cfg.tracking
@@ -25,7 +25,7 @@ def main(cfg: dict):
         tracking_uri=tracking.tracking_uri,
         experiment_name=tracking.experiment_name,
         run_name=tracking.run_name,
-        log_model = tracking.log_model,
+        log_model=tracking.log_model,
         artifact_location=tracking.default_artifact_root,
     )
 
@@ -33,7 +33,13 @@ def main(cfg: dict):
     validation_data = instantiate(cfg.validation_data)
     invariant = instantiate(cfg.invariant)
 
-    clim_data = ClimatExLightning(train_data, validation_data, invariant, hyperparameters.batch_size, num_workers=hardware.num_workers)
+    clim_data = ClimatExLightning(
+        train_data,
+        validation_data,
+        invariant,
+        hyperparameters.batch_size,
+        num_workers=hardware.num_workers,
+    )
 
     srmodel = SuperResolutionWGANGP(
         tracking,
