@@ -13,11 +13,11 @@ hyperparameters:
   batch_size: 3
 
 tracking:
-  tracking_uri: ${MLFLOW_TRACKING_URI}
-  default_artifact_root: ${MLFLOW_S3_ENDPOINT_URL}
-  experiment_name: ${MLFLOW_EXPERIMENT_NAME}
-  run_name: ${MLFLOW_RUN_NAME}
-  description: ${MLFLOW_RUN_DESCRIPTION}
+  tracking_uri: ${oc.env:MLFLOW_TRACKING_URI}
+  default_artifact_root: ${oc.env:MLFLOW_S3_ENDPOINT_URL}
+  experiment_name: ${oc.env:MLFLOW_EXPERIMENT_NAME}
+  run_name: ${oc.env:MLFLOW_RUN_NAME}
+  description: ${oc.env:MLFLOW_RUN_DESCRIPTION}
   log_every_n_steps: 250
   validation_log_every_n_steps: 100
   log_model: true
@@ -25,10 +25,12 @@ tracking:
 
 hardware:
   _target_: "ClimatExML.mlclasses.ClimatExMLTraining"
-  num_workers: 24
-  precision: 32
+  num_workers: 23
+  # precision: 32
+  precision: 16-mixed
   accelerator: "gpu"
-  strategy: "ddp_find_unused_parameters_true"
+  strategy: null
+  #"ddp_find_unused_parameters_true"
 
 
 invariant:
@@ -46,9 +48,9 @@ invariant:
     - 512
     - 512
   hr_invariant_paths: 
-    - /project/ClimatExML/data/hr_topography_norm.pt
+    - /project/ClimatExML/ClimatExML/data/hr_topography_norm.pt
   lr_invariant_paths:
-    - /project/ClimatExML/data/lr_topography_norm.pt
+    - /project/ClimatExML/ClimatExML/data/lr_topography_norm.pt
 
 train_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
