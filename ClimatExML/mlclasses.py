@@ -21,7 +21,7 @@ class HyperParameters:
 
 @dataclass
 class ClimatExMlFlow:
-    host: str = Field(default="http://206.12.93.183/")
+    host: str = Field(default="http://206.12.93.183:5000")
     port: int = Field(default=5000)
     tracking_uri: str = None
     default_artifact_root: str = None

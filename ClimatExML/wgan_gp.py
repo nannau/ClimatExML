@@ -66,7 +66,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.C = Critic(lr_dim, hr_dim, n_predictands)
         self.cross_entropy = nn.CrossEntropyLoss()
 
-        mlflow.pytorch.autolog()
+        # mlflow.pytorch.autolog()
 
         self.automatic_optimization = False
 

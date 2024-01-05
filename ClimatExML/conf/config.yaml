@@ -12,25 +12,33 @@ hyperparameters:
   noise_injection: false
   batch_size: 3
 
+# tracking:
+#   _target_: "ClimatExML.mlclasses.ClimatExMlFlow"
+#   tracking_uri: ${oc.env:MLFLOW_TRACKING_URI}
+#   default_artifact_root: ${oc.env:MLFLOW_S3_ENDPOINT_URL}
+#   experiment_name: ${oc.env:MLFLOW_EXPERIMENT_NAME}
+#   run_name: ${oc.env:MLFLOW_RUN_NAME}
+#   description: ${oc.env:MLFLOW_RUN_DESCRIPTION}
+#   log_every_n_steps: 250
+#   validation_log_every_n_steps: 100
+#   log_model: true
 tracking:
-  tracking_uri: ${oc.env:MLFLOW_TRACKING_URI}
-  default_artifact_root: ${oc.env:MLFLOW_S3_ENDPOINT_URL}
-  experiment_name: ${oc.env:MLFLOW_EXPERIMENT_NAME}
-  run_name: ${oc.env:MLFLOW_RUN_NAME}
-  description: ${oc.env:MLFLOW_RUN_DESCRIPTION}
-  log_every_n_steps: 250
-  validation_log_every_n_steps: 100
-  log_model: true
-
+  # __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
+  host: "http://206.12.93.183/"
+  port: 5000
+  default_artifact_root: str
+  log_model: True
+  experiment_name: "ML"
+  log_every_n_steps: 100
+  validation_log_every_n_steps: 500
 
 hardware:
   _target_: "ClimatExML.mlclasses.ClimatExMLTraining"
-  num_workers: 23
+  num_workers: 0
   # precision: 32
   precision: 16-mixed
   accelerator: "gpu"
-  strategy: null
-  #"ddp_find_unused_parameters_true"
+  strategy: "auto" #ddp #"ddp_find_unused_parameters_true"
 
 
 invariant:

@@ -13,20 +13,13 @@ import os
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
-    os.environ["SLURM_JOB_NAME"] = "bash"
-
     hyperparameters = instantiate(cfg.hyperparameters)
-    tracking = cfg.tracking
+    tracking = instantiate(cfg.tracking)
     hardware = instantiate(cfg.hardware)
 
-    mlflow.autolog(log_models=True, exclusive=False)
-
+    mlflow.autolog(log_models=tracking.log_model)
     mlflow_logger = MLFlowLogger(
-        tracking_uri=tracking.tracking_uri,
         experiment_name=tracking.experiment_name,
-        run_name=tracking.run_name,
-        log_model=tracking.log_model,
-        artifact_location=tracking.default_artifact_root,
     )
 
     train_data = instantiate(cfg.train_data)

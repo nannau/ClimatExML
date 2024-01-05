@@ -1,1 +1,1 @@
-docker run --rm --runtime=nvidia --gpus all --env-file mlflow.env -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr bash /project/ClimatExML/container_cmd.sh
+docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr
