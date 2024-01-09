@@ -1,7 +1,9 @@
-from pydantic.dataclasses import dataclass
+# from pydantic.dataclasses import dataclass
 from pydantic import Field
 import os
 import glob
+from dataclasses import dataclass
+import numpy as np
 
 
 @dataclass
@@ -14,21 +16,23 @@ class HyperParameters:
     n_critic: int
     max_epochs: int
     noise_injection: bool = True
+    batch_size: int = 3
 
 
 @dataclass
 class ClimatExMlFlow:
-    host: str = Field(default="http://206.12.93.183/")
+    host: str = Field(default="http://206.12.93.183:5000")
     port: int = Field(default=5000)
     tracking_uri: str = None
     default_artifact_root: str = None
     log_model: bool = True
     experiment_name: str = Field(default="ClimatExML")
     log_every_n_steps: int = Field(default=100)
+    validation_log_every_n_steps: int = Field(default=500)
 
 
 @dataclass
-class ClimateExMLTraining:
+class ClimatExMLTraining:
     num_workers: int = Field(default=24)
     precision: int = Field(default=32)
     accelerator: str = Field(default="gpu")
@@ -50,5 +54,5 @@ class InputVariables:
     hr_paths: list
 
     def __post_init__(self):
-        self.lr_files = [sorted(glob.glob(path)) for path in self.lr_paths]
-        self.hr_files = [sorted(glob.glob(path)) for path in self.hr_paths]
+        self.lr_files = np.array([sorted(glob.glob(path)) for path in self.lr_paths])
+        self.hr_files = np.array([sorted(glob.glob(path)) for path in self.hr_paths])

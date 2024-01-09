@@ -78,7 +78,7 @@ class DenseResidualBlockNoise(nn.Module):
             device=x.device,
         )
         inputs = torch.cat([x, noise], 1)
-        # print(inputs.size())
+
         for block in self.blocks:
             out = block(inputs)
             noise = torch.normal(
@@ -274,6 +274,13 @@ class Generator_hr_cov(nn.Module):
         outf = self.HR_pre(x_fine)  ## HR branch
         out = torch.cat((outc, outf), 1)  ##combine
         out = self.conv3(out)
+        # This precip threshold represents the 0 point in standardized space
+        # based on my calculation --- this value is the negative of the mean of
+        # the training data divided by the standard deviation of the training data
+        delta_precip = 0.0769779160618782 / 0.3726992905139923
+        out[:, 0, ...] = nn.ReLU()(out[:, 0, ...] + delta_precip) - delta_precip
+        # out[:, 5, ...] = nn.Sigmoid()(out[:, 5, ...])
+
         return out
 
 

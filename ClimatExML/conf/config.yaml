@@ -1,6 +1,6 @@
 
 hyperparameters:
-  __target__: "ClimatExML.mlclasses.HyperParameters"
+  _target_: "ClimatExML.mlclasses.HyperParameters"
   # Adam Optimizer
   learning_rate: 0.00025
   b1: 0.9
@@ -9,29 +9,42 @@ hyperparameters:
   alpha: 50.0
   n_critic: 5
   max_epochs: 50
-  noise_injection: True
+  noise_injection: false
+  batch_size: 3
 
+# tracking:
+#   _target_: "ClimatExML.mlclasses.ClimatExMlFlow"
+#   tracking_uri: ${oc.env:MLFLOW_TRACKING_URI}
+#   default_artifact_root: ${oc.env:MLFLOW_S3_ENDPOINT_URL}
+#   experiment_name: ${oc.env:MLFLOW_EXPERIMENT_NAME}
+#   run_name: ${oc.env:MLFLOW_RUN_NAME}
+#   description: ${oc.env:MLFLOW_RUN_DESCRIPTION}
+#   log_every_n_steps: 250
+#   validation_log_every_n_steps: 100
+#   log_model: true
 tracking:
-  __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
+  # __target__: "ClimatExML.mlclasses.ClimatExMlFlow"
   host: "http://206.12.93.183/"
   port: 5000
   default_artifact_root: str
   log_model: True
   experiment_name: "ML"
   log_every_n_steps: 100
+  validation_log_every_n_steps: 500
 
 hardware:
-  __target__: "ClimatExML.mlclasses.ClimatExMLTraining"
-  num_workers: 24
-  precision: 32
+  _target_: "ClimatExML.mlclasses.ClimatExMLTraining"
+  num_workers: 0
+  # precision: 32
+  precision: 16-mixed
   accelerator: "gpu"
-  strategy: "ddp_find_unused_parameters_true"
+  strategy: "auto" #ddp #"ddp_find_unused_parameters_true"
 
 
 invariant:
   _target_: "ClimatExML.mlclasses.InvariantData"
   lr_shape:
-    - 6 # lr covariates
+    - 7 # lr covariates
     - 64 # x size
     - 64 # y size
   hr_shape:
@@ -39,41 +52,40 @@ invariant:
     - 512 # x size
     - 512 # y size
   hr_invariant_shape:
-    - 2 # hr covariates
+    - 1 # hr invariant covariates
     - 512
     - 512
   hr_invariant_paths: 
-    - /home/nannau/sprint-10-2023/data/invariant/hr_topography_norm.pt
-    - /home/nannau/sprint-10-2023/data/invariant/hr_topography_copy.pt
+    - /project/ClimatExML/ClimatExML/data/hr_topography_norm.pt
   lr_invariant_paths:
-    - /home/nannau/sprint-10-2023/data/invariant/lr_topography_norm.pt
+    - /project/ClimatExML/ClimatExML/data/lr_topography_norm.pt
 
 train_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+    - /project/data/train/pr/lr/*.pt
+    - /project/data/train/tas/lr/*.pt
+    - /project/data/train/uas/lr/*.pt
+    - /project/data/train/vas/lr/*.pt
+    - /project/data/train/Q2/lr/*.pt
   hr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+    - /project/data/train/pr/hr/*.pt
+    - /project/data/train/tas/hr/*.pt
+    - /project/data/train/uas/hr/*.pt
+    - /project/data/train/vas/hr/*.pt
+    - /project/data/train/Q2/hr/*.pt
 
-test_data:
+validation_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/lr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/lr/*.pt
+    - /project/data/validation/pr/lr/*.pt
+    - /project/data/validation/tas/lr/*.pt
+    - /project/data/validation/uas/lr/*.pt
+    - /project/data/validation/vas/lr/*.pt
+    - /project/data/validation/Q2/lr/*.pt
   hr_paths:
-    - /home/nannau/sprint-10-2023/data/proc/pr/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/tas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/uas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/vas/hr/*.pt
-    - /home/nannau/sprint-10-2023/data/proc/Q2/hr/*.pt
+    - /project/data/validation/pr/hr/*.pt
+    - /project/data/validation/tas/hr/*.pt
+    - /project/data/validation/uas/hr/*.pt
+    - /project/data/validation/vas/hr/*.pt
+    - /project/data/validation/Q2/hr/*.pt

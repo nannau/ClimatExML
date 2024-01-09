@@ -1,9 +1,5 @@
 FROM pytorchlightning/pytorch_lightning:base-cuda-py3.10-torch2.0-cuda11.8.0
 
-WORKDIR /home
+WORKDIR /project
 
-COPY ./ /home/
-
-RUN pip install .
-
-CMD ["bash"]
+ENTRYPOINT ["bash", "/project/ClimatExML/container_cmd.sh"]
