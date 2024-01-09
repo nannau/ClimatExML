@@ -171,7 +171,6 @@ const thebe_selector_output = ".output, .cell_output"
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Installing ClimatExML</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="configuring.html">Running with Docker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
@@ -372,16 +371,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Installing ClimatExML</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-in-a-virtual-environment">Installation in a Virtual Environment</a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-pytorch-gpu-access">Verify PyTorch + GPU Access</a></li>
 </ul>
-</li>
-</ul>
-
             </nav>
         </div>
     </div>
@@ -420,9 +413,8 @@ document.write(`
 </div>
 <p>This should install the necessary requirements as well.</p>
 </section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="verify-nvidia-gpu-hardware">
-<h1>Verify NVidia GPU Hardware<a class="headerlink" href="#verify-nvidia-gpu-hardware" title="Permalink to this heading">#</a></h1>
+<section id="verify-nvidia-gpu-hardware">
+<h2>Verify NVidia GPU Hardware<a class="headerlink" href="#verify-nvidia-gpu-hardware" title="Permalink to this heading">#</a></h2>
 <p>Make sure the GPU is accessible and working correctly with</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
 </pre></div>
@@ -451,6 +443,7 @@ document.write(`
 <span class="o">+---------------------------------------------------------------------------------------+</span>
 </pre></div>
 </div>
+</section>
 <section id="verify-pytorch-gpu-access">
 <h2>Verify PyTorch + GPU Access<a class="headerlink" href="#verify-pytorch-gpu-access" title="Permalink to this heading">#</a></h2>
 <p>It’s important to also verify that PyTorch is installed correctly and is functioning as expected. That is, PyTorch should be able to communicate with the GPU and load tensors on etc. Fortunately, this is easy to check with</p>
@@ -532,16 +525,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Installing ClimatExML</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-in-a-virtual-environment">Installation in a Virtual Environment</a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-pytorch-gpu-access">Verify PyTorch + GPU Access</a></li>
 </ul>
-</li>
-</ul>
-
   </nav></div>
 
 </div></div>

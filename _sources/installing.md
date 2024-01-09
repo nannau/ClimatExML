@@ -30,7 +30,7 @@ pip install -e ClimatExML/
 
 This should install the necessary requirements as well. 
 
-# Verify NVidia GPU Hardware
+## Verify NVidia GPU Hardware
 Make sure the GPU is accessible and working correctly with
 
 ```
