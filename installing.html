@@ -376,7 +376,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-in-a-virtual-environment">Installation in a Virtual Environment</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-pytorch-gpu-access">Verify PyTorch + GPU Access</a></li>
+</ul>
+</li>
 </ul>
 
             </nav>
@@ -396,7 +399,7 @@ document.write(`
 <li><p>By installing it and the requirements locally on your host machine or;</p></li>
 <li><p>By using the containers that are designed to run this code.</p></li>
 </ol>
-<p>Option (1) requires slightly more configuration, but can be simpler to get started quickly, while option (2) provides convenient ways to configure the pipeline. Instructions are provided here to get started with both.</p>
+<p>Option (1) requires slightly more configuration, but can be simpler to get started quickly, while option (2) is highly portable and provides convenient ways to configure the pipeline on HPC systems. Instructions are provided here to get started with both.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If installing locally, it is highly recommend that you use <a class="reference external" href="https://docs.python.org/3/library/venv.html">Python virtual environments</a>. Basic instructions are included below.</p>
@@ -448,7 +451,22 @@ document.write(`
 <span class="o">+---------------------------------------------------------------------------------------+</span>
 </pre></div>
 </div>
-<p>Following this, i</p>
+<section id="verify-pytorch-gpu-access">
+<h2>Verify PyTorch + GPU Access<a class="headerlink" href="#verify-pytorch-gpu-access" title="Permalink to this heading">#</a></h2>
+<p>It’s important to also verify that PyTorch is installed correctly and is functioning as expected. That is, PyTorch should be able to communicate with the GPU and load tensors on etc. Fortunately, this is easy to check with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_availabe</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This should return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>As an extra step, load a tensor onto the GPU with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If no errors are raised then PyTorch is operating correctly.</p>
+<p>If you encounter troubles, make sure you are using your virtual environment and that no other PyTorch versions are installed on your base machine as root (outside of your virtual environment).</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -518,7 +536,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-in-a-virtual-environment">Installation in a Virtual Environment</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-pytorch-gpu-access">Verify PyTorch + GPU Access</a></li>
+</ul>
+</li>
 </ul>
 
   </nav></div>

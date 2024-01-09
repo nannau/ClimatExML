@@ -5,7 +5,7 @@ ClimatExML should be built from source so that users can modify the training to 
 1. By installing it and the requirements locally on your host machine or;
 2. By using the containers that are designed to run this code. 
 
-Option (1) requires slightly more configuration, but can be simpler to get started quickly, while option (2) provides convenient ways to configure the pipeline. Instructions are provided here to get started with both. 
+Option (1) requires slightly more configuration, but can be simpler to get started quickly, while option (2) is highly portable and provides convenient ways to configure the pipeline on HPC systems. Instructions are provided here to get started with both. 
 
 
 ```{note}
@@ -63,4 +63,23 @@ Tue Jan  9 14:30:42 2024
 +---------------------------------------------------------------------------------------+
 ```
 
-Following this, i
+## Verify PyTorch + GPU Access
+
+It's important to also verify that PyTorch is installed correctly and is functioning as expected. That is, PyTorch should be able to communicate with the GPU and load tensors on etc. Fortunately, this is easy to check with
+```python
+import torch
+torch.cuda.is_availabe()
+```
+
+This should return `True`.
+
+As an extra step, load a tensor onto the GPU with
+
+```python
+import torch
+torch.randn(1000).cuda()
+```
+
+If no errors are raised then PyTorch is operating correctly.
+
+If you encounter troubles, make sure you are using your virtual environment and that no other PyTorch versions are installed on your base machine as root (outside of your virtual environment).
