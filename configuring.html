@@ -63,8 +63,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'configuring';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -463,7 +461,7 @@ document.write(`
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Choose a logical location for the database and include the .db extension in <span class="math notranslate nohighlight">\(MLFLOW_SQLITE_DB_PATH. The number of slashes in \)</span>MLFLOW_SQLITE_DB_PATH is important. Also, make sure that $MLFLOW_ARTIFACTS_PATH exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client</p>
+<p>Choose a logical location for the database and include the .db extension in <code class="docutils literal notranslate"><span class="pre">MLFLOW_SQLITE_DB_PATH</span></code>. The number of slashes in <code class="docutils literal notranslate"><span class="pre">MLFLOW_SQLITE_DB_PATH</span></code> is important. Also, make sure that <code class="docutils literal notranslate"><span class="pre">MLFLOW_ARTIFACTS_PATH</span></code> exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client</p>
 </div>
 <p>Now, launch an MLflow user interface. It doesn’t have to be permanent, this is just an easy way to create an SQlite database for MLflow to log metrics to.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mlflow server --backend-store-uri $MLFLOW_SQLITE_DB_PATH --default-artifact-root $MLFLOW_ARTIFACTS_PATH --serve-artifacts 

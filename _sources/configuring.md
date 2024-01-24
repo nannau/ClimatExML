@@ -93,7 +93,7 @@ export MLFLOW_ARTIFACTS_PATH='/path/to/artifacts/storage' # make sure this path 
 ```
 
 ```{note}
-Choose a logical location for the database and include the .db extension in $MLFLOW_SQLITE_DB_PATH. The number of slashes in $MLFLOW_SQLITE_DB_PATH is important. Also, make sure that $MLFLOW_ARTIFACTS_PATH exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client
+Choose a logical location for the database and include the .db extension in `MLFLOW_SQLITE_DB_PATH`. The number of slashes in `MLFLOW_SQLITE_DB_PATH` is important. Also, make sure that `MLFLOW_ARTIFACTS_PATH` exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client
 ```
 
 Now, launch an MLflow user interface. It doesn't have to be permanent, this is just an easy way to create an SQlite database for MLflow to log metrics to.
