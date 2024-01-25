@@ -418,6 +418,10 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
 </section>
 <section id="docker">
 <h3>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">#</a></h3>
+<p>This runs a bash script but doesn’t work just yet</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">v</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nannau</span><span class="o">/</span><span class="n">dockerize</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">project</span><span class="o">/</span> <span class="n">nannau</span><span class="o">/</span><span class="n">sr</span>  <span class="n">bash</span> <span class="n">container_cmd</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="without-containers">

@@ -25,6 +25,10 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
 
 ### Docker
 
+This runs a bash script but doesn't work just yet
+```
+docker run -v /home/nannau/dockerize/:/project/ nannau/sr  bash container_cmd.sh
+```
 ## Without Containers
 
 ## On Digital Research Alliance Machines
