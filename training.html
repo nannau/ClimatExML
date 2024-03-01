@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Training &#8212; ClimatEx Statistical Downscaling</title>
+    <title>Installation &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -172,7 +172,7 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuring.html">Configuring MLflow</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Training</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infering.html">Preprocessing Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
@@ -361,7 +361,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Training</h1>
+    <h1>Installation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -371,16 +371,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-research-alliance-machines">Digital Research Alliance Machines</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-in-python-environment">Running in Python Environment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-digital-research-alliance-machines">On Digital Research Alliance Machines</a></li>
 </ul>
             </nav>
@@ -393,39 +384,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="training">
-<h1>Training<a class="headerlink" href="#training" title="Permalink to this heading">#</a></h1>
-<p>ClimatExML has a container with the environment pre-configured so that dependencies do not need to be installed. Users can also choose to install these dependencies normally on their host system to suit their needs.</p>
-<section id="containers">
-<h2>Containers<a class="headerlink" href="#containers" title="Permalink to this heading">#</a></h2>
-<section id="setting-up-binds">
-<h3>Setting up Binds<a class="headerlink" href="#setting-up-binds" title="Permalink to this heading">#</a></h3>
-<p>Binding allows directories in the host to be replicated in the container so that changes are represented inside of the container. This makes it easier to edit and debug code within the container framework, rather than copying all data and code into the container. It also allows for the container to change files and have them represented on the host system which is useful for tracking ML runs with MLflow.</p>
-</section>
-<section id="apptainer">
-<h3>Apptainer<a class="headerlink" href="#apptainer" title="Permalink to this heading">#</a></h3>
-<p>Simply execute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/scratch/marvin_light_container/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif  bash &quot;/home/nannau/apptainer_cmd.sh&quot;
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># this works (just for my own notes)
-apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
-</pre></div>
-</div>
-<section id="digital-research-alliance-machines">
-<h4>Digital Research Alliance Machines<a class="headerlink" href="#digital-research-alliance-machines" title="Permalink to this heading">#</a></h4>
-</section>
-</section>
-<section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">#</a></h3>
-<p>This runs a bash script but doesn’t work just yet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">v</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nannau</span><span class="o">/</span><span class="n">dockerize</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">project</span><span class="o">/</span> <span class="n">nannau</span><span class="o">/</span><span class="n">sr</span>  <span class="n">bash</span> <span class="n">container_cmd</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="without-containers">
-<h2>Without Containers<a class="headerlink" href="#without-containers" title="Permalink to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
+<section id="running-in-python-environment">
+<h2>Running in Python Environment<a class="headerlink" href="#running-in-python-environment" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="on-digital-research-alliance-machines">
 <h2>On Digital Research Alliance Machines<a class="headerlink" href="#on-digital-research-alliance-machines" title="Permalink to this heading">#</a></h2>
@@ -495,16 +457,7 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-research-alliance-machines">Digital Research Alliance Machines</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-in-python-environment">Running in Python Environment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-digital-research-alliance-machines">On Digital Research Alliance Machines</a></li>
 </ul>
   </nav></div>

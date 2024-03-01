@@ -445,7 +445,6 @@ document.write(`
 <h3>Spin up MLflow User Interface with SQlite backend<a class="headerlink" href="#spin-up-mlflow-user-interface-with-sqlite-backend" title="Permalink to this heading">#</a></h3>
 <p>To start with a fresh Python environment and run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">download</span> <span class="n">ENV</span>
-<span class="c1"># python -m venv ENV # for non alliance machines</span>
 <span class="n">source</span> <span class="n">ENV</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">index</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
 <span class="n">module</span> <span class="n">load</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">9.3.0</span> <span class="n">arrow</span><span class="o">/</span><span class="mi">8</span> <span class="n">python</span><span class="o">/</span><span class="mf">3.8</span>
@@ -454,20 +453,6 @@ document.write(`
 <span class="c1"># now you can run mlflow server commands! </span>
 </pre></div>
 </div>
-<p>Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called <code class="docutils literal notranslate"><span class="pre">mlflow.env</span></code>. This time we will change the variables to make more sense:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_SQLITE_DB_PATH</span><span class="o">=</span><span class="s1">&#39;sqlite:////path/to/database.db&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_ARTIFACTS_PATH</span><span class="o">=</span><span class="s1">&#39;/path/to/artifacts/storage&#39;</span><span class="w"> </span><span class="c1"># make sure this path is identically replicated in the container</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Choose a logical location for the database and include the .db extension in <code class="docutils literal notranslate"><span class="pre">MLFLOW_SQLITE_DB_PATH</span></code>. The number of slashes in <code class="docutils literal notranslate"><span class="pre">MLFLOW_SQLITE_DB_PATH</span></code> is important. Also, make sure that <code class="docutils literal notranslate"><span class="pre">MLFLOW_ARTIFACTS_PATH</span></code> exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client</p>
-</div>
-<p>Now, launch an MLflow user interface. It doesn’t have to be permanent, this is just an easy way to create an SQlite database for MLflow to log metrics to.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mlflow server --backend-store-uri $MLFLOW_SQLITE_DB_PATH --default-artifact-root $MLFLOW_ARTIFACTS_PATH --serve-artifacts 
-</pre></div>
-</div>
-<p>Once it runs successfully, you can <code class="docutils literal notranslate"><span class="pre">ctrl-c</span></code> to close the server.</p>
 </section>
 </section>
 </section>
