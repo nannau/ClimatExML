@@ -75,9 +75,15 @@ Also note that `<name_of_bucket>` is the name of the object store you create in 
 
 ## Option 2: On Alliance Machines
 
-These instructions are specific to Alliance machines, but the general process should be similar on other machines.
+These instructions are specific to Alliance machines, but the general process should be similar on other machines. The MLflow UI server will be hosted without the use of apptainer. 
 
-### Spin up MLflow User Interface with SQlite backend
+```{note}
+
+There are some esoteric requirements to get MLflow working in an apptainer container on the alliance machines -- one of them being that the artifact storage path (e.g. `/home/$USER/scratch/mlflow_artifacts/`) must appear with the exact same path tree as in the container. This means, unfortunately, that a pseudo `scratch` directory needs to be in the apptainer binds. Please see [training](training.md) for more details.
+
+```
+
+### Spin up MLflow User Interface (UI) with SQlite backend
 
 To start with a fresh Python environment and run 
 ```
@@ -91,7 +97,7 @@ pip install --no-index mlflow
 # now you can run mlflow server commands! 
 ```
 
-Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called `mlflow.env`. This time we will change the variables to make more sense:
+Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called `mlflow_env.sh`. This time we will change the variables to make more sense:
 
 ```bash
 export MLFLOW_SQLITE_DB_PATH='sqlite:////path/to/database.db'

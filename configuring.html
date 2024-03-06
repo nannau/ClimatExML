@@ -377,7 +377,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-on-alliance-machines">Option 2: On Alliance Machines</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-up-mlflow-user-interface-with-sqlite-backend">Spin up MLflow User Interface with SQlite backend</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-up-mlflow-user-interface-ui-with-sqlite-backend">Spin up MLflow User Interface (UI) with SQlite backend</a></li>
 </ul>
 </li>
 </ul>
@@ -445,9 +445,13 @@ document.write(`
 </section>
 <section id="option-2-on-alliance-machines">
 <h2>Option 2: On Alliance Machines<a class="headerlink" href="#option-2-on-alliance-machines" title="Permalink to this heading">#</a></h2>
-<p>These instructions are specific to Alliance machines, but the general process should be similar on other machines.</p>
-<section id="spin-up-mlflow-user-interface-with-sqlite-backend">
-<h3>Spin up MLflow User Interface with SQlite backend<a class="headerlink" href="#spin-up-mlflow-user-interface-with-sqlite-backend" title="Permalink to this heading">#</a></h3>
+<p>These instructions are specific to Alliance machines, but the general process should be similar on other machines. The MLflow UI server will be hosted without the use of apptainer.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are some esoteric requirements to get MLflow working in an apptainer container on the alliance machines – one of them being that the artifact storage path (e.g. <code class="docutils literal notranslate"><span class="pre">/home/$USER/scratch/mlflow_artifacts/</span></code>) must appear with the exact same path tree as in the container. This means, unfortunately, that a pseudo <code class="docutils literal notranslate"><span class="pre">scratch</span></code> directory needs to be in the apptainer binds. Please see <a class="reference internal" href="training.html"><span class="doc std std-doc">training</span></a> for more details.</p>
+</div>
+<section id="spin-up-mlflow-user-interface-ui-with-sqlite-backend">
+<h3>Spin up MLflow User Interface (UI) with SQlite backend<a class="headerlink" href="#spin-up-mlflow-user-interface-ui-with-sqlite-backend" title="Permalink to this heading">#</a></h3>
 <p>To start with a fresh Python environment and run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">download</span> <span class="n">ENV</span>
 <span class="c1"># python -m venv ENV # for non alliance machines</span>
@@ -459,7 +463,7 @@ document.write(`
 <span class="c1"># now you can run mlflow server commands! </span>
 </pre></div>
 </div>
-<p>Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called <code class="docutils literal notranslate"><span class="pre">mlflow.env</span></code>. This time we will change the variables to make more sense:</p>
+<p>Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called <code class="docutils literal notranslate"><span class="pre">mlflow_env.sh</span></code>. This time we will change the variables to make more sense:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_SQLITE_DB_PATH</span><span class="o">=</span><span class="s1">&#39;sqlite:////path/to/database.db&#39;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_ARTIFACTS_PATH</span><span class="o">=</span><span class="s1">&#39;/path/to/artifacts/storage&#39;</span><span class="w"> </span><span class="c1"># make sure this path is identically replicated in the container</span>
 </pre></div>
@@ -546,7 +550,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-on-alliance-machines">Option 2: On Alliance Machines</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-up-mlflow-user-interface-with-sqlite-backend">Spin up MLflow User Interface with SQlite backend</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-up-mlflow-user-interface-ui-with-sqlite-backend">Spin up MLflow User Interface (UI) with SQlite backend</a></li>
 </ul>
 </li>
 </ul>
