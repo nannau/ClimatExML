@@ -23,10 +23,10 @@ srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_c
 apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
 ```
 
-#### Digital Research Alliance Machines
-
 ### Docker
 
+This runs a bash script but doesn't work just yet
+```
+docker run -v /home/nannau/dockerize/:/project/ nannau/sr  bash container_cmd.sh
+```
 ## Without Containers
-
-## On Digital Research Alliance Machines

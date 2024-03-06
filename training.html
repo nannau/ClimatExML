@@ -373,15 +373,11 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-research-alliance-machines">Digital Research Alliance Machines</a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-digital-research-alliance-machines">On Digital Research Alliance Machines</a></li>
 </ul>
             </nav>
         </div>
@@ -413,19 +409,17 @@ document.write(`
 apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
 </pre></div>
 </div>
-<section id="digital-research-alliance-machines">
-<h4>Digital Research Alliance Machines<a class="headerlink" href="#digital-research-alliance-machines" title="Permalink to this heading">#</a></h4>
-</section>
 </section>
 <section id="docker">
 <h3>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">#</a></h3>
+<p>This runs a bash script but doesn’t work just yet</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">v</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nannau</span><span class="o">/</span><span class="n">dockerize</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">project</span><span class="o">/</span> <span class="n">nannau</span><span class="o">/</span><span class="n">sr</span>  <span class="n">bash</span> <span class="n">container_cmd</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="without-containers">
 <h2>Without Containers<a class="headerlink" href="#without-containers" title="Permalink to this heading">#</a></h2>
-</section>
-<section id="on-digital-research-alliance-machines">
-<h2>On Digital Research Alliance Machines<a class="headerlink" href="#on-digital-research-alliance-machines" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -494,15 +488,11 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-research-alliance-machines">Digital Research Alliance Machines</a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-digital-research-alliance-machines">On Digital Research Alliance Machines</a></li>
 </ul>
   </nav></div>
 
