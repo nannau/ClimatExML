@@ -10,3 +10,4 @@ chapters:
 - file: customizing
 - file: infering
 - file: performance
+- file: build_docs
