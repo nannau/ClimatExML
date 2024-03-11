@@ -380,6 +380,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-book">Jupyter Book</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-environment">Python Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs">Building the docs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publishing-docs">Publishing docs</a></li>
 </ul>
             </nav>
         </div>
@@ -393,6 +395,10 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="how-to-build-docs">
 <h1>How to build docs<a class="headerlink" href="#how-to-build-docs" title="Link to this heading">#</a></h1>
+<p>Policy is to checkout <code class="docutils literal notranslate"><span class="pre">docs_source</span></code> before developing the docs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">docs_source</span>
+</pre></div>
+</div>
 <section id="jupyter-book">
 <h2>Jupyter Book<a class="headerlink" href="#jupyter-book" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://jupyterbook.org/en/stable/publish/gh-pages.html">https://jupyterbook.org/en/stable/publish/gh-pages.html</a></p>
@@ -403,6 +409,25 @@ document.write(`
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>jbook
 <span class="nb">source</span><span class="w"> </span>jbook/bin/activate
 pip<span class="w"> </span>install<span class="w"> </span>jupyter-book
+</pre></div>
+</div>
+</section>
+<section id="building-the-docs">
+<h2>Building the docs<a class="headerlink" href="#building-the-docs" title="Link to this heading">#</a></h2>
+<p>In the ClimatExML repo, the subdirectory <code class="docutils literal notranslate"><span class="pre">docs</span></code> has the relevent docs information. Edit these values on the branch <code class="docutils literal notranslate"><span class="pre">docs_source</span></code>. To build the docs from source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jupyter</span><span class="o">-</span><span class="n">book</span> <span class="n">build</span> <span class="n">docs</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+<section id="publishing-docs">
+<h2>Publishing docs<a class="headerlink" href="#publishing-docs" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://jupyterbook.org/en/stable/start/publish.html">https://jupyterbook.org/en/stable/start/publish.html</a></p>
+<p>Install ghp-import with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ghp</span><span class="o">-</span><span class="kn">import</span>
+</pre></div>
+</div>
+<p>Push built docs to published branch with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ghp</span><span class="o">-</span><span class="kn">import</span> <span class="o">-</span><span class="n">n</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">f</span> <span class="n">_build</span><span class="o">/</span><span class="n">html</span>
 </pre></div>
 </div>
 </section>
@@ -456,6 +481,8 @@ pip<span class="w"> </span>install<span class="w"> </span>jupyter-book
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-book">Jupyter Book</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-environment">Python Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs">Building the docs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publishing-docs">Publishing docs</a></li>
 </ul>
   </nav></div>
 
