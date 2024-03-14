@@ -83,3 +83,33 @@ pip install --no-index mlflow
 
 # now you can run mlflow server commands! 
 ```
+
+To start with a fresh Python environment and run 
+```
+virtualenv --no-download ENV
+# python -m venv ENV # for non alliance machines
+source ENV/bin/activate
+pip install --no-index --upgrade pip
+module load gcc/9.3.0 arrow/8 python/3.8
+pip install --no-index mlflow
+# now you can run mlflow server commands! 
+```
+
+Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called `mlflow.env`. This time we will change the variables to make more sense:
+
+```bash
+export MLFLOW_SQLITE_DB_PATH='sqlite:////path/to/database.db'
+export MLFLOW_ARTIFACTS_PATH='/path/to/artifacts/storage' # make sure this path is identically replicated in the container
+```
+
+```{note}
+Choose a logical location for the database and include the .db extension in `MLFLOW_SQLITE_DB_PATH`. The number of slashes in `MLFLOW_SQLITE_DB_PATH` is important. Also, make sure that `MLFLOW_ARTIFACTS_PATH` exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client
+```
+
+Now, launch an MLflow user interface. It doesn't have to be permanent, this is just an easy way to create an SQlite database for MLflow to log metrics to.
+
+```
+mlflow server --backend-store-uri $MLFLOW_SQLITE_DB_PATH --default-artifact-root $MLFLOW_ARTIFACTS_PATH --serve-artifacts 
+```
+
+Once it runs successfully, you can `ctrl-c` to close the server.
