@@ -29,6 +29,11 @@ This runs a bash script but doesn't work just yet
 ```
 docker run -v /home/nannau/dockerize/:/project/ nannau/sr  bash container_cmd.sh
 ```
+
+```
+docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr
+```
+
 ## Without Containers
 
 ## On Digital Research Alliance Machines
