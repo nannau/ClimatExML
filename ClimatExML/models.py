@@ -206,7 +206,7 @@ class Generator(nn.Module):
         return out
 
 
-class Generator_hr_cov(nn.Module):
+class HRStreamGenerator(nn.Module):
     # coarse_dim_n, fine_dim_n, n_covariates, n_predictands
     def __init__(
         self,

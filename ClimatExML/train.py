@@ -1,10 +1,10 @@
-import torch
+import comet_ml
 import lightning as pl
 from ClimatExML.wgan_gp import SuperResolutionWGANGP
 from ClimatExML.loader import ClimatExLightning
-from ClimatExML.mlclasses import HyperParameters, ClimatExMlFlow, ClimatExMLTraining
-from lightning.pytorch.loggers import MLFlowLogger
-import mlflow
+from ClimatExML.mlclasses import InputVariables, InvariantData
+from lightning.pytorch.loggers import CometLogger
+import torch
 import logging
 import hydra
 from hydra.utils import instantiate
@@ -13,15 +13,21 @@ import os
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
-    hyperparameters = instantiate(cfg.hyperparameters)
-    tracking = instantiate(cfg.tracking)
-    hardware = instantiate(cfg.hardware)
+    hyperparameters = cfg.hyperparameters
+    tracking = cfg.tracking
+    hardware = cfg.hardware
 
-    mlflow.autolog(log_models=tracking.log_model)
-    mlflow_logger = MLFlowLogger(
+    comet_logger = CometLogger(
+        api_key=os.environ.get("COMET_API_KEY"),
+        project_name=tracking.project_name,
+        workspace=tracking.workspace,
+        save_dir=tracking.save_dir,
         experiment_name=tracking.experiment_name,
     )
 
+    comet_logger.log_hyperparams(cfg.hyperparameters)
+
+    # These are objects instantiated with config information (see config.yaml)
     train_data = instantiate(cfg.train_data)
     validation_data = instantiate(cfg.validation_data)
     invariant = instantiate(cfg.invariant)
@@ -46,9 +52,9 @@ def main(cfg: dict):
         precision=hardware.precision,
         accelerator=hardware.accelerator,
         max_epochs=hyperparameters.max_epochs,
-        logger=mlflow_logger,
+        logger=comet_logger,
         detect_anomaly=False,
-        devices=-1,
+        devices=hardware.devices,
         strategy=hardware.strategy,
         check_val_every_n_epoch=1,
         log_every_n_steps=tracking.log_every_n_steps,

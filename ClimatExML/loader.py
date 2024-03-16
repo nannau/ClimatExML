@@ -51,13 +51,14 @@ class ClimatExSampler(Dataset):
         hr_dates = np.array([extract_dates_from_string(path) for path in hr_basepaths])
 
         assert all(
-            np.array([lr_date == hr_date for lr_date, hr_date in zip(lr_dates, hr_dates)])
+            np.array(
+                [lr_date == hr_date for lr_date, hr_date in zip(lr_dates, hr_dates)]
+            )
         ), "Dates in paths do not match"
 
         lr = torch.stack(tuple(torch.load(var[idx]) for var in self.lr_paths), dim=0)
         lr = torch.cat([lr, self.lr_invariant], dim=0)
         hr = torch.stack(tuple(torch.load(var[idx]) for var in self.hr_paths), dim=0)
-
 
         return (lr, hr, self.hr_invariant)
 
