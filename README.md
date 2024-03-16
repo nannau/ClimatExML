@@ -1,5 +1,8 @@
 # ClimatExML
 
+[![Jupyter Book Badge](https://jupyterbook.org/badge.svg)](https://nannau.github.io/ClimatExML/intro.html)
+
+
 # MLFlow Configuration on the Alliance
 
 ## Remote Tracking
