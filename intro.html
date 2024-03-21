@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Performance &#8212; ClimatEx Statistical Downscaling</title>
+    <title>ClimatExML Documentation &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -57,10 +57,10 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'performance';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Preprocessing Pipeline" href="infering.html" />
+    <link rel="next" title="Installing ClimatExML" href="installing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -122,6 +122,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -138,7 +140,7 @@
 
   
 
-<a class="navbar-brand logo" href="intro.html">
+<a class="navbar-brand logo" href="#">
   
   
   
@@ -169,19 +171,20 @@
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="intro.html">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
                     ClimatExML Documentation
                 </a>
             </li>
         </ul>
-        <ul class="current nav bd-sidenav">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuring.html">Configuring MLflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="training.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infering.html">Preprocessing Pipeline</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_docs.html">How to build docs</a></li>
 </ul>
 
     </div>
@@ -253,7 +256,7 @@
       
       
       
-      <li><a href="https://github.com/nannau/ClimatExML/issues/new?title=Issue%20on%20page%20%2Fperformance.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/nannau/ClimatExML/issues/new?title=Issue%20on%20page%20%2Fintro.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -283,7 +286,7 @@
       
       
       
-      <li><a href="_sources/performance.md" target="_blank"
+      <li><a href="_sources/intro.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -365,7 +368,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Performance</h1>
+    <h1>ClimatExML Documentation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -379,8 +382,29 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="performance">
-<h1>Performance<a class="headerlink" href="#performance" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="climatexml-documentation">
+<h1>ClimatExML Documentation<a class="headerlink" href="#climatexml-documentation" title="Link to this heading">#</a></h1>
+<p>This documentation describes the software and training process of a statistical downscaling pipeline for climate data. It implements Super-Resolution Generative Adversarial Networks (SRGANs) following <span id="id1">[<a class="reference internal" href="#id3" title="Nicolaas J. Annau, Alex J. Cannon, and Adam H. Monahan. Algorithmic hallucinations of near-surface winds: statistical downscaling with generative adversarial networks to convection-permitting scales. Artificial Intelligence for the Earth Systems, 2(4):e230015, 2023. URL: https://journals.ametsoc.org/view/journals/aies/2/4/AIES-D-23-0015.1.xml, doi:https://doi.org/10.1175/AIES-D-23-0015.1.">ACM23</a>]</span>. The software is designed and optimized to use convection-permitting models as a high-resolution target, conditional on low-resolution inputs. The software trains Convolutional Neural Networks (CNNs) to predict high-resolution multivariate fire-weather variables for precipitation, humidity, surface temperature, and wind components.</p>
+<p>This project is supported by the ClimatEx project.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuring.html">Configuring MLflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infering.html">Preprocessing Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_docs.html">How to build docs</a></li>
+</ul>
+</div>
+<div class="docutils container" id="id2">
+<div role="list" class="citation-list">
+<div class="citation" id="id3" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">ACM23</a><span class="fn-bracket">]</span></span>
+<p>Nicolaas J. Annau, Alex J. Cannon, and Adam H. Monahan. Algorithmic hallucinations of near-surface winds: statistical downscaling with generative adversarial networks to convection-permitting scales. <em>Artificial Intelligence for the Earth Systems</em>, 2(4):e230015, 2023. URL: <a class="reference external" href="https://journals.ametsoc.org/view/journals/aies/2/4/AIES-D-23-0015.1.xml">https://journals.ametsoc.org/view/journals/aies/2/4/AIES-D-23-0015.1.xml</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1175/AIES-D-23-0015.1">doi:https://doi.org/10.1175/AIES-D-23-0015.1</a>.</p>
+</div>
+</div>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -413,14 +437,14 @@ document.write(`
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="infering.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
+    <a class="right-next"
+       href="installing.html"
+       title="next page">
       <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Preprocessing Pipeline</p>
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Installing ClimatExML</p>
       </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Training &#8212; ClimatEx Statistical Downscaling</title>
+    <title>How to build docs &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -57,11 +57,10 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'training';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'build_docs';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Customize" href="customizing.html" />
-    <link rel="prev" title="Configuring MLflow" href="configuring.html" />
+    <link rel="prev" title="Performance" href="performance.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -179,10 +178,11 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuring.html">Configuring MLflow</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infering.html">Preprocessing Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">How to build docs</a></li>
 </ul>
 
     </div>
@@ -254,7 +254,7 @@
       
       
       
-      <li><a href="https://github.com/nannau/ClimatExML/issues/new?title=Issue%20on%20page%20%2Ftraining.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/nannau/ClimatExML/issues/new?title=Issue%20on%20page%20%2Fbuild_docs.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -284,7 +284,7 @@
       
       
       
-      <li><a href="_sources/training.md" target="_blank"
+      <li><a href="_sources/build_docs.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -368,7 +368,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Training</h1>
+    <h1>How to build docs</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -378,17 +378,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-research-alliance-machines">Digital Research Alliance Machines</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-digital-research-alliance-machines">On Digital Research Alliance Machines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-book">Jupyter Book</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-environment">Python Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs">Building the docs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publishing-docs">Publishing docs</a></li>
 </ul>
             </nav>
         </div>
@@ -400,45 +393,43 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="training">
-<h1>Training<a class="headerlink" href="#training" title="Link to this heading">#</a></h1>
-<p>ClimatExML has a container with the environment pre-configured so that dependencies do not need to be installed. Users can also choose to install these dependencies normally on their host system to suit their needs.</p>
-<section id="containers">
-<h2>Containers<a class="headerlink" href="#containers" title="Link to this heading">#</a></h2>
-<section id="setting-up-binds">
-<h3>Setting up Binds<a class="headerlink" href="#setting-up-binds" title="Link to this heading">#</a></h3>
-<p>Binding allows directories in the host to be replicated in the container so that changes are represented inside of the container. This makes it easier to edit and debug code within the container framework, rather than copying all data and code into the container. It also allows for the container to change files and have them represented on the host system which is useful for tracking ML runs with MLflow.</p>
-</section>
-<section id="apptainer">
-<h3>Apptainer<a class="headerlink" href="#apptainer" title="Link to this heading">#</a></h3>
-<p>Simply execute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/scratch/marvin_light_container/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif  bash &quot;/home/nannau/apptainer_cmd.sh&quot;
+  <section class="tex2jax_ignore mathjax_ignore" id="how-to-build-docs">
+<h1>How to build docs<a class="headerlink" href="#how-to-build-docs" title="Link to this heading">#</a></h1>
+<p>Policy is to checkout <code class="docutils literal notranslate"><span class="pre">docs_source</span></code> before developing the docs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">docs_source</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># this works (just for my own notes)
-apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
-</pre></div>
-</div>
-<section id="digital-research-alliance-machines">
-<h4>Digital Research Alliance Machines<a class="headerlink" href="#digital-research-alliance-machines" title="Link to this heading">#</a></h4>
+<section id="jupyter-book">
+<h2>Jupyter Book<a class="headerlink" href="#jupyter-book" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://jupyterbook.org/en/stable/publish/gh-pages.html">https://jupyterbook.org/en/stable/publish/gh-pages.html</a></p>
 </section>
-</section>
-<section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Link to this heading">#</a></h3>
-<p>This runs a bash script but doesn’t work just yet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">v</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nannau</span><span class="o">/</span><span class="n">dockerize</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">project</span><span class="o">/</span> <span class="n">nannau</span><span class="o">/</span><span class="n">sr</span>  <span class="n">bash</span> <span class="n">container_cmd</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr
+<section id="python-environment">
+<h2>Python Environment<a class="headerlink" href="#python-environment" title="Link to this heading">#</a></h2>
+<p>Create a documentation virtual environment in Python, we will call it <code class="docutils literal notranslate"><span class="pre">jbook</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>jbook
+<span class="nb">source</span><span class="w"> </span>jbook/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>jupyter-book
 </pre></div>
 </div>
 </section>
+<section id="building-the-docs">
+<h2>Building the docs<a class="headerlink" href="#building-the-docs" title="Link to this heading">#</a></h2>
+<p>In the ClimatExML repo, the subdirectory <code class="docutils literal notranslate"><span class="pre">docs</span></code> has the relevent docs information. Edit these values on the branch <code class="docutils literal notranslate"><span class="pre">docs_source</span></code>. To build the docs from source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jupyter</span><span class="o">-</span><span class="n">book</span> <span class="n">build</span> <span class="n">docs</span><span class="o">/</span>
+</pre></div>
+</div>
 </section>
-<section id="without-containers">
-<h2>Without Containers<a class="headerlink" href="#without-containers" title="Link to this heading">#</a></h2>
-</section>
-<section id="on-digital-research-alliance-machines">
-<h2>On Digital Research Alliance Machines<a class="headerlink" href="#on-digital-research-alliance-machines" title="Link to this heading">#</a></h2>
+<section id="publishing-docs">
+<h2>Publishing docs<a class="headerlink" href="#publishing-docs" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://jupyterbook.org/en/stable/start/publish.html">https://jupyterbook.org/en/stable/start/publish.html</a></p>
+<p>Install ghp-import with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ghp</span><span class="o">-</span><span class="kn">import</span>
+</pre></div>
+</div>
+<p>Push built docs to published branch with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ghp</span><span class="o">-</span><span class="kn">import</span> <span class="o">-</span><span class="n">n</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">f</span> <span class="n">_build</span><span class="o">/</span><span class="n">html</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -473,22 +464,13 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="configuring.html"
+       href="performance.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Configuring MLflow</p>
+        <p class="prev-next-title">Performance</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="customizing.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Customize</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -506,17 +488,10 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer">Apptainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-research-alliance-machines">Digital Research Alliance Machines</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-digital-research-alliance-machines">On Digital Research Alliance Machines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-book">Jupyter Book</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-environment">Python Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs">Building the docs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#publishing-docs">Publishing docs</a></li>
 </ul>
   </nav></div>
 
