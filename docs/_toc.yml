@@ -6,6 +6,7 @@ root: intro
 chapters:
 - file: installing
 - file: configuring
+- file: tracking
 - file: training
 - file: customizing
 - file: infering
