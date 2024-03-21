@@ -12,12 +12,12 @@ kernelspec:
   name: python3
 ---
 
-# Comet
+# Tracking
 
 [Comet](https://comet.com/) is a tool that allows you to track your machine learning experiments in real time. It is fairly straightforward to get started. This documentations provides only basic instructions for getting set up with Comet: users should refer to the [Comet docs](https://www.comet.com/docs/v2/) for detailed functionality and configuration.
 Note that previously, ClimatEx used MLFLOW for experiment tracking. The instructions for configuring MLFLOW can be found in the documentation `configuring.md`.
 
-# Setting Up
+## Setting Up
 
 First, the user must sign up for Comet [here](https://www.comet.com/signup). As of the writing of this documentation, signing up and using Comet is completely free, though there are paid plans that provide more advanced functionalities if desired. After signing up, the user will be provided with an API (Application Programming Interface) key, which will serve as a form of user authentication. The API key can be found by going to "Account Settings", then selecting "API Keys". It is important that the user keeps their API key secure.
 
@@ -35,6 +35,6 @@ echo 'export COMET_API_KEY = "your_API_key_here"' >> ~/.bashrc
 ```
 Either way, if done correctly, the command `echo $COMET_API_KEY` will return your API key.
 
-# Running
+## Running
 
 Edit the tracking section in `~/ClimatExML/ClimatExML/conf/config.yaml` with your project name, experiment name, and other relevant details. The next time you train, you will be able to track your experiment by going to your projects and then selecting your experiment.

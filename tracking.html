@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Comet &#8212; ClimatEx Statistical Downscaling</title>
+    <title>Tracking &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -369,7 +369,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Comet</h1>
+    <h1>Tracking</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -379,11 +379,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Comet</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up">Setting Up</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#running">Running</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up">Setting Up</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running">Running</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -394,13 +392,12 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="comet">
-<h1>Comet<a class="headerlink" href="#comet" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="tracking">
+<h1>Tracking<a class="headerlink" href="#tracking" title="Link to this heading">#</a></h1>
 <p><a class="reference external" href="https://comet.com/">Comet</a> is a tool that allows you to track your machine learning experiments in real time. It is fairly straightforward to get started. This documentations provides only basic instructions for getting set up with Comet: users should refer to the <a class="reference external" href="https://www.comet.com/docs/v2/">Comet docs</a> for detailed functionality and configuration.
 Note that previously, ClimatEx used MLFLOW for experiment tracking. The instructions for configuring MLFLOW can be found in the documentation <code class="docutils literal notranslate"><span class="pre">configuring.md</span></code>.</p>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="setting-up">
-<h1>Setting Up<a class="headerlink" href="#setting-up" title="Link to this heading">#</a></h1>
+<section id="setting-up">
+<h2>Setting Up<a class="headerlink" href="#setting-up" title="Link to this heading">#</a></h2>
 <p>First, the user must sign up for Comet <a class="reference external" href="https://www.comet.com/signup">here</a>. As of the writing of this documentation, signing up and using Comet is completely free, though there are paid plans that provide more advanced functionalities if desired. After signing up, the user will be provided with an API (Application Programming Interface) key, which will serve as a form of user authentication. The API key can be found by going to “Account Settings”, then selecting “API Keys”. It is important that the user keeps their API key secure.</p>
 <p>In your training environment, install the <code class="docutils literal notranslate"><span class="pre">comet_ml</span></code> package.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>comet_ml
@@ -416,9 +413,10 @@ Note that previously, ClimatEx used MLFLOW for experiment tracking. The instruct
 </div>
 <p>Either way, if done correctly, the command <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$COMET_API_KEY</span></code> will return your API key.</p>
 </section>
-<section class="tex2jax_ignore mathjax_ignore" id="running">
-<h1>Running<a class="headerlink" href="#running" title="Link to this heading">#</a></h1>
+<section id="running">
+<h2>Running<a class="headerlink" href="#running" title="Link to this heading">#</a></h2>
 <p>Edit the tracking section in <code class="docutils literal notranslate"><span class="pre">~/ClimatExML/ClimatExML/conf/config.yaml</span></code> with your project name, experiment name, and other relevant details. The next time you train, you will be able to track your experiment by going to your projects and then selecting your experiment.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -485,11 +483,9 @@ Note that previously, ClimatEx used MLFLOW for experiment tracking. The instruct
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Comet</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up">Setting Up</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#running">Running</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up">Setting Up</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running">Running</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>
