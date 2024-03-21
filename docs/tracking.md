@@ -29,7 +29,7 @@ In this environment, create an environment variable called `COMET_API_KEY` whose
 ```bash
 export COMET_API_KEY = "your_API_key_here"
 ```
-If the user does not want this environment variable to expire at the end of your shell session (such that it will have to be redefined in future shell sessions), then instead append the command to your `bash.rc` file (below) and restart your shell session.
+If the user does not want this environment variable to expire at the end of your shell session (such that it will have to be redefined in future shell sessions), then instead append the command to your `bash.rc` file (below) and run `source ~/.bashrc`.
 ```bash
 echo 'export COMET_API_KEY = "your_API_key_here"' >> ~/.bashrc
 ```
