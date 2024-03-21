@@ -15,7 +15,7 @@ tracking:
   # set COMET_API_KEY environment variable for online mode
   project_name: climatex
   workspace: nannau-uvic
-  save_dir: /home/nannau/
+  save_dir: /project/
   experiment_name: comet-gan-test
   log_model: True
   log_every_n_steps: 100
@@ -43,36 +43,36 @@ invariant:
     - 512
     - 512
   hr_invariant_paths: 
-    - /home/nannau/dockerize/ClimatExML/ClimatExML/data/hr_topography_norm.pt
+    - ${oc.env:PROJECT_DIR}/ClimatExML/ClimatExML/data/hr_topography_norm.pt
   lr_invariant_paths:
-    - /home/nannau/dockerize/ClimatExML/ClimatExML/data/lr_topography_norm.pt
+    - ${oc.env:PROJECT_DIR}/ClimatExML/ClimatExML/data/lr_topography_norm.pt
 
 train_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/dockerize/data/train/pr/lr/*.pt
-    - /home/nannau/dockerize/data/train/tas/lr/*.pt
-    - /home/nannau/dockerize/data/train/uas/lr/*.pt
-    - /home/nannau/dockerize/data/train/vas/lr/*.pt
-    - /home/nannau/dockerize/data/train/RH/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/pr/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/tas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/uas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/RH/lr/*.pt
   hr_paths:
-    - /home/nannau/dockerize/data/train/pr/hr/*.pt
-    - /home/nannau/dockerize/data/train/tas/hr/*.pt
-    - /home/nannau/dockerize/data/train/uas/hr/*.pt
-    - /home/nannau/dockerize/data/train/vas/hr/*.pt
-    - /home/nannau/dockerize/data/train/RH/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/pr/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/tas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/uas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/vas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/RH/hr/*.pt
 
 validation_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - /home/nannau/dockerize/data/validation/pr/lr/*.pt
-    - /home/nannau/dockerize/data/validation/tas/lr/*.pt
-    - /home/nannau/dockerize/data/validation/uas/lr/*.pt
-    - /home/nannau/dockerize/data/validation/vas/lr/*.pt
-    - /home/nannau/dockerize/data/validation/RH/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/pr/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/tas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/uas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/RH/lr/*.pt
   hr_paths:
-    - /home/nannau/dockerize/data/validation/pr/hr/*.pt
-    - /home/nannau/dockerize/data/validation/tas/hr/*.pt
-    - /home/nannau/dockerize/data/validation/uas/hr/*.pt
-    - /home/nannau/dockerize/data/validation/vas/hr/*.pt
-    - /home/nannau/dockerize/data/validation/RH/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/pr/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/tas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/uas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/vas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/RH/hr/*.pt
