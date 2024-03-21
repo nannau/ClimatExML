@@ -106,24 +106,14 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
     def losses(self, set_type, hr, sr, mean_sr, mean_hr):
         return {
-                f"{set_type} MAE": mean_absolute_error(sr, hr),
-                f"{set_type} MSE": mean_squared_error(sr, hr),
-                f"{set_type} MSSIM": multiscale_structural_similarity_index_measure(
-                    sr, hr
-                ),
-                f"{set_type} Wasserstein Distance": mean_hr - mean_sr,
-            }
+            f"{set_type} MAE": mean_absolute_error(sr, hr),
+            f"{set_type} MSE": mean_squared_error(sr, hr),
+            f"{set_type} MSSIM": multiscale_structural_similarity_index_measure(sr, hr),
+            f"{set_type} Wasserstein Distance": mean_hr - mean_sr,
+        }
 
-    def configure_figure(
-            self,
-            set_type,
-            lr,
-            hr,
-            hr_cov,
-            n_examples=3,
-            cmap="viridis"
-        ):
-        use_hr_cov=self.hr_invariant_shape is not None
+    def configure_figure(self, set_type, lr, hr, hr_cov, n_examples=3, cmap="viridis"):
+        use_hr_cov = self.hr_invariant_shape is not None
 
         for var in range(hr.shape[1]):
             fig = plt.figure(figsize=(30, 10))
@@ -139,12 +129,9 @@ class SuperResolutionWGANGP(pl.LightningModule):
                 cmap=cmap,
             )
             self.logger.experiment.log_figure(
-                figure_name=f"{set_type}_images_{var}",
-                figure=fig,
-                overwrite=True
+                figure_name=f"{set_type}_images_{var}", figure=fig, overwrite=True
             )
             plt.close(fig)
-
 
     def training_step(self, batch, batch_idx):
 
@@ -177,19 +164,18 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         self.log_dict(
             self.losses("Train", hr, sr.detach(), mean_sr.detach(), mean_hr.detach()),
-            sync_dist=True
+            sync_dist=True,
         )
 
         if (batch_idx + 1) % self.log_every_n_steps == 0:
             self.configure_figure(
-                    "Train",
-                    lr,
-                    hr,
-                    hr_cov,
-                    n_examples=3,
-                    cmap="viridis",
-                )
-
+                "Train",
+                lr,
+                hr,
+                hr_cov,
+                n_examples=3,
+                cmap="viridis",
+            )
 
     def validation_step(self, batch, batch_idx):
         lr, hr, hr_cov = batch
@@ -204,24 +190,28 @@ class SuperResolutionWGANGP(pl.LightningModule):
 
         if (batch_idx + 1) % self.validation_log_every_n_steps == 0:
             self.configure_figure(
-                    "Validation",
-                    lr,
-                    hr,
-                    hr_cov,
-                    n_examples=3,
-                    cmap="viridis",
-                )
-            
-    def on_train_epoch_end(self,):
+                "Validation",
+                lr,
+                hr,
+                hr_cov,
+                n_examples=3,
+                cmap="viridis",
+            )
+
+    def on_train_epoch_end(
+        self,
+    ):
         # save files in working directory for inference
-        g_path = f"{os.environ['WORK_DIR']}/generator.pt"
-        c_path = f"{os.environ['WORK_DIR']}/critic.pt"
-        torch.save(self.G.state_dict(), g_path)
-        torch.save(self.C.state_dict(), c_path)
+        g_path = f"{os.environ['OUTPUT_DIR']}/generator.pt"
+        c_path = f"{os.environ['OUTPUT_DIR']}/critic.pt"
+
+        g_scripted = torch.jit.script(self.G)
+        c_scripted = torch.jit.script(self.C)
+        g_scripted.save(g_path)
+        c_scripted.save(c_path)
+
         self.logger.experiment.log_model("Generator", g_path, overwrite=True)
         self.logger.experiment.log_model("Critic", c_path, overwrite=True)
-
-
 
     def go_downhill(self, loss, opt):
         self.manual_backward(loss)

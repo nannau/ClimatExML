@@ -9,6 +9,7 @@ import logging
 import hydra
 from hydra.utils import instantiate
 import os
+import warnings
 
 
 @hydra.main(config_path="conf", config_name="config")
@@ -63,7 +64,20 @@ def main(cfg: dict):
     trainer.fit(srmodel, datamodule=clim_data)
 
 
+def check_env_vars():
+    if os.environ.get("OUTPUT_DIR") is None:
+        # make a warning
+        warnings.warn(
+            "OUTPUT_DIR is not set. Defaulting to current directory. This is likely not what you want!"
+        )
+        os.environ["OUTPUT_DIR"] = os.getcwd()
+
+
 if __name__ == "__main__":
+
+    # check that the expected environment variables are set
+
+    check_env_vars()
     torch.set_float32_matmul_precision("medium")
     torch.cuda.empty_cache()
     logging.basicConfig(level=logging.INFO)
