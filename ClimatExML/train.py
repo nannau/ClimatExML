@@ -1,6 +1,6 @@
 import torch
 import lightning as pl
-from ClimatExML.wgan_gp import SuperResolutionWGANGP
+from ClimatExML.wgan_gp_stoch import SuperResolutionWGANGP
 from ClimatExML.loader import ClimatExLightning
 from ClimatExML.mlclasses import HyperParameters, ClimatExMlFlow, ClimatExMLTraining
 from lightning.pytorch.loggers import MLFlowLogger
