@@ -3,48 +3,8 @@ import torch
 
 # import matplotlib.pyplot as plt
 import torchvision
-import mlflow
 import torch.nn.functional as F
 from numpy.random import RandomState
-
-
-def log_pytorch_model(model: torch.nn.Module, path: str) -> None:
-    """
-    Logs a pytorch model to mlflow
-    Args:
-        model (torch.nn.Module): The model to log.
-        name (str): The name of the model.
-    Returns:
-        None
-    """
-    mlflow.pytorch.log_model(model, path)
-
-
-def log_metrics_every_n_steps(
-    metrics: dict,
-    sr: torch.Tensor,
-    hr: torch.Tensor,
-    batch_idx: int,
-    n_steps: int = 100,
-) -> None:
-    """
-    Logs metrics to mlflow every n steps
-    Args:
-        metrics (dict): The metrics to log.
-        batch_idx (int): The current batch index.
-        n_steps (int): The number of steps to log after.
-    Returns:
-        None
-    """
-    # Evaluate the metrics in the metrics dictionary
-
-    if (batch_idx + 1) % n_steps == 0:
-        metrics = {
-            "MSE": F.mse_loss(sr, hr).item(),
-            "MAE": F.l1_loss(sr, hr).item(),
-            "Wasserstein": torch.mean(),
-        }
-        mlflow.log_metrics(metrics)
 
 
 def gen_grid_images(

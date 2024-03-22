@@ -13,11 +13,11 @@ setup(
         "pytorch-lightning==2.1.1",
         "lightning",
         "torch==2.1.1",
-        "mlflow==2.9.2",
         "hydra-core",
         "pytorch_msssim",
         "torchvision",
         "matplotlib",
-        "boto3",
+        "pydantic",
+        "comet-ml"
     ],
 )

@@ -125,9 +125,22 @@ class DenseResidualBlock(nn.Module):
 
     def forward(self, x):
         inputs = x
-        for block in self.blocks:
-            out = block(inputs)
-            inputs = torch.cat([inputs, out], 1)
+
+        # list blocks manually for torch script
+        out = self.b1(inputs)
+        inputs = torch.cat([inputs, out], 1)
+        out = self.b2(inputs)
+        inputs = torch.cat([inputs, out], 1)
+        out = self.b3(inputs)
+        inputs = torch.cat([inputs, out], 1)
+        out = self.b4(inputs)
+        inputs = torch.cat([inputs, out], 1)
+        out = self.b5(inputs)
+        inputs = torch.cat([inputs, out], 1)
+
+        # for block in self.blocks:
+        #     out = block(inputs)
+        #     inputs = torch.cat([inputs, out], 1)
         return out.mul(self.res_scale) + x
 
 
@@ -206,7 +219,7 @@ class Generator(nn.Module):
         return out
 
 
-class Generator_hr_cov(nn.Module):
+class HRStreamGenerator(nn.Module):
     # coarse_dim_n, fine_dim_n, n_covariates, n_predictands
     def __init__(
         self,
@@ -268,6 +281,8 @@ class Generator_hr_cov(nn.Module):
             nn.Conv2d(filters + 1, n_predictands, kernel_size=3, stride=1, padding=1),
         )
 
+        self.sig = nn.Sigmoid()
+
     def forward(self, x_coarse, x_fine):
         out = self.LR_pre(x_coarse)  ## LR branch
         outc = self.upsampling(out)
@@ -277,9 +292,9 @@ class Generator_hr_cov(nn.Module):
         # This precip threshold represents the 0 point in standardized space
         # based on my calculation --- this value is the negative of the mean of
         # the training data divided by the standard deviation of the training data
-        delta_precip = 0.0769779160618782 / 0.3726992905139923
-        out[:, 0, ...] = nn.ReLU()(out[:, 0, ...] + delta_precip) - delta_precip
-        # out[:, 5, ...] = nn.Sigmoid()(out[:, 5, ...])
+        # delta_precip = 0.0769779160618782 / 0.3726992905139923
+        # out[:, 0, ...] = nn.ReLU()(out[:, 0, ...] + delta_precip) - delta_precip
+        out = self.sig(out)
 
         return out
 

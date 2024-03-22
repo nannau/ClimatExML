@@ -1,7 +1,5 @@
 nvidia-smi
-echo $MLFLOW_TRACKING_URI
-echo $MLFLOW_EXPERIMENT_NAME
-echo $MLFLOW_S3_ENDPOINT_URL
+echo $COMET_API_KEY
 pip install -e /project/ClimatExML
-source /project/ClimatExML/mlflow.env
+source /project/ClimatExML/env_vars.sh
 python /project/ClimatExML/ClimatExML/train.py
