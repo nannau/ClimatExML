@@ -153,7 +153,7 @@ class SuperResolutionWGANGP(pl.LightningModule):
         if (batch_idx + 1) % self.n_critic == 0:
             self.toggle_optimizer(g_opt)
             sr = self.G(lr, hr_cov)
-            n_realisation = 5
+            n_realisation = 4
             ls1 = [i for i in range(lr.shape[0])]
             dat_lr = [lr[i,...].unsqueeze(0).repeat(n_realisation,1,1,1) for i in ls1]
             dat_hr = [hr[i,...] for i in ls1]
@@ -208,11 +208,13 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self,
     ):
         # save files in working directory for inference
-        g_path = f"{os.environ['OUTPUT_DIR']}/generator.pt"
-        c_path = f"{os.environ['OUTPUT_DIR']}/critic.pt"
+        g_path = f"{os.environ['OUTPUT_DIR']}generator.pt"
+        c_path = f"{os.environ['OUTPUT_DIR']}critic.pt"
 
         g_scripted = torch.jit.script(self.G)
         c_scripted = torch.jit.script(self.C)
+        # torch.jit.save(g_scripted, g_path)
+        # torch.jit.save(c_scripted, c_path)
         g_scripted.save(g_path)
         c_scripted.save(c_path)
 

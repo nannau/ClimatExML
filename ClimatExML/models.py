@@ -67,33 +67,60 @@ class DenseResidualBlockNoise(nn.Module):
         self.b3 = block(in_features=3 * filters + 3)
         self.b4 = block(in_features=4 * filters + 4)
         self.b5 = block(in_features=5 * filters + 5, non_linearity=False)
-        self.blocks = [self.b1, self.b2, self.b3, self.b4, self.b5]
+        #self.blocks = [self.b1, self.b2, self.b3, self.b4, self.b5]
         self.noise_strength = torch.nn.Parameter(torch.mul(torch.ones([]), 10))
 
     def forward(self, x):
+        nrm_mean = torch.zeros([x.shape[0], 1, self.resolution, self.resolution], device = x.device)
+        nrm_std = torch.full([x.shape[0], 1, self.resolution, self.resolution],self.noise_sd, device = x.device)
         noise = torch.normal(
-            0,
-            self.noise_sd,
-            size=[x.shape[0], 1, self.resolution, self.resolution],
-            device=x.device,
+            nrm_mean,
+            nrm_std,
         )
         inputs = torch.cat([x, noise], 1)
 
-        for block in self.blocks:
-            out = block(inputs)
-            noise = torch.normal(
-                0,
-                self.noise_sd,
-                size=[x.shape[0], 1, self.resolution, self.resolution],
-                device=x.device,
+        out = self.b1(inputs)
+        noise = torch.normal(
+                nrm_mean,
+                nrm_std,
             )
-            inputs = torch.cat([inputs, out, noise], 1)
+        inputs = torch.cat([inputs, out, noise], 1)
+        out = self.b2(inputs)
+        noise = torch.normal(
+                nrm_mean,
+                nrm_std,
+            )
+        inputs = torch.cat([inputs, out, noise], 1)
+        out = self.b3(inputs)
+        noise = torch.normal(
+                nrm_mean,
+                nrm_std,
+            )
+        inputs = torch.cat([inputs, out, noise], 1)
+        out = self.b4(inputs)
+        noise = torch.normal(
+                nrm_mean,
+                nrm_std,
+            )
+        inputs = torch.cat([inputs, out, noise], 1)
+        out = self.b5(inputs)
+        noise = torch.normal(
+                nrm_mean,
+                nrm_std,
+            )
+        inputs = torch.cat([inputs, out, noise], 1)
+
+        # for block in self.blocks:
+        #     out = block(inputs)
+        #     noise = torch.normal(
+        #         nrm_mean,
+        #         nrm_std,
+        #     )
+        #     inputs = torch.cat([inputs, out, noise], 1)
 
         noise = torch.normal(
-            0,
-            self.noise_sd,
-            size=[x.shape[0], 1, self.resolution, self.resolution],
-            device=x.device,
+            nrm_mean,
+            nrm_std,
         )
         noiseScale = noise * self.noise_strength
         out = out.mul(self.res_scale) + x
