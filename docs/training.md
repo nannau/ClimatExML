@@ -34,20 +34,8 @@ docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DA
 
 ## Without Containers
 
-Installing ClimatExML is just like any other python package. Start by creating a virtual environment:
+In a virtual environment with ClimatExML installed, and after testing that the GPU(s) are properly configured to run with PyTorch, simply run
 
-```bash
-python -m venv climatexenv
-source climatexenv/bin/activate
+```python
+python ClimatExML/ClimatExML/train.py
 ```
-
-Install ClimatExML in virtual environment, you have several options. For development, it is recommended that you clone the main branch of the ClimatExML github repository and install.
-
-```bash
-git clone git@github.com:nannau/ClimatExML.git
-cd ClimatExML
-
-pip install -e .
-```
-
-This will install an editable version of ClimatExML in your environment so that changes you make do not require you to rebuild the package.

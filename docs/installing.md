@@ -21,6 +21,8 @@ Begin by cloning [the ClimatExML repo](https://github.com/nannau/ClimatExML)
 
 ```
 git clone https://github.com/nannau/ClimatExML 
+# or
+git clone git clone git@github.com:nannau/ClimatExML.git
 ```
 
 Then install the ClimatExML Python package with 
