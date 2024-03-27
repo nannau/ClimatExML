@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Preprocessing Pipeline &#8212; ClimatEx Statistical Downscaling</title>
+    <title>Inference &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -181,9 +181,8 @@
 <li class="toctree-l1"><a class="reference internal" href="configuring.html">Configuring MLflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing Pipeline</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_docs.html">How to build docs</a></li>
 </ul>
 
     </div>
@@ -367,7 +366,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Preprocessing Pipeline</h1>
+    <h1>Inference</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -381,8 +380,28 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="preprocessing-pipeline">
-<h1>Preprocessing Pipeline<a class="headerlink" href="#preprocessing-pipeline" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="inference">
+<h1>Inference<a class="headerlink" href="#inference" title="Link to this heading">#</a></h1>
+<p>The models are saved in a <code class="docutils literal notranslate"><span class="pre">pt</span></code> PyTorch file format, and have specifically been saved such that their weights and biases (learned parameters), as well as the model architecture are all stored in a single file.</p>
+<p>This file is then logged to Comet.</p>
+<p>In the Comet interface, if you are happy with a model’s results you can register a version of the model along with a description. This is save the model and the associated training information with it. Under the training run with the saved model, you can access “Registry” -&gt; “model version” -&gt; API</p>
+<p>Assuming you’ve correctly set your API keys in your current shell, you can download the registered models using Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">comet_ml.api</span> <span class="kn">import</span> <span class="n">API</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span> 
+<span class="n">api</span><span class="o">.</span><span class="n">download_registry_model</span><span class="p">(</span><span class="s2">&quot;nannau-uvic&quot;</span><span class="p">,</span> <span class="s2">&quot;name_of_model_registry&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will download the model file locally so that you can perform inference easily.</p>
+<p>Below is a quick snippet for how to perform inference. Actual inference will depend on what question you’re trying to answer, computational hardware available to you, and so on.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">jit</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;generator.pt&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span> <span class="c1"># lr climatex fields</span>
+<span class="n">hr_cov</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span> <span class="c1"># hr invariant covariates</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">hr_cov</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Random placeholders are used here instead of actual data. However, if used with <code class="docutils literal notranslate"><span class="pre">nc2pt</span></code>, this data can be easily generated.</p>
 </section>
 
     <script type="text/x-thebe-config">
