@@ -8,7 +8,7 @@ ClimatExML has a container with the environment pre-configured so that dependenc
 
 Binding allows directories in the host to be replicated in the container so that changes are represented inside of the container. This makes it easier to edit and debug code within the container framework, rather than copying all data and code into the container. It also allows for the container to change files and have them represented on the host system which is useful for tracking ML runs with MLflow.
 
-### Apptainer
+### Apptainer (Recommended on HPC systems)
 
 Simply execute 
 
@@ -20,8 +20,6 @@ srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_c
 # this works (just for my own notes)
 apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
 ```
-
-#### Digital Research Alliance Machines
 
 ### Docker
 
@@ -36,4 +34,8 @@ docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DA
 
 ## Without Containers
 
-## On Digital Research Alliance Machines
+In a virtual environment with ClimatExML installed, and after testing that the GPU(s) are properly configured to run with PyTorch, simply run
+
+```python
+python ClimatExML/ClimatExML/train.py
+```

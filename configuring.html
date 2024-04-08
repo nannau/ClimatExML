@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installing ClimatExML &#8212; ClimatEx Statistical Downscaling</title>
+    <title>Configuring MLflow &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -57,11 +57,11 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'installing';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'configuring';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tracking" href="tracking.html" />
-    <link rel="prev" title="ClimatExML Documentation" href="intro.html" />
+    <link rel="next" title="Training" href="training.html" />
+    <link rel="prev" title="Installing ClimatExML" href="installing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -177,13 +177,12 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installing ClimatExML</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tracking.html">Tracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Configuring MLflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
-<li class="toctree-l1"><a class="reference internal" href="infering.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infering.html">Preprocessing Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_docs.html">How to build docs</a></li>
 </ul>
 
     </div>
@@ -255,7 +254,7 @@
       
       
       
-      <li><a href="https://github.com/nannau/ClimatExML/issues/new?title=Issue%20on%20page%20%2Finstalling.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/nannau/ClimatExML/issues/new?title=Issue%20on%20page%20%2Fconfiguring.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -285,7 +284,7 @@
       
       
       
-      <li><a href="_sources/installing.md" target="_blank"
+      <li><a href="_sources/configuring.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -369,7 +368,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Installing ClimatExML</h1>
+    <h1>Configuring MLflow</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -379,9 +378,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-in-a-virtual-environment">Installation in a Virtual Environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-pytorch-gpu-access">Verify PyTorch + GPU Access</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-remote-mlflow-instance">Option 1: Remote MLflow Instance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remote-tracking-server">Remote Tracking Server</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys">Keys</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-on-alliance-machines">Option 2: On Alliance Machines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-up-mlflow-user-interface-with-sqlite-backend">Spin up MLflow User Interface with SQlite backend</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -393,82 +398,93 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="installing-climatexml">
-<h1>Installing ClimatExML<a class="headerlink" href="#installing-climatexml" title="Link to this heading">#</a></h1>
-<p>ClimatExML should be built from source so that users can modify the training to suit their needs or preferences. There are two main ways of using ClimatExML.</p>
-<ol class="arabic simple">
-<li><p>By installing it and the requirements locally on your host machine or;</p></li>
-<li><p>By using the containers that are designed to run this code.</p></li>
-</ol>
-<p>Option (1) requires slightly more configuration, but can be simpler to get started quickly, while option (2) is highly portable and provides convenient ways to configure the pipeline on HPC systems. Instructions are provided here to get started with both.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="configuring-mlflow">
+<h1>Configuring MLflow<a class="headerlink" href="#configuring-mlflow" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://mlflow.org/">MLflow</a> is a project that allows for automatically tracking, logging, and displaying data about your ML models and training algorithms live. It is a critical component of evaluating different models and debugging issues with code. ClimatExML uses MLflow for logging metrics, generating artifacts (like plots and images), as well as saving trained models.</p>
+<p>Users should refer to the <a class="reference external" href="https://mlflow.org/docs/latest/tracking.html">MLflow documentation</a> so that they can fine tune the configuration to match their needs. This documentation will provide a quick overview of two main options: (1) using an S3 bucket and tracking to a remote mlflow instance, and (2) on an HPC system without internet access while training.</p>
+<section id="option-1-remote-mlflow-instance">
+<h2>Option 1: Remote MLflow Instance<a class="headerlink" href="#option-1-remote-mlflow-instance" title="Link to this heading">#</a></h2>
+<p>This option requires a mlflow server with a postgres database configured on an external server. It also requires an object store, like an s3 bucket to be setup.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If installing locally, it is highly recommend that you use <a class="reference external" href="https://docs.python.org/3/library/venv.html">Python virtual environments</a>. Basic instructions are included below.</p>
+<p>If you are a member of the UVic climate lab or ECCC, send an email to request access.</p>
 </div>
-<section id="installation-in-a-virtual-environment">
-<h2>Installation in a Virtual Environment<a class="headerlink" href="#installation-in-a-virtual-environment" title="Link to this heading">#</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">climatexvenv</span>
-<span class="n">source</span> <span class="n">climatexvenv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<section id="remote-tracking-server">
+<h3>Remote Tracking Server<a class="headerlink" href="#remote-tracking-server" title="Link to this heading">#</a></h3>
+<p>Alliance conveneiently provides persistant storage on arbutus which is accessible here <a class="reference external" href="https://arbutus.cloud.computecanada.ca/">https://arbutus.cloud.computecanada.ca/</a>. You can also make object stores here. There is an openstack user interface for managing cloud resources.</p>
+<p>MLflow artifacts can be logged to an instance running an mlflow server. This server must have <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> installed, as well as <code class="docutils literal notranslate"><span class="pre">boto3</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You have to manually add other ssh machines to access this server and can’t do it from openstack.</p>
+</div>
+<p>Use an environment variable file to set up the MLflow environment variables from your training environment called <code class="docutils literal notranslate"><span class="pre">mlflow.env</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s1">&#39;&lt;public-ip-of-instance-on-arbutus&gt;:5000&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_S3_ENDPOINT_URL</span><span class="o">=</span><span class="s1">&#39;https://object-arbutus.cloud.computecanada.ca/&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span><span class="s2">&quot;&lt;get-this-from-openstack&gt;&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span><span class="s2">&quot;&lt;get-this-from-openstack&gt;&quot;</span>
 </pre></div>
 </div>
-<p>Begin by cloning <a class="reference external" href="https://github.com/nannau/ClimatExML">the ClimatExML repo</a></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">nannau</span><span class="o">/</span><span class="n">ClimatExML</span> 
-<span class="c1"># or</span>
-<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">nannau</span><span class="o">/</span><span class="n">ClimatExML</span><span class="o">.</span><span class="n">git</span>
-</pre></div>
-</div>
-<p>Then install the ClimatExML Python package with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>ClimatExML/
-</pre></div>
-</div>
-<p>This should install the necessary requirements as well.</p>
 </section>
-<section id="verify-nvidia-gpu-hardware">
-<h2>Verify NVidia GPU Hardware<a class="headerlink" href="#verify-nvidia-gpu-hardware" title="Link to this heading">#</a></h2>
-<p>Make sure the GPU is accessible and working correctly with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
+<section id="keys">
+<h3>Keys<a class="headerlink" href="#keys" title="Link to this heading">#</a></h3>
+<p>To get the keys from openstack you must first download the <code class="docutils literal notranslate"><span class="pre">...opensrc.sh</span></code> file from the openstack client. <code class="docutils literal notranslate"><span class="pre">...</span></code> corresponds to your specific allcoation and instance names automatically generated by openstack.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">...</span><span class="n">openrc</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">openstack</span> <span class="n">ec2</span> <span class="n">credentials</span> <span class="n">create</span>
 </pre></div>
 </div>
-<p>Which should return something like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Tue</span> <span class="n">Jan</span>  <span class="mi">9</span> <span class="mi">14</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2024</span>
-<span class="o">+---------------------------------------------------------------------------------------+</span>
-<span class="o">|</span> <span class="n">NVIDIA</span><span class="o">-</span><span class="n">SMI</span> <span class="mf">535.129.03</span>             <span class="n">Driver</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">535.129.03</span>   <span class="n">CUDA</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">12.2</span>     <span class="o">|</span>
-<span class="o">|-----------------------------------------+----------------------+----------------------+</span>
-<span class="o">|</span> <span class="n">GPU</span>  <span class="n">Name</span>                 <span class="n">Persistence</span><span class="o">-</span><span class="n">M</span> <span class="o">|</span> <span class="n">Bus</span><span class="o">-</span><span class="n">Id</span>        <span class="n">Disp</span><span class="o">.</span><span class="n">A</span> <span class="o">|</span> <span class="n">Volatile</span> <span class="n">Uncorr</span><span class="o">.</span> <span class="n">ECC</span> <span class="o">|</span>
-<span class="o">|</span> <span class="n">Fan</span>  <span class="n">Temp</span>   <span class="n">Perf</span>          <span class="n">Pwr</span><span class="p">:</span><span class="n">Usage</span><span class="o">/</span><span class="n">Cap</span> <span class="o">|</span>         <span class="n">Memory</span><span class="o">-</span><span class="n">Usage</span> <span class="o">|</span> <span class="n">GPU</span><span class="o">-</span><span class="n">Util</span>  <span class="n">Compute</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
-<span class="o">|</span>                                         <span class="o">|</span>                      <span class="o">|</span>               <span class="n">MIG</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
-<span class="o">|=========================================+======================+======================|</span>
-<span class="o">|</span>   <span class="mi">0</span>  <span class="n">NVIDIA</span> <span class="n">GeForce</span> <span class="n">RTX</span> <span class="n">XXXX</span>        <span class="n">Off</span> <span class="o">|</span> <span class="mi">00000000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>  <span class="n">On</span> <span class="o">|</span>                  <span class="n">Off</span> <span class="o">|</span>
-<span class="o">|</span>  <span class="mi">0</span><span class="o">%</span>   <span class="mi">35</span><span class="n">C</span>    <span class="n">P8</span>              <span class="mi">21</span><span class="n">W</span> <span class="o">/</span> <span class="mi">450</span><span class="n">W</span> <span class="o">|</span>     <span class="mi">61</span><span class="n">MiB</span> <span class="o">/</span> <span class="mi">24564</span><span class="n">MiB</span> <span class="o">|</span>      <span class="mi">0</span><span class="o">%</span>      <span class="n">Default</span> <span class="o">|</span>
-<span class="o">|</span>                                         <span class="o">|</span>                      <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
-<span class="o">+-----------------------------------------+----------------------+----------------------+</span>
+<p>This will create a file and you want the <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code> key to be set as <code class="docutils literal notranslate"><span class="pre">access</span></code> and the <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code> key to be set as <code class="docutils literal notranslate"><span class="pre">secret</span></code> from the generated info. <code class="docutils literal notranslate"><span class="pre">source</span></code> the mlflow environment bash to set the variables.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use the same environment variables on the server running your mlflow server instance.</p>
+</div>
+<p>Then you can spin up your mlflow server remotely at:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mlflow</span> <span class="n">server</span> <span class="o">--</span><span class="n">backend</span><span class="o">-</span><span class="n">store</span><span class="o">-</span><span class="n">uri</span> <span class="n">postgresql</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">username</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">password</span><span class="o">&gt;</span><span class="nd">@localhost</span><span class="p">:</span><span class="mi">5432</span><span class="o">/</span><span class="n">mlflowdb</span> <span class="o">--</span><span class="n">host</span> <span class="mf">0.0.0.0</span> <span class="o">--</span><span class="n">default</span><span class="o">-</span><span class="n">artifact</span><span class="o">-</span><span class="n">root</span> <span class="n">s3</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">name_of_bucket</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>You will have to configure a postgresql database named <code class="docutils literal notranslate"><span class="pre">mlflowdb</span></code> and set a user and password beforehand.</p>
+<p>Also note that <code class="docutils literal notranslate"><span class="pre">&lt;name_of_bucket&gt;</span></code> is the name of the object store you create in openstack.</p>
+</section>
+</section>
+<section id="option-2-on-alliance-machines">
+<h2>Option 2: On Alliance Machines<a class="headerlink" href="#option-2-on-alliance-machines" title="Link to this heading">#</a></h2>
+<p>These instructions are specific to Alliance machines, but the general process should be similar on other machines.</p>
+<section id="spin-up-mlflow-user-interface-with-sqlite-backend">
+<h3>Spin up MLflow User Interface with SQlite backend<a class="headerlink" href="#spin-up-mlflow-user-interface-with-sqlite-backend" title="Link to this heading">#</a></h3>
+<p>To start with a fresh Python environment and run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">download</span> <span class="n">ENV</span>
+<span class="n">source</span> <span class="n">ENV</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">index</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">9.3.0</span> <span class="n">arrow</span><span class="o">/</span><span class="mi">8</span> <span class="n">python</span><span class="o">/</span><span class="mf">3.8</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">index</span> <span class="n">mlflow</span>
 
-<span class="o">+---------------------------------------------------------------------------------------+</span>
-<span class="o">|</span> <span class="n">Processes</span><span class="p">:</span>                                                                            <span class="o">|</span>
-<span class="o">|</span>  <span class="n">GPU</span>   <span class="n">GI</span>   <span class="n">CI</span>        <span class="n">PID</span>   <span class="n">Type</span>   <span class="n">Process</span> <span class="n">name</span>                            <span class="n">GPU</span> <span class="n">Memory</span> <span class="o">|</span>
-<span class="o">|</span>        <span class="n">ID</span>   <span class="n">ID</span>                                                             <span class="n">Usage</span>      <span class="o">|</span>
-<span class="o">|=======================================================================================|</span>
-<span class="o">|</span>    <span class="mi">0</span>   <span class="n">N</span><span class="o">/</span><span class="n">A</span>  <span class="n">N</span><span class="o">/</span><span class="n">A</span>      <span class="mi">2020</span>      <span class="n">G</span>   <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">xorg</span><span class="o">/</span><span class="n">Xorg</span>                           <span class="mi">35</span><span class="n">MiB</span> <span class="o">|</span>
-<span class="o">|</span>    <span class="mi">0</span>   <span class="n">N</span><span class="o">/</span><span class="n">A</span>  <span class="n">N</span><span class="o">/</span><span class="n">A</span>      <span class="mi">2079</span>      <span class="n">G</span>   <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gnome</span><span class="o">-</span><span class="n">shell</span>                         <span class="mi">13</span><span class="n">MiB</span> <span class="o">|</span>
-<span class="o">+---------------------------------------------------------------------------------------+</span>
+<span class="c1"># now you can run mlflow server commands! </span>
 </pre></div>
 </div>
+<p>To start with a fresh Python environment and run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">download</span> <span class="n">ENV</span>
+<span class="c1"># python -m venv ENV # for non alliance machines</span>
+<span class="n">source</span> <span class="n">ENV</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">index</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">9.3.0</span> <span class="n">arrow</span><span class="o">/</span><span class="mi">8</span> <span class="n">python</span><span class="o">/</span><span class="mf">3.8</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">index</span> <span class="n">mlflow</span>
+<span class="c1"># now you can run mlflow server commands! </span>
+</pre></div>
+</div>
+<p>Next, and similarly to the remote MLflow setup, use an environment variable file to set up the MLflow environment variables from your training environment called <code class="docutils literal notranslate"><span class="pre">mlflow.env</span></code>. This time we will change the variables to make more sense:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_SQLITE_DB_PATH</span><span class="o">=</span><span class="s1">&#39;sqlite:////path/to/database.db&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_ARTIFACTS_PATH</span><span class="o">=</span><span class="s1">&#39;/path/to/artifacts/storage&#39;</span><span class="w"> </span><span class="c1"># make sure this path is identically replicated in the container</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Choose a logical location for the database and include the .db extension in <code class="docutils literal notranslate"><span class="pre">MLFLOW_SQLITE_DB_PATH</span></code>. The number of slashes in <code class="docutils literal notranslate"><span class="pre">MLFLOW_SQLITE_DB_PATH</span></code> is important. Also, make sure that <code class="docutils literal notranslate"><span class="pre">MLFLOW_ARTIFACTS_PATH</span></code> exists in both your host and container otherwise the artifacts will not be logged or accessible in the MLflow server client</p>
+</div>
+<p>Now, launch an MLflow user interface. It doesn’t have to be permanent, this is just an easy way to create an SQlite database for MLflow to log metrics to.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mlflow server --backend-store-uri $MLFLOW_SQLITE_DB_PATH --default-artifact-root $MLFLOW_ARTIFACTS_PATH --serve-artifacts 
+</pre></div>
+</div>
+<p>Once it runs successfully, you can <code class="docutils literal notranslate"><span class="pre">ctrl-c</span></code> to close the server.</p>
 </section>
-<section id="verify-pytorch-gpu-access">
-<h2>Verify PyTorch + GPU Access<a class="headerlink" href="#verify-pytorch-gpu-access" title="Link to this heading">#</a></h2>
-<p>It’s important to also verify that PyTorch is installed correctly and is functioning as expected. That is, PyTorch should be able to communicate with the GPU and load tensors on etc. Fortunately, this is easy to check with</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_availabe</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>This should return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-<p>As an extra step, load a tensor onto the GPU with</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>If no errors are raised then PyTorch is operating correctly.</p>
-<p>If you encounter troubles, make sure you are using your virtual environment and that no other PyTorch versions are installed on your base machine as root (outside of your virtual environment).</p>
 </section>
 </section>
 
@@ -503,20 +519,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="intro.html"
+       href="installing.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">ClimatExML Documentation</p>
+        <p class="prev-next-title">Installing ClimatExML</p>
       </div>
     </a>
     <a class="right-next"
-       href="tracking.html"
+       href="training.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Tracking</p>
+        <p class="prev-next-title">Training</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -536,9 +552,15 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-in-a-virtual-environment">Installation in a Virtual Environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-nvidia-gpu-hardware">Verify NVidia GPU Hardware</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-pytorch-gpu-access">Verify PyTorch + GPU Access</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-remote-mlflow-instance">Option 1: Remote MLflow Instance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remote-tracking-server">Remote Tracking Server</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys">Keys</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-on-alliance-machines">Option 2: On Alliance Machines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-up-mlflow-user-interface-with-sqlite-backend">Spin up MLflow User Interface with SQlite backend</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

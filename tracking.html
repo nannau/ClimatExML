@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
@@ -395,20 +395,21 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="tracking">
 <h1>Tracking<a class="headerlink" href="#tracking" title="Link to this heading">#</a></h1>
 <p><a class="reference external" href="https://comet.com/">Comet</a> is a tool that allows you to track your machine learning experiments in real time. It is fairly straightforward to get started. This documentations provides only basic instructions for getting set up with Comet: users should refer to the <a class="reference external" href="https://www.comet.com/docs/v2/">Comet docs</a> for detailed functionality and configuration.
-Note that previously, ClimatEx used MLFLOW for experiment tracking. The instructions for configuring MLFLOW can be found in the documentation <code class="docutils literal notranslate"><span class="pre">configuring.md</span></code>.</p>
+Note that previously, ClimatEx used MLFLOW for experiment tracking.</p>
 <section id="setting-up">
 <h2>Setting Up<a class="headerlink" href="#setting-up" title="Link to this heading">#</a></h2>
-<p>First, the user must sign up for Comet <a class="reference external" href="https://www.comet.com/signup">here</a>. As of the writing of this documentation, signing up and using Comet is completely free, though there are paid plans that provide more advanced functionalities if desired. After signing up, the user will be provided with an API (Application Programming Interface) key, which will serve as a form of user authentication. The API key can be found by going to “Account Settings”, then selecting “API Keys”. It is important that the user keeps their API key secure.</p>
+<p>First, sign up for Comet <a class="reference external" href="https://www.comet.com/signup">here</a>. As of the writing of this documentation, signing up and using Comet is completely free, though there are paid plans that provide more advanced functionalities if desired. After signing up, you will be provided with an API (Application Programming Interface) key, which will serve as a form of user authentication. The API key can be found by going to “Account Settings”, then selecting “API Keys”. It is very important that the user keeps their API key secure.</p>
 <p>In your training environment, install the <code class="docutils literal notranslate"><span class="pre">comet_ml</span></code> package.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>comet_ml
 </pre></div>
 </div>
-<p>In this environment, create an environment variable called <code class="docutils literal notranslate"><span class="pre">COMET_API_KEY</span></code> whose value is your API key. This can be done via</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COMET_API_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;your_API_key_here&quot;</span>
+<p>In this environment, create an environment variable called <code class="docutils literal notranslate"><span class="pre">COMET_API_KEY</span></code> whose value is your API key. This can be done via the <code class="docutils literal notranslate"><span class="pre">export</span></code> command, as follows.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COMET_API_KEY</span><span class="o">=</span><span class="s2">&quot;your_API_key_here&quot;</span>
 </pre></div>
 </div>
-<p>If the user does not want this environment variable to expire at the end of your shell session (such that it will have to be redefined in future shell sessions), then instead append the command to your <code class="docutils literal notranslate"><span class="pre">bash.rc</span></code> file (below) and run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bashrc</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export COMET_API_KEY = &quot;your_API_key_here&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<p>If the user does not want this environment variable to expire at the end of your shell session (such that you will have to redefine it in future shell sessions), then you can instead append the command to your <code class="docutils literal notranslate"><span class="pre">bash.rc</span></code> file (as follows).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export COMET_API_KEY=&quot;your_API_key_here&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">source</span><span class="w"> </span>~/.bashrc
 </pre></div>
 </div>
 <p>Either way, if done correctly, the command <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$COMET_API_KEY</span></code> will return your API key.</p>
