@@ -1,15 +1,14 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Performance &#8212; ClimatEx Statistical Downscaling</title>
+    <title>Preprocessing &#8212; ClimatEx Statistical Downscaling</title>
   
   
   
@@ -19,55 +18,48 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js"></script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'preprocessing';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Local" href="local.html" />
-    <link rel="prev" title="Welcome to your Jupyter Book" href="intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -77,10 +69,9 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -121,11 +112,16 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -159,21 +155,35 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="intro.html">
-                    Welcome to your Jupyter Book
+                    ClimatExML Documentation
                 </a>
             </li>
         </ul>
-        <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Performance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="local.html">Local</a></li>
-<li class="toctree-l1"><a class="reference internal" href="remote.html">Remote</a></li>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tracking.html">Tracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customizing.html">Customize</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infering.html">Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_docs.html">How to build docs</a></li>
 </ul>
 
     </div>
@@ -346,7 +356,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -357,11 +369,28 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Performance</h1>
+    <h1>Preprocessing</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-intended-use-cases-of-nc2pt">What intended use cases of nc2pt?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-preprocessing-steps-does-nc2pt-do">What preprocessing steps does nc2pt do? 🤔</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-the-downsides-of-using-pytorch-files-for-climate-data">What are the downsides of using PyTorch files for climate data?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">💽 Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">📋 Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running">🚀 Running</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -369,10 +398,200 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="performance">
-<h1>Performance<a class="headerlink" href="#performance" title="Permalink to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="preprocessing">
+<h1>Preprocessing<a class="headerlink" href="#preprocessing" title="Link to this heading">#</a></h1>
+<p>NetCDF4 files, commonly used for storing climate and earth systems data, are not optimized for use with most machine learning applications with heavy io requirements or datasets that are simply too large to hold in GPU/CPU memory. ClimatExML uses <a class="reference external" href="https://github.com/nannau/nc2pt">nc2pt</a> to resolve this issue. It performs a preprocessing flow on climate fields and converts them from NetCDF4 (<code class="docutils literal notranslate"><span class="pre">.nc</span></code>) to an intermediate file format Zarr (<code class="docutils literal notranslate"><span class="pre">.zarr</span></code>) which allows for the parallel loading and writing to individual PyTorch Lightning files (<code class="docutils literal notranslate"><span class="pre">.pt</span></code>) that can be loaded directly onto GPUs.</p>
+<section id="what-intended-use-cases-of-nc2pt">
+<h2>What intended use cases of nc2pt?<a class="headerlink" href="#what-intended-use-cases-of-nc2pt" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>standardizing and making metadata uniform between datasets</p></li>
+<li><p>aligns different grids perfectly by re-projecting them onto one another – nc2pt projects the low-resolution (lr) regular grids onto the high-resolution curvilinear grids (hr). nc2pt assumes the curvilinear dimensions are like <code class="docutils literal notranslate"><span class="pre">rlat</span></code> or <code class="docutils literal notranslate"><span class="pre">rlon</span></code>. It was originally designed to support super-resolution problems.</p></li>
+<li><p>selects individual years as test years or training years</p></li>
+<li><p>organizes code into input (lr) or output (hr) fields</p></li>
+<li><p>meant for use with large datasets ont he order of hundreds of GB</p></li>
+</ul>
+</section>
+<section id="what-preprocessing-steps-does-nc2pt-do">
+<h2>What preprocessing steps does nc2pt do? 🤔<a class="headerlink" href="#what-preprocessing-steps-does-nc2pt-do" title="Link to this heading">#</a></h2>
+<p>High-level workflow
+<img alt="image" src="https://private-user-images.githubusercontent.com/10455520/313314202-e13396ce-2224-4298-8fa2-472631efe4df.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTA1MzE2NjUsIm5iZiI6MTcxMDUzMTM2NSwicGF0aCI6Ii8xMDQ1NTUyMC8zMTMzMTQyMDItZTEzMzk2Y2UtMjIyNC00Mjk4LThmYTItNDcyNjMxZWZlNGRmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAzMTUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMzE1VDE5MzYwNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWZmODQwZTI1NmE0ODY5NjgzMDMzNTVlYWViMjEzYzA3NmE3OWE0ZjM5YmQxYTE5ZjFhMzkwM2JlM2RmZjkzMzcmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.zGYUntGj7tLS32QPFudHTA5tgfNoyRu9l_38puxhwxM" /></p>
+<ol class="arabic simple">
+<li><p>configures metadata between the datasets as defined in the config</p></li>
+<li><p>slices data to a pre-determined range of dates</p></li>
+<li><p>aligns the grids via interpolation, crops them to be the same size, and coarsens the low-resolution fields by the configured scale factor</p></li>
+<li><p>applies user defined transforms like unit conversions or log transformations</p></li>
+<li><p>splits into a train and test dataset and standardizes both datasets based on the mean and standard deviation of all grids from the training data only (also writes this information into the zarr metadata for inference)</p></li>
+<li><p>writes to <code class="docutils literal notranslate"><span class="pre">.zarr</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nc2pt/tools/zarr_to_torch.py</span></code> - writes to PyTorch files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nc2pt/tools/single_file_to_batches.py</span></code> - batches the single PyTorch files</p></li>
+</ol>
+</section>
+<section id="what-are-the-downsides-of-using-pytorch-files-for-climate-data">
+<h2>What are the downsides of using PyTorch files for climate data?<a class="headerlink" href="#what-are-the-downsides-of-using-pytorch-files-for-climate-data" title="Link to this heading">#</a></h2>
+<p>The most obvious downside is that you lose the metadata associated with a netCDF dataset. The intermediate Zarr format produced by nc2pt allows for parallelized io and perserves the metadata. This is useful for inference.</p>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> with Python &gt;= 3.8</p></li>
+<li><p><a class="reference external" href="https://xesmf.readthedocs.io/en/latest/">xESMF</a></p></li>
+</ul>
+<section id="installation">
+<h3>💽 Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h3>
+<p>xESMF is only available through Conda, so you will have to be able to install conda on your system. Unfortunately, this is limiting because certain HPCs don’t allow conda.</p>
+<ol class="arabic simple">
+<li><p>Begin by install xESMF here in a conda environment: <a class="reference external" href="https://xesmf.readthedocs.io/en/latest/">xESMF</a></p></li>
+<li><p>Clone this repository</p></li>
+<li><p>Install into your conda environment</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<span class="c1"># editable install</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>nc2pt/
+</pre></div>
+</div>
+<p>That’s it!</p>
+</section>
+<section id="configuration">
+<h3>📋 Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h3>
+<p>nc2pt uses <a class="reference external" href="https://hydra.cc/">hydra</a> for configuring and by instantiating structured classes in <code class="docutils literal notranslate"><span class="pre">nc2pt/climatedata.py</span></code>. This simeultaneously defines the workflow as well as the data. Please see <code class="docutils literal notranslate"><span class="pre">nc2pt/conf/config.yml</span></code> for an example configuration, or below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateData</span><span class="w"> </span><span class="c1"># Iniatlizes ClimateData dataclass object</span>
+<span class="nt">output_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/nannau/data/proc/</span>
+<span class="nt">climate_models</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># This lists the models </span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateModel</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hr</span>
+<span class="w">    </span><span class="nt">info</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;High</span><span class="nv"> </span><span class="s">Resolution</span><span class="nv"> </span><span class="s">USask</span><span class="nv"> </span><span class="s">WRF,</span><span class="nv"> </span><span class="s">Western</span><span class="nv"> </span><span class="s">Canada&quot;</span>
+<span class="w">    </span><span class="nt">climate_variables</span><span class="p">:</span><span class="w"> </span><span class="c1"># Provides a list of ClimateVariable dataclass objects to initialize</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateVariable</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tas&quot;</span>
+<span class="w">        </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;T2&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;surface</span><span class="nv"> </span><span class="s">temperature&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/nannau/USask-WRF-WCA/fire_vars/T2/*.nc</span>
+<span class="w">        </span><span class="nt">is_west_negative</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">apply_standardize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">        </span><span class="nt">apply_normalize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">invariant</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">        </span><span class="nt">transform</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateModel</span>
+<span class="w">    </span><span class="nt">info</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Low</span><span class="nv"> </span><span class="s">resolution</span><span class="nv"> </span><span class="s">ERA5,</span><span class="nv"> </span><span class="s">Western</span><span class="nv"> </span><span class="s">Canada&quot;</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lr</span>
+<span class="w">    </span><span class="nt">hr_ref</span><span class="p">:</span><span class="w"> </span><span class="c1"># Reference field to interpolate to. Will need to provide new file if not using USask WRF</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateVariable</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hr_ref&quot;</span>
+<span class="w">      </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;T2&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt/nc2pt/data/hr_ref.nc</span>
+<span class="w">      </span><span class="nt">is_west_negative</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">    </span><span class="nt">climate_variables</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateVariable</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tas&quot;</span>
+<span class="w">        </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;T2&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;surface</span><span class="nv"> </span><span class="s">temperature&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/nannau/ERA5_NCAR-RDA_North_America/proc/tas_1hr_ERA5_an_RDA-025_1979010100-2018123123_time_sliced_cropped.nc</span>
+<span class="w">        </span><span class="nt">is_west_negative</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">        </span><span class="nt">apply_standardize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">        </span><span class="nt">apply_normalize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">invariant</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">        </span><span class="nt">transform</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;x</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">273.15&quot;</span>
+
+
+<span class="nt">dims</span><span class="p">:</span><span class="w"> </span><span class="c1"># Defines the dimensions you might find in your lr or hr dataset and lists them to be initialized as ClimateDimension objects. Typically this would match what is in your hr dataset. Intended to allow for renaming of dimensions and allows for the control of chunking</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateDimension</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time</span>
+<span class="w">    </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;forecast_initial_time&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Time&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Times&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;times&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">chunksize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateDimension</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rlat</span>
+<span class="w">    </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;rotated_latitude&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">hr_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">chunksize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateDimension</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rlon</span>
+<span class="w">    </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;rotated_longitude&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">hr_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">chunksize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+
+<span class="c1"># similar to dims, just as coodinates instead. coordinates might not match dims on curvilinear grids</span>
+<span class="nt">coords</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateDimension</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lat</span>
+<span class="w">    </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;latitude&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Lat&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Latitude&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">chunksize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nc2pt.climatedata.ClimateDimension</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lon</span>
+<span class="w">    </span><span class="nt">alternative_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;longitude&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Long&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Lon&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Longitude&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">chunksize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+
+<span class="c1"># subsample data temporally or spatially!</span>
+
+<span class="nt">select</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Time indexing for subsets</span>
+<span class="w">  </span><span class="nt">time</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Crop to the dataset with the shortest run</span>
+<span class="w">    </span><span class="c1"># this defines the full dataset from which to subset</span>
+<span class="w">    </span><span class="nt">range</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">start</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;20001001T06:00:00&quot;</span>
+<span class="w">      </span><span class="nt">end</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;20150928T12:00:00&quot;</span>
+<span class="w">      </span><span class="c1"># start: &quot;2021-11-01T00:00:00&quot;</span>
+<span class="w">      </span><span class="c1"># end: &quot;2021-12-31T22:00:00&quot;</span>
+
+<span class="w">    </span><span class="c1"># use this to select which years to reserve for testing</span>
+<span class="w">    </span><span class="c1"># and for validation</span>
+<span class="w">    </span><span class="c1"># the remaining years in full will be used for training</span>
+<span class="w">    </span><span class="nt">test_years</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">2000</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2009</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2014</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">validation_years</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">2015</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="c1"># test_years: [None]</span>
+<span class="w">    </span><span class="c1"># validation_years: [None]</span>
+
+<span class="w">  </span><span class="c1"># sets the scale factor and index slices of the rotated coordinates</span>
+<span class="w">  </span><span class="nt">spatial</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">scale_factor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">    </span><span class="nt">x</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">first_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">110</span>
+<span class="w">      </span><span class="nt">last_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">622</span>
+<span class="w">    </span><span class="nt">y</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">first_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">      </span><span class="nt">last_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">532</span>
+
+
+
+<span class="c1"># dask client parameters</span>
+<span class="nt">compute</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># xarray netcdf engine</span>
+<span class="w">  </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h5netcdf</span>
+<span class="w">  </span><span class="nt">dask_dashboard_address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8787</span>
+<span class="w">  </span><span class="nt">chunks</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
+<span class="w">    </span><span class="nt">rlat</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
+<span class="w">    </span><span class="nt">rlon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
+
+<span class="c1"># optional for tools scripts (single_files_to_batches)</span>
+<span class="nt">loader</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">  </span><span class="nt">randomize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</pre></div>
+</div>
+</section>
+<section id="running">
+<h3>🚀 Running<a class="headerlink" href="#running" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Explore data and ensure compatibility</p></li>
+<li><p>Configure <code class="docutils literal notranslate"><span class="pre">nc2pt/conf/config.yaml</span></code></p></li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">nc2pt/preprocess.py</span></code> script which will run through your preprocessing steps. This creates the zarr files</p></li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">nc2pt/tools/zarr_to_torch.py</span></code> script which serializes each time step in the <code class="docutils literal notranslate"><span class="pre">.zarr</span></code> file to an individual PyTorch <code class="docutils literal notranslate"><span class="pre">.pt</span></code> file.</p></li>
+<li><p>Optional: run the <code class="docutils literal notranslate"><span class="pre">nc2pt/tools/single_files_to_batches.py</span></code> which combines individual files from the previous step into random batches. This setup allows for less io in your machine learning pipeline.</p></li>
+</ol>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h3>
+<p>Testing is done with pytest. The easiest way to perform tests is to install pytest and use the command: <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--cov-report</span> <span class="pre">term-missing</span> <span class="pre">--cov=nc2pt</span> <span class="pre">.</span></code></p>
+<p>It will generate a coverage report and automatically use files prepended with <code class="docutils literal notranslate"><span class="pre">test_*.py</span></code> in <code class="docutils literal notranslate"><span class="pre">nc2pt/tests</span></code></p>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -405,30 +624,36 @@ document.write(`
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="intro.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Welcome to your Jupyter Book</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="local.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Local</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-intended-use-cases-of-nc2pt">What intended use cases of nc2pt?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-preprocessing-steps-does-nc2pt-do">What preprocessing steps does nc2pt do? 🤔</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-the-downsides-of-using-pytorch-files-for-climate-data">What are the downsides of using PyTorch files for climate data?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">💽 Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">📋 Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running">🚀 Running</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
@@ -439,7 +664,7 @@ document.write(`
   <div class="footer-item">
     
 <p class="component-author">
-By Nic Annau, Environment and Climate Change Canada
+By Nic Annau
 </p>
 
   </div>
@@ -449,7 +674,7 @@ By Nic Annau, Environment and Climate Change Canada
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -473,8 +698,8 @@ By Nic Annau, Environment and Climate Change Canada
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
