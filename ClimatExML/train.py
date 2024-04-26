@@ -76,7 +76,6 @@ if __name__ == "__main__":
 
     # check that the expected environment variables are set
 
-    check_env_vars()
     torch.set_float32_matmul_precision("medium")
     torch.cuda.empty_cache()
     logging.basicConfig(level=logging.INFO)
