@@ -2,7 +2,7 @@
 
 ClimatExML should be built from source so that users can modify the training to suit their needs or preferences. There are two main ways of using ClimatExML. 
 
-1. By installing it and the requirements locally on your host machine or;
+1. (Recommended) By installing it and the requirements locally on your host machine or;
 2. By using the containers that are designed to run this code. 
 
 Option (1) requires slightly more configuration, but can be simpler to get started quickly, while option (2) is highly portable and provides convenient ways to configure the pipeline on HPC systems. Instructions are provided here to get started with both. 

@@ -4,8 +4,8 @@
 format: jb-book
 root: intro
 chapters:
-- file: installing
 - file: preprocessing
+- file: installing
 - file: tracking
 - file: training
 - file: customizing

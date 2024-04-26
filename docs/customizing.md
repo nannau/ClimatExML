@@ -20,6 +20,10 @@ These instructions may evolve as the project evolves, but the core functionality
 
 Configuration and customization typically occurs at a high level in the `ClimatExML/conf/config.yaml` file, or in lower levels in the `.py` files. As a quick outline of what each file does:
 
+## Experiment Environment Variables
+
+Currently the environment variables `PROJECT_DIR` and `DATA_DIR` are used to define the parent paths for the ClimatExML repo location as well as the paths to the preprocessed `.pt` files (output from [nc2pt](https://github.com/nannau/nc2pt), see [Preprocessing](./preprocessing.md)). Finally, `OUTPUT_COMET_ZIP` should be set to tell ClimatExML where you want to write the files to. Typically put this somewhere in your scratch directory on DRAC machines.
+
 ## config.yaml
 
 Here is where paths, hyperparameters, covariates, tracking, and other information is read in by the project. Users can choose to hard-code in data paths, or use environment variables (e.g. `${oc.env:PROJECT_DIR}` in the yaml file). Importantly, this is also where the project name and experiment name is supplied to CometML. Please always use a unique `experiment_name` unless you plan on overwriting trained models.
