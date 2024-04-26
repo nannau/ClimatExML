@@ -7,7 +7,7 @@ setup(
     author_email="nicannau@gmail.com ",
     packages=["ClimatExML"],
     license="LICENSE",
-    description="Python module to to pre-process ClimatEx deep learning data.",
+    description="Python module for deep learning WGAN-GPs.",
     long_description=open("README.md").read(),
     install_requires=[
         #"pytorch-lightning==2.1.1",
