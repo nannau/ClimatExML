@@ -356,7 +356,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -372,6 +374,16 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-yaml">config.yaml</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#train-py">train.py</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wgan-gp-py">wgan-gp.py</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -383,6 +395,68 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="customize">
 <h1>Customize<a class="headerlink" href="#customize" title="Link to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These instructions may evolve as the project evolves, but the core functionality should remain the same.</p>
+</div>
+<p>Configuration and customization typically occurs at a high level in the <code class="docutils literal notranslate"><span class="pre">ClimatExML/conf/config.yaml</span></code> file, or in lower levels in the <code class="docutils literal notranslate"><span class="pre">.py</span></code> files. As a quick outline of what each file does:</p>
+<section id="config-yaml">
+<h2>config.yaml<a class="headerlink" href="#config-yaml" title="Link to this heading">#</a></h2>
+<p>Here is where paths, hyperparameters, covariates, tracking, and other information is read in by the project. Users can choose to hard-code in data paths, or use environment variables (e.g. <code class="docutils literal notranslate"><span class="pre">${oc.env:PROJECT_DIR}</span></code> in the yaml file). Importantly, this is also where the project name and experiment name is supplied to CometML. Please always use a unique <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> unless you plan on overwriting trained models.</p>
+</section>
+<section id="train-py">
+<h2><a class="reference external" href="http://train.py">train.py</a><a class="headerlink" href="#train-py" title="Link to this heading">#</a></h2>
+<p>This is the launch point of the program, and so high-level changes can be made here. Usually changes to this file are major, so if you find yourself modifying this file, perhaps consider your problem elsewhere or consider introducing functionality in a new module or file.</p>
+</section>
+<section id="wgan-gp-py">
+<h2><a class="reference external" href="http://wgan-gp.py">wgan-gp.py</a><a class="headerlink" href="#wgan-gp-py" title="Link to this heading">#</a></h2>
+<p>This is where the low-level training methods occur. Here you can add losses to log, change the training algorithm, and so on. Specifically, the function <code class="docutils literal notranslate"><span class="pre">training_step</span></code> is looped while training so research and experimentation can go here. Below is an example of this loop with inline comments to explain:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">):</span>
+
+        <span class="c1"># train generator</span>
+        <span class="n">lr</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">hr_cov</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># load the data from the dataloader</span>
+        <span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="c1"># change to float</span>
+        <span class="n">hr</span> <span class="o">=</span> <span class="n">hr</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">hr_cov</span> <span class="o">=</span> <span class="n">hr_cov</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="n">g_opt</span><span class="p">,</span> <span class="n">c_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">()</span> <span class="c1"># get optimizers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_optimizer</span><span class="p">(</span><span class="n">c_opt</span><span class="p">)</span> <span class="c1"># turn ON critic optimizer for first n_critic steps</span>
+
+        <span class="n">sr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">hr_cov</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="c1"># detach generated field from Generator network so graph is not used (leads to memory leaks)</span>
+
+        <span class="n">gradient_penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_gradient_penalty</span><span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">sr</span><span class="p">)</span> <span class="c1"># compute WGAN-GP grad penalty</span>
+        <span class="n">mean_sr</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">(</span><span class="n">sr</span><span class="p">))</span> <span class="c1"># compute mean of vectors for wasserstein distance</span>
+        <span class="n">mean_hr</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">(</span><span class="n">hr</span><span class="p">))</span>
+        <span class="n">loss_c</span> <span class="o">=</span> <span class="n">mean_sr</span> <span class="o">-</span> <span class="n">mean_hr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">gp_lambda</span> <span class="o">*</span> <span class="n">gradient_penalty</span> <span class="c1"># assemble final critic loss function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">go_downhill</span><span class="p">(</span><span class="n">loss_c</span><span class="p">,</span> <span class="n">c_opt</span><span class="p">)</span> <span class="c1"># go downhill performs the gradient descent step</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_critic</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># ever n_critic steps, update the generator network!</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_optimizer</span><span class="p">(</span><span class="n">g_opt</span><span class="p">)</span> <span class="c1"># turn ON the generator optimizer</span>
+            <span class="n">sr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">hr_cov</span><span class="p">)</span> <span class="c1"># generate example field</span>
+            <span class="n">loss_g</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">mean_squared_error</span><span class="p">(</span>
+                <span class="n">sr</span><span class="p">,</span> <span class="n">hr</span>
+            <span class="p">)</span> <span class="c1"># use the critic loss (adversarial loss) and MSE to assemble generator loss</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">go_downhill</span><span class="p">(</span><span class="n">loss_g</span><span class="p">,</span> <span class="n">g_opt</span><span class="p">)</span> <span class="c1"># gradient step downhill</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">(</span><span class="s2">&quot;Train&quot;</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">sr</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="n">mean_sr</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="n">mean_hr</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span>
+            <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span> <span class="c1"># log training losses</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_every_n_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configure_figure</span><span class="p">(</span>
+                <span class="s2">&quot;Train&quot;</span><span class="p">,</span>
+                <span class="n">lr</span><span class="p">,</span>
+                <span class="n">hr</span><span class="p">,</span>
+                <span class="n">hr_cov</span><span class="p">,</span>
+                <span class="n">n_examples</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span>
+            <span class="p">)</span> <span class="c1"># create figure and log</span>
+</pre></div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -440,7 +514,22 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"></div>
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-yaml">config.yaml</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#train-py">train.py</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wgan-gp-py">wgan-gp.py</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
