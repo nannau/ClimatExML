@@ -3,51 +3,61 @@
 #SBATCH --mem=32G
 #SBATCH --gres=gpu:4
 #SBATCH --nodes=1
-#SBATCH --ntasks=2
-#SBATCH --ntasks-per-node=2
-#SBATCH --time=03-16:00            # time (DD-HH:MM)
-#SBATCH --cpus-per-task=12
-#SBATCH --output=log_kurtosis.out
+#SBATCH --ntasks-per-node=4
+#SBATCH --time=05-16:00            # time (DD-HH:MM)
+#SBATCH --cpus-per-task=6
+#SBATCH --output=log_lightning_%j.out
 
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-# srun --cpus-per-task=$SLURM_CPUS_PER_TASK ./program
+echo "CONFIG OPTIONS"
+export PROJECT_DIR=$SLURM_TMPDIR # code uses project dir as base.
+export DATA_DIR=$SLURM_TMPDIR/data
+export OUTPUT_COMET_ZIP=$HOME/scratch
+
+export CODE_PATH=/home/nannau/scratch/comet/
+export HOST_DATA_PATH=/home/nannau/scratch/data
+echo "END CONFIG OPTIONS"
+
+echo "INSTALL SOFTWARE"
+rsync -av --progress $CODE_PATH $SLURM_TMPDIR/
+
+module load python
+unset KUBERNETES_PORT # mysterious, needs to be here. Not sure why.
+
+virtualenv --no-download ${PROJECT_DIR}/mlenv
+source ${PROJECT_DIR}/mlenv/bin/activate
+pip install --no-index --upgrade pip
+pip install --no-index ${PROJECT_DIR}/ClimatExML/
+echo "END INSTALL"
+
+echo "SET RANDOM NODE VARS"
+export NCCL_BLOCKING_WAIT=1
+unset OMP_NUM_THREADS # mysterious, needs to be here. Not sure why.
+unset COMET_API_KEY # force offline mode
 
 # debugging flags (optional)
 export NCCL_DEBUG=INFO
 export PYTHONFAULTHANDLER=1
+echo "END SET"
 
-rsync -av --progress /home/nannau/scratch/marvin_light_container/ $SLURM_TMPDIR/
-rsync -av --progress /home/nannau/scratch/data $SLURM_TMPDIR/
-# tar -xf $SLURM_TMPDIR/light_container/data.tar.gz -C $SLURM_TMPDIR/light_container --checkpoint=.50000
+echo "COPY AND EXTRACT DATA"
+rsync -av --progress $HOST_DATA_PATH $SLURM_TMPDIR/
 
-for var in uas vas tas Q2 pr; do
+for var in uas vas tas RH pr; do
     echo
-    echo "Extracting Train $var"
+    echo "Extracting validation $var"
     echo
-    tar -xf $SLURM_TMPDIR/data/train/$var.tar.gz -C $SLURM_TMPDIR/data/train --checkpoint=.50000
-    echo
-    echo "Extracting Validation $var"
-    echo
-    tar -xf $SLURM_TMPDIR/data/validation/$var.tar.gz -C $SLURM_TMPDIR/data/validation --checkpoint=.50000
+    tar -xf $SLURM_TMPDIR/data/validation/$var.tar.gz -C $SLURM_TMPDIR/data --checkpoint=.50000
 done
 
+for var in uas vas tas RH pr; do
+    echo
+    echo "Extracting train $var"
+    echo
+    tar -xf $SLURM_TMPDIR/data/train/$var.tar.gz -C $SLURM_TMPDIR/data --checkpoint=.50000
+done
 
-module load apptainer
-module load cuda
-unset KUBERNETES_PORT
+echo "END COPY"
 
-# This command should make it so you can edit outside of $SLURM_TMPDIR and have changes appear in container
-# apptainer shell --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR:/home/nannau/,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif
-####
-# This command works well for mounting changes and the new data:
-# apptainer shell --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif
-##
-
-# okay for dumb technical reasons we have to match the output artifact directory to the exact same directory in the apptainer container as where it's bing
-# stored and served in mlflow server
-# apptainer shell --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/scratch/marvin_light_container/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif 
-# associated sserver command:
-# mlflow ui --backend-store-uri sqlite:////home/nannau/scratch/marvin_light_container/light_container/mlflow/climatexdb.sqlite
-# srun apptainer exec --home /home/nannau --nv --bind $SLURM_TMPDIR:/home/nannau/,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif bash "/home/nannau/apptainer_cmd.sh"
-
-srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/scratch/marvin_light_container/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif  bash "/home/nannau/apptainer_cmd.sh"
+echo "RUN TRAINING"
+unset OMP_NUM_THREADS
+python ${PROJECT_DIR}/ClimatExML/ClimatExML/train.py 
