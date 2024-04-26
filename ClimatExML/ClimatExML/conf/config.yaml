@@ -1,0 +1,78 @@
+
+hyperparameters:
+  # Adam Optimizer
+  learning_rate: 0.00025
+  b1: 0.9
+  b2: 0.99
+  gp_lambda: 10
+  alpha: 50.0
+  n_critic: 5
+  max_epochs: 50
+  noise_injection: false
+  batch_size: 3
+
+tracking:
+  # set COMET_API_KEY environment variable for online mode
+  project_name: climatex
+  workspace: nannau-uvic
+  save_dir: ${oc.env:OUTPUT_COMET_ZIP}
+  experiment_name: comet-gan-test-narval-5epoch
+  log_model: True
+  log_every_n_steps: 100
+  validation_log_every_n_steps: 500
+
+hardware:
+  num_workers: 11
+  precision: 32
+  accelerator: "gpu"
+  devices: -1
+  strategy: "ddp_find_unused_parameters_true"
+
+invariant:
+  _target_: "ClimatExML.mlclasses.InvariantData"
+  lr_shape:
+    - 6 # lr covariates
+    - 64 # x size
+    - 64 # y size
+  hr_shape:
+    - 5 # hr covariates (predictands)
+    - 512 # x size
+    - 512 # y size
+  hr_invariant_shape:
+    - 1 # hr invariant covariates
+    - 512
+    - 512
+  hr_invariant_paths: 
+    - ${oc.env:PROJECT_DIR}/ClimatExML/ClimatExML/data/hr_topography_norm.pt
+  lr_invariant_paths:
+    - ${oc.env:PROJECT_DIR}/ClimatExML/ClimatExML/data/lr_topography_norm.pt
+
+train_data:
+  _target_: "ClimatExML.mlclasses.InputVariables"
+  lr_paths:
+    - ${oc.env:DATA_DIR}/train/pr/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/tas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/uas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/RH/lr/*.pt
+  hr_paths:
+    - ${oc.env:DATA_DIR}/train/pr/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/tas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/uas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/vas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/RH/hr/*.pt
+
+validation_data:
+  _target_: "ClimatExML.mlclasses.InputVariables"
+  lr_paths:
+    - ${oc.env:DATA_DIR}/validation/pr/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/tas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/uas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/RH/lr/*.pt
+  hr_paths:
+    - ${oc.env:DATA_DIR}/validation/pr/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/tas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/uas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/vas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/RH/hr/*.pt
