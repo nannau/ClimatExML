@@ -11,20 +11,12 @@ from hydra.utils import instantiate
 import os
 import warnings
 
-def check_tracking_paths(tracking):
-    if tracking.save_dir is None:
-        # make a warning
-        warnings.warn(
-            "The environment variable OUTPUT_COMET_ZIP is not set as defined in save_dir in config.yaml. Defaulting to current directory. This is likely not what you want!"
-        )
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: dict):
     hyperparameters = cfg.hyperparameters
     tracking = cfg.tracking
     hardware = cfg.hardware
-
-    check_tracking_paths(tracking)
 
     comet_logger = CometLogger(
         api_key=os.environ.get("COMET_API_KEY"),
@@ -73,10 +65,6 @@ def main(cfg: dict):
 
 
 if __name__ == "__main__":
-
-    # check that the expected environment variables are set
-
-    check_env_vars()
     torch.set_float32_matmul_precision("medium")
     torch.cuda.empty_cache()
     logging.basicConfig(level=logging.INFO)
