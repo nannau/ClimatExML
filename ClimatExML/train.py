@@ -65,12 +65,12 @@ def main(cfg: dict):
 
 
 def check_env_vars():
-    if os.environ.get("OUTPUT_DIR") is None:
+    if os.environ.get("OUTPUT_COMET_ZIP") is None:
         # make a warning
         warnings.warn(
-            "OUTPUT_DIR is not set. Defaulting to current directory. This is likely not what you want!"
+            "OUTPUT_COMET_ZIP is not set. Defaulting to current directory. This is likely not what you want!"
         )
-        os.environ["OUTPUT_DIR"] = os.getcwd()
+        os.environ["OUTPUT_COMET_ZIP"] = os.getcwd()
 
 
 if __name__ == "__main__":
