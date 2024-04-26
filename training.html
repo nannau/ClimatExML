@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
@@ -177,6 +177,7 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tracking.html">Tracking</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Training</a></li>
@@ -379,13 +380,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer-recommended-on-hpc-systems">Apptainer (Recommended on HPC systems)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers-recommended">Without Containers (Recommended)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-drac-machines-narval">On DRAC Machines (Narval)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers-experimental">Containers (Experimental)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-volumes-binds">Setting up Volumes/Binds</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-untested">Docker (untested)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
 </ul>
             </nav>
         </div>
@@ -399,41 +400,31 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="training">
 <h1>Training<a class="headerlink" href="#training" title="Link to this heading">#</a></h1>
-<p>ClimatExML has a container with the environment pre-configured so that dependencies do not need to be installed. Users can also choose to install these dependencies normally on their host system to suit their needs.</p>
-<section id="containers">
-<h2>Containers<a class="headerlink" href="#containers" title="Link to this heading">#</a></h2>
-<section id="setting-up-binds">
-<h3>Setting up Binds<a class="headerlink" href="#setting-up-binds" title="Link to this heading">#</a></h3>
+<p>ClimatExML has a container with the environment pre-configured so that dependencies do not need to be installed. However, at this stage, it is recommended that users install ClimatEx using the Python installation instructions.</p>
+<section id="without-containers-recommended">
+<h2>Without Containers (Recommended)<a class="headerlink" href="#without-containers-recommended" title="Link to this heading">#</a></h2>
+<p>In a virtual environment with ClimatExML installed, and after testing that the GPU(s) are properly configured (refere to <a class="reference internal" href="installing.html"><span class="std std-doc">installing</span></a>) to run with PyTorch, simply run</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">ClimatExML</span><span class="o">/</span><span class="n">ClimatExML</span><span class="o">/</span><span class="n">train</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</section>
+<section id="on-drac-machines-narval">
+<h2>On DRAC Machines (Narval)<a class="headerlink" href="#on-drac-machines-narval" title="Link to this heading">#</a></h2>
+<p>To submit a SLURM job is a bit finicky but as of writing this documentation, the following method works as provided in <code class="docutils literal notranslate"><span class="pre">hpc/train_job.sh</span></code>. On DRAC machines you can submit a job with <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">train_job.sh</span></code> once you modified its contents to match your configuration.</p>
+</section>
+<section id="containers-experimental">
+<h2>Containers (Experimental)<a class="headerlink" href="#containers-experimental" title="Link to this heading">#</a></h2>
+<section id="setting-up-volumes-binds">
+<h3>Setting up Volumes/Binds<a class="headerlink" href="#setting-up-volumes-binds" title="Link to this heading">#</a></h3>
 <p>Binding allows directories in the host to be replicated in the container so that changes are represented inside of the container. This makes it easier to edit and debug code within the container framework, rather than copying all data and code into the container. It also allows for the container to change files and have them represented on the host system which is useful for tracking ML runs with MLflow.</p>
 </section>
-<section id="apptainer-recommended-on-hpc-systems">
-<h3>Apptainer (Recommended on HPC systems)<a class="headerlink" href="#apptainer-recommended-on-hpc-systems" title="Link to this heading">#</a></h3>
-<p>Simply execute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/scratch/marvin_light_container/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif  bash &quot;/home/nannau/apptainer_cmd.sh&quot;
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># this works (just for my own notes)
-apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
-</pre></div>
-</div>
-</section>
-<section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Link to this heading">#</a></h3>
-<p>This runs a bash script but doesn’t work just yet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">v</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nannau</span><span class="o">/</span><span class="n">dockerize</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">project</span><span class="o">/</span> <span class="n">nannau</span><span class="o">/</span><span class="n">sr</span>  <span class="n">bash</span> <span class="n">container_cmd</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
+<section id="docker-untested">
+<h3>Docker (untested)<a class="headerlink" href="#docker-untested" title="Link to this heading">#</a></h3>
+<p>To enter an environment with the necessary environment (for example if you have limited access to linux machines or are having troubles getting the environment installed manually)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr
 </pre></div>
 </div>
 </section>
-</section>
-<section id="without-containers">
-<h2>Without Containers<a class="headerlink" href="#without-containers" title="Link to this heading">#</a></h2>
-<p>In a virtual environment with ClimatExML installed, and after testing that the GPU(s) are properly configured to run with PyTorch, simply run</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">ClimatExML</span><span class="o">/</span><span class="n">ClimatExML</span><span class="o">/</span><span class="n">train</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
 </section>
 </section>
 
@@ -501,13 +492,13 @@ apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/proje
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers">Containers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-binds">Setting up Binds</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apptainer-recommended-on-hpc-systems">Apptainer (Recommended on HPC systems)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">Docker</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers-recommended">Without Containers (Recommended)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#on-drac-machines-narval">On DRAC Machines (Narval)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers-experimental">Containers (Experimental)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-volumes-binds">Setting up Volumes/Binds</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-untested">Docker (untested)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#without-containers">Without Containers</a></li>
 </ul>
   </nav></div>
 

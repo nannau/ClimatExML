@@ -1,41 +1,28 @@
 # Training
 
-ClimatExML has a container with the environment pre-configured so that dependencies do not need to be installed. Users can also choose to install these dependencies normally on their host system to suit their needs.
+ClimatExML has a container with the environment pre-configured so that dependencies do not need to be installed. However, at this stage, it is recommended that users install ClimatEx using the Python installation instructions.
 
-## Containers
+## Without Containers (Recommended)
 
-### Setting up Binds
-
-Binding allows directories in the host to be replicated in the container so that changes are represented inside of the container. This makes it easier to edit and debug code within the container framework, rather than copying all data and code into the container. It also allows for the container to change files and have them represented on the host system which is useful for tracking ML runs with MLflow.
-
-### Apptainer (Recommended on HPC systems)
-
-Simply execute 
-
-```
-srun apptainer exec --home /home/nannau --nv --bind $HOME/scratch/marvin_light_container/:/home/nannau/,$SLURM_TMPDIR/data:/home/nannau/data,/home/nannau/scratch/marvin_light_container/light_container/mlflow/:/home/nannau/scratch/marvin_light_container/light_container/mlflow/, --overlay $SLURM_TMPDIR/light_container/ $SLURM_TMPDIR/light_container/lightning.sif  bash "/home/nannau/apptainer_cmd.sh"
-```
-
-```
-# this works (just for my own notes)
-apptainer shell --fakeroot --home /project --bind $HOME/scratch/apptainer:/project/ --overlay $HOME/scratch/apptainer/ $HOME/scratch/apptainer/ClimatExML/sr.sif
-```
-
-### Docker
-
-This runs a bash script but doesn't work just yet
-```
-docker run -v /home/nannau/dockerize/:/project/ nannau/sr  bash container_cmd.sh
-```
-
-```
-docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr
-```
-
-## Without Containers
-
-In a virtual environment with ClimatExML installed, and after testing that the GPU(s) are properly configured to run with PyTorch, simply run
+In a virtual environment with ClimatExML installed, and after testing that the GPU(s) are properly configured (refere to [installing](./installing.md)) to run with PyTorch, simply run
 
 ```python
 python ClimatExML/ClimatExML/train.py
+```
+
+## On DRAC Machines (Narval)
+
+To submit a SLURM job is a bit finicky but as of writing this documentation, the following method works as provided in `hpc/train_job.sh`. On DRAC machines you can submit a job with `sbatch train_job.sh` once you modified its contents to match your configuration.
+
+## Containers (Experimental)
+
+### Setting up Volumes/Binds
+
+Binding allows directories in the host to be replicated in the container so that changes are represented inside of the container. This makes it easier to edit and debug code within the container framework, rather than copying all data and code into the container. It also allows for the container to change files and have them represented on the host system which is useful for tracking ML runs with MLflow.
+
+### Docker (untested)
+
+To enter an environment with the necessary environment (for example if you have limited access to linux machines or are having troubles getting the environment installed manually) 
+```
+docker run -it --rm --runtime=nvidia --gpus all -v $PROJECT_DIR:/project/ -v $DATA_DIR:/project/data/ nannau/sr
 ```

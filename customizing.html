@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
@@ -177,6 +177,7 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing ClimatExML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tracking.html">Tracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
@@ -379,6 +380,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-environment-variables">Experiment Environment Variables</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-yaml">config.yaml</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#train-py">train.py</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wgan-gp-py">wgan-gp.py</a></li>
@@ -400,6 +402,10 @@ document.write(`
 <p>These instructions may evolve as the project evolves, but the core functionality should remain the same.</p>
 </div>
 <p>Configuration and customization typically occurs at a high level in the <code class="docutils literal notranslate"><span class="pre">ClimatExML/conf/config.yaml</span></code> file, or in lower levels in the <code class="docutils literal notranslate"><span class="pre">.py</span></code> files. As a quick outline of what each file does:</p>
+<section id="experiment-environment-variables">
+<h2>Experiment Environment Variables<a class="headerlink" href="#experiment-environment-variables" title="Link to this heading">#</a></h2>
+<p>Currently the environment variables <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR</span></code> and <code class="docutils literal notranslate"><span class="pre">DATA_DIR</span></code> are used to define the parent paths for the ClimatExML repo location as well as the paths to the preprocessed <code class="docutils literal notranslate"><span class="pre">.pt</span></code> files (output from <a class="reference external" href="https://github.com/nannau/nc2pt">nc2pt</a>, see <a class="reference internal" href="preprocessing.html"><span class="std std-doc">Preprocessing</span></a>). Finally, <code class="docutils literal notranslate"><span class="pre">OUTPUT_COMET_ZIP</span></code> should be set to tell ClimatExML where you want to write the files to. Typically put this somewhere in your scratch directory on DRAC machines.</p>
+</section>
 <section id="config-yaml">
 <h2>config.yaml<a class="headerlink" href="#config-yaml" title="Link to this heading">#</a></h2>
 <p>Here is where paths, hyperparameters, covariates, tracking, and other information is read in by the project. Users can choose to hard-code in data paths, or use environment variables (e.g. <code class="docutils literal notranslate"><span class="pre">${oc.env:PROJECT_DIR}</span></code> in the yaml file). Importantly, this is also where the project name and experiment name is supplied to CometML. Please always use a unique <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> unless you plan on overwriting trained models.</p>
@@ -523,6 +529,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-environment-variables">Experiment Environment Variables</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-yaml">config.yaml</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#train-py">train.py</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wgan-gp-py">wgan-gp.py</a></li>
