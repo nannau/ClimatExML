@@ -34,6 +34,8 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self.save_hyperparameters()
         self.num_workers = hardware.num_workers
         self.log_every_n_steps = tracking.log_every_n_steps
+        self.save_dir = tracking.save_dir
+        self.experiment_name = tracking.experiment_name
         self.validation_log_every_n_steps = tracking.validation_log_every_n_steps
 
         self.learning_rate = hyperparameters.learning_rate
@@ -202,8 +204,8 @@ class SuperResolutionWGANGP(pl.LightningModule):
         self,
     ):
         # save files in working directory for inference
-        g_path = f"{os.environ['OUTPUT_DIR']}/generator.pt"
-        c_path = f"{os.environ['OUTPUT_DIR']}/critic.pt"
+        g_path = f"{self.save_dir}/generator_{self.experiment_name}.pt"
+        c_path = f"{self.save_dir}/critic_{self.experiment_name}.pt"
 
         g_scripted = torch.jit.script(self.G)
         c_scripted = torch.jit.script(self.C)
