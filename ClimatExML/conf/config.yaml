@@ -15,8 +15,8 @@ tracking:
   # set COMET_API_KEY environment variable for online mode
   project_name: climatex
   workspace: nannau-uvic
-  save_dir: /home/kdaust/climx_output/project/
-  experiment_name: comet-gan-stochastic
+  save_dir: /home/kdaust/climx_output/
+  experiment_name: test_stochastic_kiri
   log_model: True
   log_every_n_steps: 100
   validation_log_every_n_steps: 500
@@ -31,11 +31,11 @@ hardware:
 invariant:
   _target_: "ClimatExML.mlclasses.InvariantData"
   lr_shape:
-    - 4 # lr covariates
+    - 6 # lr covariates
     - 32 # x size
     - 32 # y size
   hr_shape:
-    - 3 # hr covariates (predictands)
+    - 1 # hr covariates (predictands)
     - 256 # x size
     - 256 # y size
   hr_invariant_shape:
@@ -50,21 +50,21 @@ invariant:
 train_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - ${oc.env:DATA_DIR}/train256/tas/lr/*.pt
-    - ${oc.env:DATA_DIR}/train256/uas/lr/*.pt
-    - ${oc.env:DATA_DIR}/train256/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/tas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/uas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/ps/lr/*.pt
+    - ${oc.env:DATA_DIR}/train/cape/lr/*.pt
   hr_paths:
-    - ${oc.env:DATA_DIR}/train256/tas/hr/*.pt
-    - ${oc.env:DATA_DIR}/train256/uas/hr/*.pt
-    - ${oc.env:DATA_DIR}/train256/vas/hr/*.pt
+    - ${oc.env:DATA_DIR}/train/tas/hr/*.pt
 
 validation_data:
   _target_: "ClimatExML.mlclasses.InputVariables"
   lr_paths:
-    - ${oc.env:DATA_DIR}/validation256/tas/lr/*.pt
-    - ${oc.env:DATA_DIR}/validation256/uas/lr/*.pt
-    - ${oc.env:DATA_DIR}/validation256/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/tas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/uas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/vas/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/ps/lr/*.pt
+    - ${oc.env:DATA_DIR}/validation/cape/lr/*.pt
   hr_paths:
-    - ${oc.env:DATA_DIR}/validation256/tas/hr/*.pt
-    - ${oc.env:DATA_DIR}/validation256/uas/hr/*.pt
-    - ${oc.env:DATA_DIR}/validation256/vas/hr/*.pt
+    - ${oc.env:DATA_DIR}/validation/tas/hr/*.pt
