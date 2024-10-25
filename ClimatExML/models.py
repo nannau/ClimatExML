@@ -294,8 +294,6 @@ class HRStreamGenerator(nn.Module):
         # the training data divided by the standard deviation of the training data
         # delta_precip = 0.0769779160618782 / 0.3726992905139923
         # out[:, 0, ...] = nn.ReLU()(out[:, 0, ...] + delta_precip) - delta_precip
-        out = self.sig(out)
-
         return out
 
 
