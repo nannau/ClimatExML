@@ -9,8 +9,10 @@ Climate data focused PyTorch Lightning implementation of Wasserstein GANs for su
 [![Jupyter Book Badge](https://jupyterbook.org/badge.svg)](https://nannau.github.io/ClimatExML/intro.html)
 
 ### Quick Start
+
+Recommend using [uv](https://docs.astral.sh/uv/).
+
 ```
-virtualenv --no-download ENV
-source ENV/bin/activate
-pip install -e git+https://github.com/nannau/ClimatExML
+# install locally
+uv pip install -e .
 ```
